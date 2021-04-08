@@ -8,7 +8,7 @@ export default class LoginAct extends React.Component{
           this._loginActGoogleSignIn = this._loginActGoogleSignIn.bind(this);
      }
      _loginActGoogleSignIn(){
-          this.props.firebaseHelp.__firebaseGoogleSignInInit();
+          this.props.firebaseHelp.__firebaseGoogleSignInInit().then((res)=>{console.log(res)});
      }
 
      render(){
