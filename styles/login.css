@@ -1,0 +1,82 @@
+.login_act_main_body{
+     height: 100vh;
+     width: 100wh;
+     justify-content: center;
+     align-items: center;
+     display: flex;
+}
+.login_act_main_head_body{
+     position: fixed;
+     top: 0;
+     height: 62px;
+     width: 100%;
+     font-size: 22px;
+     text-align: center;
+     padding-top: 12px;
+     box-shadow: 0px 3px 6px #e0e0e0;
+}
+.login_act_main_form_body{
+     width: 324px;
+     border-radius: 8px;
+     border: 1px solid #e0e0e0;
+     padding: 12px;
+}
+.login_act_main_unm_txt{
+     width: 300px;
+     border-radius: 8px;
+     border:1px solid #e0e0e0;
+     height: 36px;
+     padding-left: 10px;
+}
+.login_act_main_pass_txt{
+     width: 300px;
+     height: 36px;
+     border-radius: 8px;
+     border:1px solid #e0e0e0;   
+     padding-left: 10px;
+     margin-top: 12px;
+}
+.login_act_main_sub_butt{
+     width: 100%;
+     margin-top: 12px;
+     height: 32px;
+     border-style: none;
+     border-radius: 8px;
+     cursor: pointer;
+     background-color: #e1e1e1;
+  
+}
+.login_act_or_txt{
+     width: 100%;
+     text-align: center;
+     padding-top: 7px;
+     padding-bottom: 7px;
+}
+.login_act_gog_butt{
+     width: 100%;
+     height: 36px;
+     background-color: #0E98FF;
+     border-style: none;
+     border-radius: 12px;
+     color:#fefefe;
+     cursor: pointer;
+}
+.login_act_for_lnk{
+     padding-top: 10px;
+     padding-bottom: 10px;
+     font-size: 12px;
+     color: #14348E;
+}
+.login_act_crt_act{
+     margin-top: 10px;
+     width: 100%;
+
+}
+.login_act_sgnup_cont{
+text-align: center;
+padding-top: 8px;
+padding-bottom: 8px;
+margin-top: 10px;
+color: #0E98FF;
+border-top: 1px solid #e0e0e0;
+}

@@ -1,5 +1,5 @@
 module.exports = {
      env: {
-       ket: 'my-value',
+       BASE_DIREC: 'E:/titan/titan/',
      },
    }
