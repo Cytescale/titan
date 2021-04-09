@@ -13,16 +13,20 @@ export default class firebaseHelper{
       constructor(UserClass){
           this.UserClass = UserClass;
           console.log("FIREBASE HELPER INIT")
-          firebase.apps.length?1:FIREBASE_APP = firebase.initializeApp(FIREBASE_CONFIG);
-          FIREBASE_PROVIDER = new firebase.auth.GoogleAuthProvider();
-          FIREBASE = firebase;
-          
-
+                   
      }
      
+     _init_firebase_app(){
+      firebase.apps.length?1:FIREBASE_APP = firebase.initializeApp(FIREBASE_CONFIG);
+      FIREBASE_PROVIDER = new firebase.auth.GoogleAuthProvider(); 
+      FIREBASE = firebase;
+     }
+
      _get_firebase(){
        return FIREBASE;
      }
+
+     
 
      async _app_init_auth_state_inti(){
       console.log("INIT AUTH");
@@ -70,6 +74,29 @@ export default class firebaseHelper{
       this.UserClass._set_curr_user(firebase.auth().currentUser);
      }
 
+     async _firebaseEmailSignInInit(email,pass)
+      {
+        let res  ={err:null,errCode:null};
+        return(await firebase.auth().signInWithEmailAndPassword(email,pass).then((result)=>{
+              /** @type {firebase.auth.OAuthCredential} */
+              const credential = result.credential;
+              const token = credential.accessToken;
+              console.log("LOG IN CREDS" + credential)
+              cookies.set('accessToken',token, { path: '/' });
+              this._set_current_user();
+              Router.push(process.env.NEXT_PUBLIC_HOST+'src/land');  
+              res = {err:false};
+              return res;
+        }).catch((error) => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          var email = error.email;
+          var credential = error.credential;
+          console.log("NO NEW EMAIL SIGNIIN AT ERROR "+errorCode);
+          res = {err:true,errCode:errorCode};
+          return res;
+        }));
+      }
      async __firebaseGoogleSignInInit(){     
          return(await firebase.auth().signInWithPopup(FIREBASE_PROVIDER).then((result) => {
             /** @type {firebase.auth.OAuthCredential} */
@@ -78,7 +105,7 @@ export default class firebaseHelper{
             console.log("LOG IN CREDS" + credential);
             cookies.set('accessToken',token, { path: '/' });
             this._set_current_user();
-            
+            Router.push(process.env.NEXT_PUBLIC_HOST+'src/land');
             return true;
           }).catch((error) => {
             var errorCode = error.code;
