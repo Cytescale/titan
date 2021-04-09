@@ -1,15 +1,26 @@
 import React, { useState,useEffect  } from 'react';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
+import Router from "next/router";
+import firebaseHelper from '../../../util/firebase_helper';
+import UserClass from '../../../util/User';
 
 
+var User = new UserClass();
+const firebaseHelp = new firebaseHelper(User);
 export default class LoginAct extends React.Component{
      constructor(props){
-          super(props);          
+          super(props);  
           this._loginActGoogleSignIn = this._loginActGoogleSignIn.bind(this);
+          NotificationManager.info('Info message');
      }
+
+     com(){
+          firebaseHelp._init_user_check(process.env.NEXT_PUBLIC_HOST+'src/land',null);
+     }
+
      _loginActGoogleSignIn(){
-          this.props.firebaseHelp.__firebaseGoogleSignInInit().then((res)=>{
-               this.props.setlogFlag(res);
-          });
+          firebaseHelp.__firebaseGoogleSignInInit();
      }
 
      render(){
@@ -17,9 +28,7 @@ export default class LoginAct extends React.Component{
        <div className='login_act_main_body'>
                     <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
                     <title>Login</title>
-                    <div className='login_act_main_head_body'>
-                              Titan           
-                    </div>
+                    
                     <div className='login_act_main_form_body'>
                          <div className='login_act_tit_cont'>Login to Titan</div>
                          <form>
@@ -31,11 +40,13 @@ export default class LoginAct extends React.Component{
                               <div className='login_act_or_txt'>or</div>
                               <div><button className='login_act_gog_butt' onClick={this._loginActGoogleSignIn}>Sign-in with Google</button></div>
                               <div className='login_act_sgnup_cont'>
-                                   <a href='#' className='login_act_sgnup_cont_lnk'>Create Account</a>
+                                   <a href='/src/signup' className='login_act_sgnup_cont_lnk'>Create Account</a>
                               </div>
                          
                          
                     </div>
+                    <NotificationContainer/>
+
        </div>   
      );
      }

@@ -1,6 +1,9 @@
 import firebase from "firebase/app";
 import FIREBASE_CONFIG from './firebase_config.js';
 import "firebase/auth";
+import Router from "next/router";
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 var FIREBASE_APP = null;
 var FIREBASE_PROVIDER = null; 
@@ -13,36 +16,52 @@ export default class firebaseHelper{
           firebase.apps.length?1:FIREBASE_APP = firebase.initializeApp(FIREBASE_CONFIG);
           FIREBASE_PROVIDER = new firebase.auth.GoogleAuthProvider();
           FIREBASE = firebase;
+          
+
      }
      
      _get_firebase(){
        return FIREBASE;
      }
 
-    //  async _get_current_user(){
-    //   console.log("GET CURRENT USER INIT"); 
-    //   let found = false;
-    //   let res = await firebase.auth().onAuthStateChanged((user) => {
-    //       if (user) {
-    //         console.log("AUTH CHANGE CALL yes exist sign in | USER TOKEN "+user.uid);
-    //         found =  true;
-    //         this._set_current_user();
-    //         console.log("FOUND RES"+ found);
-    //         return found;
-    //       } else {
-    //         console.log("AUTH CHANGE CALL no exist sign in | USER TOKEN "+user);
-    //         found =  false;
-    //         console.log("FOUND RES"+ found);
-    //         return found;
-    //       }
-    //     }); 
-    //     return res;
-    //  }
+     async _app_init_auth_state_inti(){
+      console.log("INIT AUTH");
+      await this._get_firebase().auth().onAuthStateChanged((user) => {
+        if (user) {
+          console.log("AUTH CHANGE CALL yes exist sign in | USER TOKEN "+user.uid);
+          this._set_current_user();
+          const DEST_URL = process.env.NEXT_PUBLIC_HOST+'src/land';
+          
+          Router.pathname!=='/src/land'?Router.push(DEST_URL):null;
+          return true;
+        } else {
+          console.log("AUTH CHANGE CALL no exist sign in | USER TOKEN "+user);
+          cookies.remove('accessToken',{ path: '/' });
+          return false;
+        }
+      });  
+     }
+
+     
+
+     async _init_user_check(succ,fail){ 
+      console.log("CURRENT USER CHECK TOKEN "+cookies.get('accessToken'));
+      if(cookies.get('accessToken')==null||undefined){
+        fail!=null?Router.push(fail):null;
+      }
+      else{
+        succ!=null?Router.push(succ):null;
+      }
+
+    }
 
      async _firebaseGoogleSignOutInit(){
       firebase.auth().signOut().then(() => {
           console.log("FIREBASE SIGN OUT SUCCESS");
+          cookies.remove('accessToken',{ path: '/' });
+          Router.push('/')
       }).catch((error) => {
+          Router.push('/')
         console.log("FIREBASE SIGN OUT ERROR");
       });
      }
@@ -54,10 +73,12 @@ export default class firebaseHelper{
      async __firebaseGoogleSignInInit(){     
          return(await firebase.auth().signInWithPopup(FIREBASE_PROVIDER).then((result) => {
             /** @type {firebase.auth.OAuthCredential} */
-            var credential = result.credential;
-            var token = credential.accessToken;
-            var user = result.user;
+            const credential = result.credential;
+            const token = credential.accessToken;
+            console.log("LOG IN CREDS" + credential);
+            cookies.set('accessToken',token, { path: '/' });
             this._set_current_user();
+            
             return true;
           }).catch((error) => {
             var errorCode = error.code;
