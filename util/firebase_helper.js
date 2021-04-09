@@ -32,6 +32,9 @@ export default class firebaseHelper{
       console.log("INIT AUTH");
       await this._get_firebase().auth().onAuthStateChanged((user) => {
         if (user) {
+          if(cookies.get('accessToken')==null){
+            this._firebaseGoogleSignOutInit();
+          }
           console.log("AUTH CHANGE CALL yes exist sign in | USER TOKEN "+user.uid);
           this._set_current_user();
           const DEST_URL = process.env.NEXT_PUBLIC_HOST+'src/land';
@@ -112,7 +115,7 @@ export default class firebaseHelper{
             var errorMessage = error.message;
             var email = error.email;
             var credential = error.credential;
-            console.log("NO NEW GOOGLE SIGNIIN AT ERROR "+error);
+            console.log("NO NEW GOOGLE SIGNIIN AT ERROR "+errorCode);
             return false;
           }));
      }

@@ -1,5 +1,5 @@
 module.exports = {
      env: {
-       DEV_VERSION:"0.0.5",
+       DEV_VERSION:"0.0.53",
      },
    }
