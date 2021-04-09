@@ -13,6 +13,7 @@ export default class SignUpAct extends React.Component{
                          <div className='login_act_main_head_body'>Titan</div>
                          <div className='login_act_main_form_body'>
                               <form>
+                                   <div className='login_act_tit_cont'>Sign Up to Titan</div>
                                    <div><input type='text' placeholder='Email' className='login_act_main_unm_txt'/></div>
                                    <div><input type='password' placeholder='Password' className='login_act_main_pass_txt'/></div>
                                    <div><input type='submit' value='Create Account' className='login_act_main_sub_butt' ></input></div>

@@ -1,7 +1,6 @@
 import React, { useState,useEffect  } from 'react';
 
 
-
 export default class LoginAct extends React.Component{
      constructor(props){
           super(props);          
@@ -16,12 +15,13 @@ export default class LoginAct extends React.Component{
      render(){
      return(
        <div className='login_act_main_body'>
+                    <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
                     <title>Login</title>
                     <div className='login_act_main_head_body'>
-                              Titan
-                              
+                              Titan           
                     </div>
                     <div className='login_act_main_form_body'>
+                         <div className='login_act_tit_cont'>Login to Titan</div>
                          <form>
                               <div><input type='text' placeholder='Email' className='login_act_main_unm_txt'/></div>
                               <div><input type='password' placeholder='Password' className='login_act_main_pass_txt'/></div>

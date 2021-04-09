@@ -54,10 +54,12 @@
 }
 .login_act_gog_butt{
      width: 100%;
-     height: 36px;
+     height: 52px;
      background-color: #0E98FF;
      border-style: none;
      border-radius: 12px;
+     font-size: 17px;
+     font-weight: 600;
      color:#fefefe;
      cursor: pointer;
 }
@@ -78,5 +80,24 @@ padding-top: 8px;
 padding-bottom: 8px;
 margin-top: 10px;
 color: #0E98FF;
-border-top: 1px solid #e0e0e0;
+
+}
+.login_act_tit_cont{
+     padding-top: 10px;
+     padding-bottom: 5px;
+     margin-bottom: 10px;
+     width: 100%;
+     text-align: center;
+     font-size: 19px;
+}
+
+.app_ver_cont{
+     position: fixed;
+     background-color: #e0e0e0;
+     bottom: 0;
+     right: 0;
+     padding: 10px;
+     color: #000;
+     font-size: 16px;
+     font-weight: 600;
 }

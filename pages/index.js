@@ -4,6 +4,7 @@ import firebaseHelper from '../util/firebase_helper';
 import UserClass from '../util/User';
 import React from 'react';
 
+
 var User = new UserClass();
 const firebaseHelp = new firebaseHelper(User);
 export default class Home extends React.Component{
@@ -30,14 +31,9 @@ export default class Home extends React.Component{
       }
     }); 
   }
-  componentDidUpdate(){
-   // this._init_user_check();
-  }
-
-  componentWillMount(){
+  componentDidMount(){
     this._init_user_check();
   }
-
   _set_logged_flag(bool){
     console.log("LOGIIN BOOL CHANGE "+ bool);
     bool!=null?this.setState({isLoggedFlag:bool}):console.log("Wrong flag");
@@ -52,6 +48,7 @@ export default class Home extends React.Component{
         setlogFlag={this._set_logged_flag}/>
         :
         <div>
+          <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
           LOGGED IN 
           <button onClick={firebaseHelp._firebaseGoogleSignOutInit}>Sign Out</button>
         </div>
