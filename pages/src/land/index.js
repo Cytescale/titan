@@ -11,6 +11,7 @@ export default class LandAct extends React.Component{
      }
      componentDidMount(){
           firebaseHelp._init_user_check(null,process.env.NEXT_PUBLIC_HOST+'src/login');
+
      }
      render(){
      return(

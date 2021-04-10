@@ -5,6 +5,7 @@ import UserClass from '../util/User';
 import React from 'react';
 import Link from 'next/link'
 import Router from "next/router";
+import axios from 'axios';
 
 
 var User = new UserClass();
@@ -16,6 +17,7 @@ export default class Home extends React.Component{
   componentDidMount(){
     firebaseHelp._init_user_check(process.env.NEXT_PUBLIC_HOST+'src/land',process.env.NEXT_PUBLIC_HOST+'src/login');
   }
+
   render(){
     return (
       <div>

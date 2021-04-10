@@ -17,6 +17,7 @@ export default class LoginAct extends React.Component{
           this.handlePassChange = this.handlePassChange.bind(this);
           this._set_err = this._set_err.bind(this);
           this._set_load_bool = this._set_load_bool.bind(this);
+          
      }
 
      _set_err(code,mess){
@@ -40,9 +41,13 @@ export default class LoginAct extends React.Component{
           event.preventDefault();
           this._set_load_bool(true);
           if(this.state.eml!==''&&this.state.pass!==''){
-               if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.state.eml)){this._loginActEmailSignIn();}
+               if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.state.eml))
+               {
+                    this._loginActEmailSignIn();
+               }
                else{
                     this._set_err(2,"Enter valid email address");
+                    
                     this._set_load_bool(false);
                }
           }else{
@@ -84,7 +89,7 @@ export default class LoginAct extends React.Component{
                     
                     <div className='login_act_main_form_body'>
                          <div className='login_act_tit_cont'>Login to Titan</div>
-                         <form onSubmit={this.handleEmailFormSubmit}>
+                              <form onSubmit={this.handleEmailFormSubmit}>
                               <div><input type='text' disabled={this.state.loading} placeholder='Email' value={this.state.eml} onChange={this.handleEmlChange}  className='login_act_main_unm_txt'/></div>
                               {this.state.errCode==2?<div className='login_act_err_cont'>{this.state.errMess}</div>:<span/>}
                               <div><input type='password' disabled={this.state.loading} placeholder='Password'  value={this.state.pass} onChange={this.handlePassChange} className='login_act_main_pass_txt'/></div>

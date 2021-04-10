@@ -14,9 +14,7 @@ export default class AccountInfoAct extends React.Component{
                     <div className='info_form_main_body'>
                               <div className='info_form_main_body_tit'>Tell us about yourself</div>
                               <form>
-                                   <div><input type='text' placeholder='First name' className='info_main_form_fld_class'></input></div>
-                                   <div><input type='text' placeholder='Last name' className='info_main_form_fld_class'></input></div>
-                                   <div><input type='text' placeholder='Company name' className='info_main_form_fld_class'></input></div>
+                                   
                                    <div><input type='submit' value='Save' className='info_main_form_fld_sub_class'></input></div>
                               </form>
                     </div>
