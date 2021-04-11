@@ -1,18 +1,12 @@
 import React, { useState,useEffect  } from 'react';
 import Router from "next/router";
 import firebaseHelper from '../../../util/firebase_helper';
-import { Button,Dropdown,Modal } from 'react-bootstrap';
+import { Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
+import Slider from 'react-rangeslider'
+
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
-
-let STLYE_ELEMENT_TEXT ={
-     margin:0,
-     padding:0,
-     border_radius:0,
-     back_color:'red',
-     text_color:'#000',
-}
 
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -31,27 +25,26 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 
 var _ELEMENT_CORE_ARRAY = [];
 
-
-
-
-function _Element_Text_Func(text,in_style){
+var STLYE_ELEMENT_TEXT ={
+     margin:0,
+     padding:10,
+     border_radius:0,
+     back_color:'',
+     text_color:'#000',
+     font_size:17,
      
-     let element_prop_data = {
-          element_id:0,
-          text : "Lorem Impsum",
-          style:Object.assign({},STLYE_ELEMENT_TEXT,in_style)
-     }
-     return(
-          <div className="_page_element_main_bdy">
-               <div 
-               
-               className='_page_element_text_class'
-               >{text}
-               </div>
-               <div className="_page_element_overlay"></div>
-          </div>
-     )
 }
+
+class _Element_Text{
+     constructor(text,in_style){
+          this.element_id =_ELEMENT_CORE_ARRAY.length,
+          this.data = text!==null?text:"Lorem Ipsum";
+          this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
+         
+     }
+}
+
+
 
 
 import UserClass from '../../../util/User';
@@ -71,6 +64,58 @@ export default class LandAct extends React.Component{
           this._add_element_count = this._add_element_count.bind(this);
           this._set_element_count = this._set_element_count.bind(this);
           this._add_text_element = this._add_text_element.bind(this);
+     }
+     _popover_txt_overlay(element_id){
+     return(
+     <Popover id="popover-basic" className='popover_txt_class'>
+     <div className='ele_pop_main_bdy'>
+               <div className='pop_txt_head_main_cont'>
+                         <div className='pop_txt_head_txt'>Text</div>
+                         <div className='pop_txt_head_rght_cont'>
+                                 
+                         </div>
+               </div>
+               <div className='ele_pop_bdy'>
+                    <div className='ele_pop_bdy_txt'>Value</div>
+                    <input 
+                    type='text'
+                     placeholder='Text Value' 
+                     className='ele_txt_pop_cont' 
+                    value={_ELEMENT_CORE_ARRAY[element_id].data}
+                    onChange={(e)=>{
+                         _ELEMENT_CORE_ARRAY[element_id].data = e.target.value;
+                         this.forceUpdate();
+                    }} />
+                         <div className='ele_pop_bdy_txt'>Font Size</div>
+                         <Slider
+                         orientation="horizontal"
+                         value={_ELEMENT_CORE_ARRAY[element_id].style.font_size}
+                         onChange={(val) =>{
+                              _ELEMENT_CORE_ARRAY[element_id].style.font_size=val;
+                              this.forceUpdate();
+                         }}
+                   
+                         />
+
+                         <div className='ele_pop_bdy_txt'>Background Color</div>
+                         <input 
+                              type='text'
+                              placeholder='Color value' 
+                              className='ele_txt_pop_cont' 
+                              value={_ELEMENT_CORE_ARRAY[element_id].style.back_color}
+                              onChange={(e)=>{
+                                   _ELEMENT_CORE_ARRAY[element_id].style.back_color = e.target.value;
+                                   this.forceUpdate();
+                              }} />
+
+                                   {/* <Button className='pop_txt_head_rght_del_butt' variant={"outline-danger"}
+                                   onClick={()=>{
+                     
+                                   }}
+                                   >delete</Button> */}
+               </div>
+     </div>
+     </Popover>)     
      }
 
      _set_element_count(int){
@@ -118,7 +163,7 @@ export default class LandAct extends React.Component{
      
         
      _add_text_element(){
-          _ELEMENT_CORE_ARRAY.push(new _Element_Text_Func("TEXT"));
+          _ELEMENT_CORE_ARRAY.push(new _Element_Text("TEXT"));
           console.log("ELEMENT | ELEMENT TEXT ADDED | SIZE "+_ELEMENT_CORE_ARRAY.length);
           this._set_element_count(_ELEMENT_CORE_ARRAY.length);
           this._set_elem_mod(false);
@@ -127,16 +172,45 @@ export default class LandAct extends React.Component{
      _render_component(){
           let res = [];
           console.log("RENDERED");
-          console.log(_ELEMENT_CORE_ARRAY)
           _ELEMENT_CORE_ARRAY.map(
-               element=>{
-                    res.push(element);
+               (element,index)=>{
+                         console.log(element);
+                         res.push(
+                              <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={this._popover_txt_overlay(element.element_id)}>
+                              <div className="_page_element_main_bdy">
+                                   <div 
+                                   style={
+                                        {
+                                             margin:element.style.margin+"px",
+                                             padding:element.style.padding+"px",
+                                             fontSize:element.style.font_size+"px",
+                                             backgroundColor:element.style.back_color,
+                                        }
+                                   }
+                                   className='_page_element_text_class'
+                                   >{element.data}
+                                   </div>
+                                   <div className="_page_element_overlay" ></div>
+                              </div>
+                              </OverlayTrigger>
+                         )
                }
           );
           return res;
      }
 
+     componentDidUpdate(){
+          cookies.set('pageData',_ELEMENT_CORE_ARRAY, { path: '/' });
+
+     }
+
      componentDidMount(){
+          let exstPageData = cookies.get('pageData');
+          if(exstPageData!==null&&exstPageData!==undefined){
+               console.log("PAGE DATA EXIST");     
+               _ELEMENT_CORE_ARRAY = exstPageData;
+          }
+          
           firebaseHelp._init_user_check(null,process.env.APP_NAME+'src/login');
 
      }
@@ -176,7 +250,6 @@ export default class LandAct extends React.Component{
 
                
                <div className='land_act_creat_main_cont'>
-                    {/* <PageAdapter element_count={this.state.element_count}/>     */}
                     {this._render_component()}
                </div>
                <div className='land_act_creat_butt_main_cont'>
