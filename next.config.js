@@ -1,5 +1,9 @@
 module.exports = {
+    images: {
+      domains: ['icons8.com'],
+    },
      env: {
-       DEV_VERSION:"0.0.6",
+       APP_NAME:"Titan",
+       DEV_VERSION:"0.0.65",
      },
    }

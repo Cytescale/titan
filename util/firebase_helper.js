@@ -34,7 +34,7 @@ export default class firebaseHelper{
 
      async _app_init_auth_state_inti(){
       console.log("INIT AUTH");
-      await this._get_firebase().auth().onAuthStateChanged((user) => {
+      return(await this._get_firebase().auth().onAuthStateChanged((user) => {
         if (user) {
           if(cookies.get('accessToken')===null||cookies.get('accessToken')===undefined){
             this._firebaseGoogleSignOutInit();
@@ -49,7 +49,7 @@ export default class firebaseHelper{
           cookies.remove('accessToken',{ path: '/' });
           return false;
         }
-      });  
+      }));  
      }
 
      
@@ -65,6 +65,7 @@ export default class firebaseHelper{
 
     }
 
+
      async _firebaseGoogleSignOutInit(){
       firebase.auth().signOut().then(() => {
           console.log("FIREBASE SIGN OUT SUCCESS");
@@ -79,6 +80,10 @@ export default class firebaseHelper{
      async _set_current_user(){
       //console.log("SET USER INFO"+JSON.stringify(firebase.auth().currentUser));
       this.UserClass._set_curr_user(firebase.auth().currentUser);
+     }
+
+     async _get_current_user(){
+       return (firebase.auth().currentUser);
      }
 
      async _firebaseEmailCreateInit(front_data){

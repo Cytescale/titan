@@ -4,6 +4,7 @@
      justify-content: center;
      align-items: center;
      display: flex;
+     color: #fff;
      background-color: #000;
 }
 .login_act_main_head_body{

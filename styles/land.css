@@ -1,0 +1,113 @@
+.backdrop{
+     display: none;
+}
+
+.land_act_head_main_cont{
+     width: 100%;
+     position: fixed;
+     height: 62px;
+     z-index: 99999;
+     display: inline-flex;
+     background-color: #212121;
+}
+.land_act_head_tit_cont{
+     margin-left: 32px;
+     margin-right: 32px;
+     height: 100%;
+     width: fit-content;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 18px;
+     font-weight: 700;
+     color: #fff;
+}
+.land_act_head_cent_main_cont{
+     width: 100%;
+     position: absolute;
+     height: 100%;
+     display: inline-flex;
+     justify-content: center;
+     align-items: center;
+}
+.land_act_head_cent_link_cont{
+     padding-left: 15px;
+     padding-right: 15px;
+}
+.land_act_head_cent_link{
+     font-size: 17px;
+     font-weight: 600;
+     color: #727272;          
+}
+.land_act_head_cent_link_selec{
+     font-size: 17px;
+     font-weight: 600;
+     color: blue;
+}
+.land_act_head_rght_main_cont{
+     padding-left: 32px;
+     padding-right: 32px;
+     display: inline-flex;
+     justify-content: center;
+     align-items: center;
+     position: absolute;
+     right: 0;
+     height: 100%;
+}
+.land_act_head_rght_feed_butt_cont{
+     padding-left: 15px;
+     
+}
+.land_act_head_rght_acc_img{
+     width: 32px;
+     border-radius: 100px;
+     height: 32px;
+     padding: 5px;
+     background-color: #e0e0e0;
+}
+.land_act_head_nam_txt{
+     padding-left: 24px;
+     padding-top: 5px;
+     padding-bottom: 5px;
+}
+.land_act_creat_butt_main_cont{
+     width: 100%;
+     position: fixed;
+     bottom: 0;
+     right: 0;
+     left: 0;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     margin: 32px;
+
+}
+.land_act_creat_butt{
+     border-radius: 100px;
+     padding-left: 22px;
+     padding-right: 22px;
+     background-color: blue;
+}
+.land_act_elem_add_cont{
+
+}
+.land_act_elem_add_butt{
+     width: 100%;
+     margin-bottom: 7px;
+     height: 42px;
+     font-weight: 500;
+}
+
+.land_act_creat_main_cont{
+     width: 60%;
+     margin-left: 20%;
+     left: 0;
+     right: 0;     
+     padding-top: 62px;
+     background-color: #fff;
+     min-height: 100vh;
+     border-left: 1px solid #000;
+     border-right: 1px solid #000;
+}
+
+

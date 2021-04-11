@@ -1,0 +1,25 @@
+._page_element_main_bdy{
+width: fit-content;
+position: relative;
+}
+
+._page_element_overlay{
+width: 100%;
+height: 100%;
+position: absolute;
+top:0;
+left: 0;
+right:0;
+bottom: 0;
+cursor: pointer;
+}
+._page_element_overlay:hover{
+     background-color: rgba(14,152,255,0.2);
+}
+
+._page_element_text_class{
+ 
+}
+._page_element_text_class:hover{
+ 
+}
