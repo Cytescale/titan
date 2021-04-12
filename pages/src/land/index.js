@@ -8,7 +8,7 @@ import Embed from 'react-embed';
 import $ from 'jquery';
 
 
-import elementRender from './element_render';
+import elementRender from '../../../util/element_render';
 
 import Cookies from 'universal-cookie';
 const cookies  = new Cookies();
