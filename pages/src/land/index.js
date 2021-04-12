@@ -317,7 +317,9 @@ export default class LandAct extends React.Component{
 
                <div className='land_act_main_bdy_cont'>
                     <div className='land_act_creat_main_cont'>
-                         {this._render_component()}
+                         <div className='land_act_creat_sub_cont'>
+                              {this._render_component()}
+                         </div>
                     </div>
                     <div className='land_act_prv_main_cont'>
                          <div className='land_act_prv_sub_cont'>
@@ -325,10 +327,10 @@ export default class LandAct extends React.Component{
                                         <div className='land_act_prv_add_bar'>
                                              https://titan.com/page/56197
                                         </div>
-                                        <Button className='land_act_prv_add_bar_rel_butt'>Reload</Button>
+                                        <Button variant={"light"} className='land_act_prv_add_bar_rel_butt'>Reload</Button>
                               </div>
                               <div className='land_act_prv_base_cont'>
-                              <iframe   className='land_act_prv_base'></iframe>
+                              {/* <iframe   className='land_act_prv_base'></iframe> */}
                               </div>
                          </div>
                     </div>

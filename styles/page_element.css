@@ -2,8 +2,7 @@
 width: 100%;
 position: relative;
 background-color: #fff;
-border:1px solid #e0e0e0;
-border-bottom-style: none;
+
 }
 
 input[type=checkbox]{
@@ -86,9 +85,20 @@ bottom: 0;
 border-radius: 4px;
 cursor: pointer;
 }
+
+@keyframes selec_hover_anim {
+     from {
+
+     }
+     to {
+          background-color: rgba(14,152,255,0.2);     
+     }
+   }
+
 ._page_element_overlay:hover{
-     background-color: rgba(14,152,255,0.2);
-     
+     animation-name: selec_hover_anim;
+     animation-duration: 0.5s;
+     animation-fill-mode: forwards;
 }
 
 ._page_element_text_class{

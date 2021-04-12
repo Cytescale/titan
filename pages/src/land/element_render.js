@@ -29,7 +29,6 @@ export default class elementRender{
 
 
      }
-
      _render_element_overlay(){
           console.log(this._get_type_element(this.element))
           return(
@@ -43,7 +42,6 @@ export default class elementRender{
                </OverlayTrigger>
           )
      }
-     
      _render_vid_yout_element(){
           return(
            <div className="_page_element_main_bdy"style={{opacity:this.element.enabled===true?1:0.6,}}
