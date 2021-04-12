@@ -6,6 +6,7 @@ import React from 'react';
 import Link from 'next/link'
 import Router from "next/router";
 import axios from 'axios';
+import LoaderHelper from './src/loader_helper';
 
 
 var User = new UserClass();
@@ -21,7 +22,7 @@ export default class Home extends React.Component{
   render(){
     return (
       <div>
-        loading..
+        <LoaderHelper/>
       </div>
     );
   }
