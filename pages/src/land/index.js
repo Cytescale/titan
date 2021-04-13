@@ -34,6 +34,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 
 var _ELEMENT_CORE_ARRAY = [];
 var _PAGE_ID = null;
+var _VIEW_ID = null;
 var _PAGE_CODE = '';
 var _GEN_CODE ='';
 var _PRIVEW_GEN_CODE = '';
@@ -134,7 +135,6 @@ export default class LandAct extends React.Component{
      }
 
      _render_notification(){
-          console.log("NOTIFICATION RENDER FOR"+this.noti_pool.length);
           let res = [];
           if(this.noti_pool.length>0){
                this.noti_pool.map(
@@ -169,6 +169,7 @@ export default class LandAct extends React.Component{
                     if(res.page_data!==null){ 
                     _PAGE_ID = res.page_id;
                      _PAGE_CODE = res.page_data;
+                     _VIEW_ID = res.page_data._VISIT_CODE;
                      
                     const GOT_ARRAY =  JSON.parse(res.page_data._PAGE_CORE_ARRAY);
                     if(GOT_ARRAY!==null){
@@ -398,7 +399,7 @@ export default class LandAct extends React.Component{
                _PAGE_CORE_ARRAY:JSON.stringify(_ELEMENT_CORE_ARRAY),
                
           }
-       
+          this._add_notification("Saving...","warning",2000);
           let up_res = await storeHelper._update_page_data(_SEND_DATA);
           if(up_res.errBool===false){
                this._add_notification("Saved","success",2000);
@@ -424,6 +425,7 @@ export default class LandAct extends React.Component{
      componentDidMount(){  
           firebaseHelp._init_user_check(null,process.env.APP_NAME+'src/login');
           this._init_land_data();
+          console.log();
           
      }
      render(){          
@@ -467,10 +469,19 @@ export default class LandAct extends React.Component{
 
                <div className='land_act_main_bdy_cont'>
                     <div className='land_act_creat_main_cont'>
-                         <div><Button className='land_act_gen_butt' onClick={()=>{
-                              this._add_notification("Saving...","warning",2000);
+                         <div>
+                              <Button className='land_act_gen_butt' onClick={()=>{
                               this._gen_page_code();
                          }}>Save</Button>
+                                        <div className='land_act_prv_add_bar_cont'>
+                                        <div className='land_act_prv_add_bar'>
+                                             <a href={process.env.NEXT_PUBLIC_HOST+'api/view?q='+_VIEW_ID}>
+                                             {process.env.NEXT_PUBLIC_HOST+'api/view?q='+_VIEW_ID}
+                                             </a>
+                                        </div>
+                              </div>
+
+
                          <div className='land_act_creat_sub_cont'>
                               {this._render_component()}
                          </div>

@@ -1,4 +1,4 @@
-export default (data)=>{
+exports.driverCode = function(data){
      return(
           `
           <html lang="en">

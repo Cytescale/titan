@@ -1,5 +1,6 @@
 var admin = require("firebase-admin");
 import('firebase/firebase-firestore');
+var random =require('random-key-generator');       
 var serviceAccount = require("../../../util/firebase_admin_cert.json");
 var otherFire = null;
 var db = null;
@@ -12,7 +13,7 @@ var _PAGE_DATA = {
      _DISABLED_BOOL:false,
      _PAGE_CORE_ARRAY:'null',
      _PAGE_CORE_CODE:'null',
-
+     _VISIT_CODE:random(4),
 }
 
 async function create_new_page_entry(_GOT_PAGE_DATA){
