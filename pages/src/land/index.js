@@ -1,6 +1,10 @@
 import React, { useState,useEffect  } from 'react';
+import { renderToString } from 'react-dom/server'
 import Router from "next/router";
+
 import firebaseHelper from '../../../util/firebase_helper';
+import firestoreHelper from '../../../util/firestore_helper';
+
 import { Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
 import Slider from 'react-rangeslider'
@@ -8,11 +12,13 @@ import Embed from 'react-embed';
 import $ from 'jquery';
 
 
+import portDriverCode from '../../../util/port_driver_code';
 import elementRender from '../../../util/element_render';
 
 import Cookies from 'universal-cookie';
 const cookies  = new Cookies();
 
+const storeHelper = new firestoreHelper(cookies.get('accessToken'));
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
      <a
@@ -28,18 +34,24 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
    ));
 
 
+
 var _ELEMENT_CORE_ARRAY = [];
+var _PAGE_ID = null;
+var _PAGE_CODE = ''
+var _GEN_CODE ='';
+var _PRIVEW_GEN_CODE = '';
 
 var STLYE_ELEMENT_TEXT ={
      margin:0,
-     padding:5,
-     border_radius:12,
+     padding:10,
+     border_radius:0,
      back_color:'',
      text_color:'#000',
      font_size:17,
-     
-     
 }
+
+
+
 
 class _Element_Video_Youtube{
      constructor(in_style){
@@ -50,13 +62,6 @@ class _Element_Video_Youtube{
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
     
-     _set_text_font_size(int){
-          if(int>=10){
-               this.style.font_size = int
-          }else{
-               this.style.font_size = 11
-          }
-     }
 }
 
 class _Element_Text{
@@ -68,23 +73,8 @@ class _Element_Text{
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
      
-     _set_text_data(val){
-          if(val.length>0){
-               this.data = val
-          }else{
-               this.data = "Lorem Ipsum"
-          }
-     }
-     _set_text_font_size(int){
-          if(int>=10){
-               this.style.font_size = int
-          }else{
-               this.style.font_size = 11
-          }
-     }
+  
 }
-
-
 
 
 import UserClass from '../../../util/User';
@@ -100,6 +90,7 @@ export default class LandAct extends React.Component{
                _add_elem_mod_show:false,
                _txt_pop_shw:false,
           }
+          this._set_load_bool = this._set_load_bool.bind(this);
           this._set_txt_pop_show = this._set_txt_pop_show.bind(this);
           this._set_elem_mod = this._set_elem_mod.bind(this);
           this._set_dname = this._set_dname.bind(this);
@@ -108,6 +99,37 @@ export default class LandAct extends React.Component{
           this._add_text_element = this._add_text_element.bind(this);
           this._add_video_ytube_element = this._add_video_ytube_element.bind(this);
           this._get_popover = this._get_popover.bind(this);
+          this._get_page_type_render = this._get_page_type_render.bind(this);
+          
+     }
+
+     async _init_land_data(){
+          this._set_load_bool(true);      
+          await storeHelper._get_page_data().then(res=>{
+               //console.log("OUTSIDE RES "+JSON.stringify(res.page_data));
+               if(res.errBool===false){
+                    if(res.page_data!==null){ 
+                    _PAGE_ID = res.page_id;
+                     _PAGE_CODE = res.page_data;
+                    let GOT_ARRAY =  JSON.parse(res.page_data._PAGE_CORE_ARRAY);
+                    if(GOT_ARRAY!==null){
+                         _ELEMENT_CORE_ARRAY = GOT_ARRAY;     
+                    }
+                    this._update_preview_wind();
+                    //console.log(GOT_ARRAY);
+                    }
+               }else{
+               }
+               this._set_load_bool(false);
+          });
+     }
+
+     _decode_got_array(GOT_OBJ){
+
+     }
+
+     _set_load_bool(bool){
+          this.setState({loading:bool});
      }
      _set_txt_pop_show(bool){
           this.setState({_txt_pop_shw:bool});
@@ -137,7 +159,7 @@ export default class LandAct extends React.Component{
                                className='ele_txt_pop_cont' 
                               value={_ELEMENT_CORE_ARRAY[element_id].data!==undefined?_ELEMENT_CORE_ARRAY[element_id].data:"undefined"}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id]._set_text_data(e.target.value);
+                                   _ELEMENT_CORE_ARRAY[element_id].data  = e.target.value;
                                    this.forceUpdate();
                               }} />
                                    <div className='ele_pop_bdy_txt'>Font Size</div>
@@ -146,7 +168,7 @@ export default class LandAct extends React.Component{
                                    orientation="horizontal"
                                    value={_ELEMENT_CORE_ARRAY[element_id].style.font_size}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id]._set_text_font_size(val);
+                                        _ELEMENT_CORE_ARRAY[element_id].style.font_size =val;
                                         this.forceUpdate();
                                    }}
                                    />
@@ -263,23 +285,73 @@ export default class LandAct extends React.Component{
 
      _render_component(){
           let res = [];
-          res.push(new elementRender()._render_profile_element());
+          //res.push(new elementRender()._render_profile_element());
+          if(_ELEMENT_CORE_ARRAY!==null){
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
                          res.push(new elementRender(element,this._get_popover(element.element_type_id,element.element_id))._render_element_overlay());
                }
           );
+          }
           res.push(new elementRender()._render_foot_element());
           return res;
      }
 
-     componentDidUpdate(){
-
+     _get_page_type_render(element){
+          switch(element.element_type_id){
+               case 0:{return(renderToString(new elementRender(element)._render_text_element()))}
+               case 4:{return("<div>Player</div>")}
+               default:{break}
+               }
      }
+
+
+     _update_preview_wind(){
+          
+          let gcoode = '';
+          if(_ELEMENT_CORE_ARRAY!==null){
+          _ELEMENT_CORE_ARRAY.map(
+               (element,index)=>{
+                    gcoode += this._get_page_type_render(element);
+               }
+          )
+          gcoode += renderToString(new elementRender()._foot_code());
+          _PRIVEW_GEN_CODE = portDriverCode(gcoode);
+          }
+     }
+
+     _gen_page_code(){
+          console.log(JSON.stringify(_ELEMENT_CORE_ARRAY));
+          console.log("PAGECODE")
+
+          _GEN_CODE = '';
+          _ELEMENT_CORE_ARRAY.map(
+               (element,index)=>{
+                    _GEN_CODE += this._get_page_type_render(element);
+               }
+          )
+          _GEN_CODE += renderToString(new elementRender()._foot_code());
+          let _SEND_DATA = {
+               UID:cookies.get('accessToken'),
+               PID:_PAGE_ID,
+               _ELEMENT_COUNT:this.state.element_count,
+               _PAGE_CORE_CODE:_GEN_CODE,
+               _PAGE_CORE_ARRAY:JSON.stringify(_ELEMENT_CORE_ARRAY),
+               
+          }
+          storeHelper._update_page_data(_SEND_DATA);
+          //console.log("SEND DATA"+JSON.stringify(_SEND_DATA));
+     }
+
+     componentDidUpdate(){
+          this._update_preview_wind();
+     }
+
 
      componentDidMount(){  
           firebaseHelp._init_user_check(null,process.env.APP_NAME+'src/login');
-
+          this._init_land_data();
+       
      }
      render(){
      return(
@@ -317,6 +389,9 @@ export default class LandAct extends React.Component{
 
                <div className='land_act_main_bdy_cont'>
                     <div className='land_act_creat_main_cont'>
+                         <Button className='land_act_gen_butt' onClick={()=>{
+                              this._gen_page_code();
+                         }}>Generate</Button>
                          <div className='land_act_creat_sub_cont'>
                               {this._render_component()}
                          </div>
@@ -329,7 +404,8 @@ export default class LandAct extends React.Component{
                                         </div>
                                         <Button variant={"light"} className='land_act_prv_add_bar_rel_butt'>Reload</Button>
                               </div>
-                              <div className='land_act_prv_base_cont'>
+                              <div className='land_act_prv_base_cont' dangerouslySetInnerHTML={{ __html:_PRIVEW_GEN_CODE }}>
+                                   
                               {/* <iframe   className='land_act_prv_base'></iframe> */}
                               </div>
                          </div>

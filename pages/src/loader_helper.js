@@ -24,7 +24,6 @@ export default class LoaderHelper extends React.Component{
 
      _loader_randomise(){
           let val = Math.floor(Math.random() * 4);
-          console.log("##############FANED###########"+val);
           this.setState({cho:val}); 
      }
      render(){
