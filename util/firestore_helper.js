@@ -11,6 +11,7 @@ export default class firestoreHelper{
       
 
      async _update_page_data(send_data){
+          let update_res = null;
           await axios(process.env.NEXT_PUBLIC_HOST+"api/db/db_update_page_data",{
                method: 'POST',
                mode: 'no-cors',
@@ -25,6 +26,7 @@ export default class firestoreHelper{
              })
              .then(res=>{
                console.log(JSON.stringify(res.data));
+               update_res = res.data;
                     if(res.data.errBool===false){
 
                     }
@@ -36,7 +38,7 @@ export default class firestoreHelper{
                   console.log(err);
                
              });
-             
+             return update_res;
      }
 
      async _get_page_data(){

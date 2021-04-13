@@ -1,25 +1,22 @@
 import React, { useState,useEffect  } from 'react';
 import { renderToString } from 'react-dom/server'
 import Router from "next/router";
-
 import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
-
-import { Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
+import {Alert,Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
 import Slider from 'react-rangeslider'
 import Embed from 'react-embed';
 import $ from 'jquery';
-
-
 import portDriverCode from '../../../util/port_driver_code';
 import elementRender from '../../../util/element_render';
 
+import  _ from 'lodash';
 import Cookies from 'universal-cookie';
+
+
 const cookies  = new Cookies();
-
 const storeHelper = new firestoreHelper(cookies.get('accessToken'));
-
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
      <a
        href=""
@@ -37,7 +34,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 
 var _ELEMENT_CORE_ARRAY = [];
 var _PAGE_ID = null;
-var _PAGE_CODE = ''
+var _PAGE_CODE = '';
 var _GEN_CODE ='';
 var _PRIVEW_GEN_CODE = '';
 
@@ -51,9 +48,18 @@ var STLYE_ELEMENT_TEXT ={
 }
 
 
+class notiClass{
+     constructor(txt,type,dura){
+          this.closed = false;
+          this.text = txt;
+          this.type = type;
+          this.dura = dura;
+     }
+}
 
 
 class _Element_Video_Youtube{
+   
      constructor(in_style){
           this.enabled = true;
           this.element_type_id = 4;
@@ -81,10 +87,12 @@ import UserClass from '../../../util/User';
 var User = new UserClass();
 const firebaseHelp = new firebaseHelper(User);
 export default class LandAct extends React.Component{
+     
      constructor(props){
           super(props);            
           this.state={
                loading:false,
+               isUnSaved:false,
                dname:"Not done..",
                element_count:0,
                _add_elem_mod_show:false,
@@ -100,7 +108,57 @@ export default class LandAct extends React.Component{
           this._add_video_ytube_element = this._add_video_ytube_element.bind(this);
           this._get_popover = this._get_popover.bind(this);
           this._get_page_type_render = this._get_page_type_render.bind(this);
-          
+          this._set_unsaved_bool = this._set_unsaved_bool.bind(this);     
+          this._add_noti_cont = this._add_noti_cont.bind(this);
+          this.noti_pool = [];
+
+     }
+
+     _set_unsaved_bool(bool){
+          this.setState({isUnSaved:bool});
+     }
+
+     _add_notification(txt,type,dura){
+          this.noti_pool.push(new notiClass(txt,type));
+          setTimeout(()=>{
+               console.log("TIMEOUT");
+               this._hide_notification(this.noti_pool.length-1);
+               this.forceUpdate();
+          },dura)
+     }
+
+     _hide_notification(index){
+          console.log("HIDE");
+          this.noti_pool.splice(index,1);
+          this.forceUpdate();
+     }
+
+     _render_notification(){
+          console.log("NOTIFICATION RENDER FOR"+this.noti_pool.length);
+          let res = [];
+          if(this.noti_pool.length>0){
+               this.noti_pool.map(
+                    (ele,index)=>{
+                         
+                         res.push(
+                              <Alert variant={ele.type} onClose={() => this._hide_notification(index)}  dismissible>
+                                   {ele.text}
+                              </Alert>
+                         );
+                    }
+               );
+               return res;
+          }
+          else{
+               return null;
+          }
+     }
+     _render_notif(){
+          return(
+               <div className='noti_main_cont'>
+                    {this._render_notification()}
+               </div>
+          )
      }
 
      async _init_land_data(){
@@ -111,7 +169,8 @@ export default class LandAct extends React.Component{
                     if(res.page_data!==null){ 
                     _PAGE_ID = res.page_id;
                      _PAGE_CODE = res.page_data;
-                    let GOT_ARRAY =  JSON.parse(res.page_data._PAGE_CORE_ARRAY);
+                     
+                    const GOT_ARRAY =  JSON.parse(res.page_data._PAGE_CORE_ARRAY);
                     if(GOT_ARRAY!==null){
                          _ELEMENT_CORE_ARRAY = GOT_ARRAY;     
                     }
@@ -122,10 +181,6 @@ export default class LandAct extends React.Component{
                }
                this._set_load_bool(false);
           });
-     }
-
-     _decode_got_array(GOT_OBJ){
-
      }
 
      _set_load_bool(bool){
@@ -145,6 +200,7 @@ export default class LandAct extends React.Component{
                                    
                                    <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
                                         _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                     
                                         this.forceUpdate();
                                    }} />
                                    <label for="switch">Toggle</label>
@@ -160,6 +216,7 @@ export default class LandAct extends React.Component{
                               value={_ELEMENT_CORE_ARRAY[element_id].data!==undefined?_ELEMENT_CORE_ARRAY[element_id].data:"undefined"}
                               onChange={(e)=>{
                                    _ELEMENT_CORE_ARRAY[element_id].data  = e.target.value;
+                                   
                                    this.forceUpdate();
                               }} />
                                    <div className='ele_pop_bdy_txt'>Font Size</div>
@@ -169,6 +226,7 @@ export default class LandAct extends React.Component{
                                    value={_ELEMENT_CORE_ARRAY[element_id].style.font_size}
                                    onChange={(val) =>{
                                         _ELEMENT_CORE_ARRAY[element_id].style.font_size =val;
+                                     
                                         this.forceUpdate();
                                    }}
                                    />
@@ -180,6 +238,7 @@ export default class LandAct extends React.Component{
                                         value={_ELEMENT_CORE_ARRAY[element_id].style.back_color}
                                         onChange={(e)=>{
                                              _ELEMENT_CORE_ARRAY[element_id].style.back_color = e.target.value;
+                                        
                                              this.forceUpdate();
                                         }} />
 
@@ -285,7 +344,7 @@ export default class LandAct extends React.Component{
 
      _render_component(){
           let res = [];
-          //res.push(new elementRender()._render_profile_element());
+          res.push(new elementRender()._render_profile_element());
           if(_ELEMENT_CORE_ARRAY!==null){
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
@@ -320,7 +379,7 @@ export default class LandAct extends React.Component{
           }
      }
 
-     _gen_page_code(){
+     async _gen_page_code(){
           console.log(JSON.stringify(_ELEMENT_CORE_ARRAY));
           console.log("PAGECODE")
 
@@ -339,21 +398,35 @@ export default class LandAct extends React.Component{
                _PAGE_CORE_ARRAY:JSON.stringify(_ELEMENT_CORE_ARRAY),
                
           }
-          storeHelper._update_page_data(_SEND_DATA);
+       
+          let up_res = await storeHelper._update_page_data(_SEND_DATA);
+          if(up_res.errBool===false){
+               this._add_notification("Saved","success",2000);
+               this._set_unsaved_bool(false);
+          }
+          else{
+               this._add_notification("Error Occurred","danger",2000);
+          }
+
           //console.log("SEND DATA"+JSON.stringify(_SEND_DATA));
      }
-
      componentDidUpdate(){
-          this._update_preview_wind();
+          
+         // this._update_preview_wind();
      }
 
+     _add_noti_cont(){
+          
+          this._add_notification("TEXT","danger",2000);
+          this.forceUpdate();
+     }
 
      componentDidMount(){  
           firebaseHelp._init_user_check(null,process.env.APP_NAME+'src/login');
           this._init_land_data();
-       
+          
      }
-     render(){
+     render(){          
      return(
           this.state.loading===true?
           <LoaderHelper/>:
@@ -362,7 +435,12 @@ export default class LandAct extends React.Component{
                
                <div className='land_act_head_main_cont'>
                     {this._element_add_modal()}
-                    <div className='land_act_head_tit_cont'>{process.env.APP_NAME}.Aplha</div>  
+                    <div className='land_act_head_tit_cont'>{process.env.APP_NAME}.Aplha 
+                    <div className='land_act_head_save_cont' style={{
+                         color:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
+                         borderColor:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
+                    }}>{this.state.isUnSaved===true?'Unsaved':'Saved'}</div>
+                    </div>  
                     <div className='land_act_head_cent_main_cont'>
                               <div className='land_act_head_cent_link_cont'><a href='#' className='land_act_head_cent_link_selec'>Editor</a></div>
                               <div className='land_act_head_cent_link_cont'><a href='#' className='land_act_head_cent_link'>Analytics</a></div>
@@ -389,14 +467,16 @@ export default class LandAct extends React.Component{
 
                <div className='land_act_main_bdy_cont'>
                     <div className='land_act_creat_main_cont'>
-                         <Button className='land_act_gen_butt' onClick={()=>{
+                         <div><Button className='land_act_gen_butt' onClick={()=>{
+                              this._add_notification("Saving...","warning",2000);
                               this._gen_page_code();
-                         }}>Generate</Button>
+                         }}>Save</Button>
                          <div className='land_act_creat_sub_cont'>
                               {this._render_component()}
                          </div>
+                         </div>
                     </div>
-                    <div className='land_act_prv_main_cont'>
+                    {/* <div className='land_act_prv_main_cont'>
                          <div className='land_act_prv_sub_cont'>
                               <div className='land_act_prv_add_bar_cont'>
                                         <div className='land_act_prv_add_bar'>
@@ -405,17 +485,16 @@ export default class LandAct extends React.Component{
                                         <Button variant={"light"} className='land_act_prv_add_bar_rel_butt'>Reload</Button>
                               </div>
                               <div className='land_act_prv_base_cont' dangerouslySetInnerHTML={{ __html:_PRIVEW_GEN_CODE }}>
-                                   
-                              {/* <iframe   className='land_act_prv_base'></iframe> */}
                               </div>
                          </div>
-                    </div>
+                    </div> */}
                </div>
                <div className='land_act_creat_butt_main_cont'>
                     <Button variant={"primary"} onClick={()=>{this._set_elem_mod(true)}}className='land_act_creat_butt'>Add Element +</Button>
                </div>
-
+               {this._render_notif()}
           <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
+        
         </div>
      );
 }

@@ -77,7 +77,7 @@ export default async (req, res) => {
           }
 
      }
-     console.warn("API GET PAGE INFO RES"+JSON.stringify(fin_res));
+     //console.warn("API GET PAGE INFO RES"+JSON.stringify(fin_res));
      res.status(200).json(fin_res);
    
 }
