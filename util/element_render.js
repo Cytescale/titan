@@ -83,9 +83,21 @@ export default class elementRender{
                               <div 
                                                   style={
                                                        {
+                                                            textAlign:this.element.style.text_align,
+                                                            borderStyle:this.element.style.bordered===true?'solid':'none',
+                                                            borderWidth:this.element.style.border_width,
+                                                            borderColor:this.element.style.border_color,
+                                                            paddingTop:this.element.style.padding_top,
+                                                            paddingBottom:this.element.style.padding_bottom,
+                                                            paddingRight:this.element.style.padding_right,
+                                                            paddingLeft:this.element.style.padding_left,
+                                                            marginTop:this.element.style.margin_top,
+                                                            marginBottom:this.element.style.margin_bottom,
+                                                            textDecoration:this.element.style.underline===true?'underline':'none',
                                                             margin:this.element.style.margin+"px",
                                                             padding:this.element.style.padding+"px",
                                                             fontSize:this.element.style.font_size+"px",
+                                                            color:this.element.style.text_color,
                                                             backgroundColor:this.element.style.back_color,
                                                             borderRadius:this.element.style.border_radius+"px",
                                                             whiteSpace:'pre',

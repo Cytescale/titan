@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Router from "next/router";
 import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
-import {Alert,Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
+import {Alert,Button,Dropdown,Modal,OverlayTrigger,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
 import Slider from 'react-rangeslider'
 import Embed from 'react-embed';
@@ -11,9 +11,10 @@ import $ from 'jquery';
 import portDriverCode from '../../../util/port_driver_code';
 import elementRender from '../../../util/element_render';
 
-import  _ from 'lodash';
+import  _, { concat } from 'lodash';
 import Cookies from 'universal-cookie';
 
+import { TwitterPicker  } from 'react-color'
 
 const cookies  = new Cookies();
 const storeHelper = new firestoreHelper(cookies.get('accessToken'));
@@ -41,11 +42,25 @@ var _PRIVEW_GEN_CODE = '';
 
 var STLYE_ELEMENT_TEXT ={
      margin:0,
-     padding:10,
+     margin_top:0,
+     margin_bottom:0,
+     padding_right:0,
+     padding_left:10,
+     padding_top:0,
+     padding_bottom:0,
+     padding:0,
      border_radius:0,
+     border_width:2,
+     bordered:false,
+     border_color:'#000',
      back_color:'',
      text_color:'#000',
      font_size:17,
+     bold:false,
+     italic:false,
+     underline:false,
+     text_align:'start',
+
 }
 
 
@@ -62,6 +77,7 @@ class notiClass{
 class _Element_Video_Youtube{
    
      constructor(in_style){
+          this.deleted = false;
           this.enabled = true;
           this.element_type_id = 4;
           this.element_id =_ELEMENT_CORE_ARRAY.length,
@@ -73,6 +89,7 @@ class _Element_Video_Youtube{
 
 class _Element_Text{
      constructor(text,in_style){
+          this.deleted = false;
           this.enabled = true;
           this.element_type_id = 0;
           this.element_id =_ELEMENT_CORE_ARRAY.length,
@@ -111,7 +128,7 @@ export default class LandAct extends React.Component{
           this._get_page_type_render = this._get_page_type_render.bind(this);
           this._set_unsaved_bool = this._set_unsaved_bool.bind(this);     
           this._add_noti_cont = this._add_noti_cont.bind(this);
-          this.noti_pool = [];
+          this.noti_pool = [];     
 
      }
 
@@ -190,6 +207,9 @@ export default class LandAct extends React.Component{
      _set_txt_pop_show(bool){
           this.setState({_txt_pop_shw:bool});
      }
+
+
+
      _popover_txt_overlay(element_id){
      if(_ELEMENT_CORE_ARRAY[element_id]!==undefined&&_ELEMENT_CORE_ARRAY[element_id]!==null){
           return(          
@@ -197,18 +217,39 @@ export default class LandAct extends React.Component{
                <div className='ele_pop_main_bdy'>
                          <div className='pop_txt_head_main_cont'>
                                    <div className='pop_txt_head_txt'>Text</div>
-                                   <div className='pop_txt_head_rght_cont'>
-                                   
-                                   <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
-                                        _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
-                                     
-                                        this.forceUpdate();
-                                   }} />
-                                   <label for="switch">Toggle</label>
+                                        <div className='pop_txt_head_rght_cont'>
+                                        <div className='pop_txt_head_rght_cont_swt'>
+                                        <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
+                                             _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                             this.forceUpdate();
+                                        }} />
+                                        <label for="switch" className='ele_pop_elem_lab'>Toggle</label>
+                                        </div>
+                                        <div className='pop_txt_head_rght_cont_del_swt'>
+                                                  <button className='pop_txt_head_rght_cont_del_swt_butt'
+                                                   onClick={()=>{
+                                                       _ELEMENT_CORE_ARRAY[element_id].deleted = true;
+                                                       this._add_notification("Text element deleted","danger",1000);
+                                                       $('.popover_txt_class').hide();
+                                                       this.forceUpdate();           
+                                                  }}>
+                                                  <svg
+                                                  className='pop_txt_head_rght_cont_del_swt_ico'
+                                                  viewBox='0 0 512 512'>
+                                                  <path d='M112 112l20 320c.95 18.49 14.4 32 32 32h184c17.67 0 30.87-13.51 32-32l20-320' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M80 112h352'/><path d='M192 112V72h0a23.93 23.93 0 0124-24h80a23.93 23.93 0 0124 24h0v40M256 176v224M184 176l8 224M328 176l-8 224' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/>
+                                                  </svg>
+                                                  </button>
+                                        </div>
                                    
                                    </div>
+
+
+
                          </div>
                          <div className='ele_pop_bdy'>
+                         <Tabs defaultActiveKey="text" id="uncontrolled-tab-example">
+                         <Tab eventKey="text" title="Text">
+                         <div>
                               <div className='ele_pop_bdy_txt'>Value</div>
                               <textarea  
                                    wrap="hard"
@@ -217,37 +258,272 @@ export default class LandAct extends React.Component{
                               value={_ELEMENT_CORE_ARRAY[element_id].data!==undefined?_ELEMENT_CORE_ARRAY[element_id].data:"undefined"}
                               onChange={(e)=>{
                                    _ELEMENT_CORE_ARRAY[element_id].data  = e.target.value;
-                                   
                                    this.forceUpdate();
                               }} />
-                                   <div className='ele_pop_bdy_txt'>Font Size</div>
-                                   
-                                   <Slider
-                                   orientation="horizontal"
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.font_size}
-                                   onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.font_size =val;
-                                     
+                                     <div className='ele_pop_bdy_txt'>Font Size</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.font_size}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.font_size =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.font_size}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.font_size =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
-                                   <div className='ele_pop_bdy_txt'>Background Color</div>
-                                   <input 
-                                        type='text'
-                                        placeholder='Color value' 
-                                        className='ele_txt_pop_cont_color' 
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.back_color}
-                                        onChange={(e)=>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.back_color = e.target.value;
-                                        
+                                   </div>
+                                   
+                                   <div className='ele_pop_bdy_txt'>Border width</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                   <div className='ele_pop_bdy_slid_hold'>
+                                   <Slider
+                                   orientation="horizontal"
+                                   tooltip={false}
+                                   value={_ELEMENT_CORE_ARRAY[element_id].style.border_width}
+                                   onChange={(val) =>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.border_width =val;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={_ELEMENT_CORE_ARRAY[element_id].style.border_width}
+                                   onChange={(e)=>{
+                                   _ELEMENT_CORE_ARRAY[element_id].style.border_width = e.target.value;   
+                                   this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   
+                                   <div className='ele_pop_bdy_txt'>Border raidus</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.border_radius =val;   
                                              this.forceUpdate();
-                                        }} />
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.border_radius =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Text alignment</div>        
+                                   <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={_ELEMENT_CORE_ARRAY[element_id].style.text_align} className="mb-2"
+                                   onChange={(val)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.text_align =  val;
+                                        this.forceUpdate();
+                                   }}
+                                   >
+                                   <ToggleButton value={'start'}>Left</ToggleButton>
+                                   <ToggleButton value={'center'}>Center</ToggleButton>
+                                   <ToggleButton value={'end'}>Right </ToggleButton>
+                                   </ToggleButtonGroup>
 
-                                   <Button onClick={()=>{
-                                        console.log($('#popover-basic'));
-                                   }}>
-                                        hide
-                                   </Button>
+                                   <ButtonGroup toggle className="mb-2">
+                                   <ToggleButton
+                                        type="checkbox"
+                                        variant="light"
+                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.undeline}
+                                        value="1"
+                                        onChange={(e) => {
+                                             _ELEMENT_CORE_ARRAY[element_id].style.undeline = e.currentTarget.checked;
+                                             this.forceUpdate();
+                                        }}
+                                   >
+                                        Underline
+                                   </ToggleButton>
+                                   <ToggleButton
+                                        type="checkbox"
+                                        variant="light"
+                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.italic}
+                                        value="1"
+                                        onChange={(e) => {
+                                             _ELEMENT_CORE_ARRAY[element_id].style.italic = e.currentTarget.checked;
+                                             this.forceUpdate();
+                                        }}
+                                   >
+                                        Italic
+                                   </ToggleButton>
+                                   <ToggleButton
+                                        type="checkbox"
+                                        variant="light"
+                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.bordered}
+                                        value="1"
+                                        onChange={(e) => {
+                                             _ELEMENT_CORE_ARRAY[element_id].style.bordered = e.currentTarget.checked;
+                                             this.forceUpdate();
+                                        }}
+                                   >
+                                        Border
+                                   </ToggleButton>
+                                   </ButtonGroup>
+                                   </div>
+                         </Tab>
+                         <Tab eventKey="col" title="Color">
+
+                                   <div className='ele_pop_bdy_txt'>Background Color</div>
+                                   <TwitterPicker width={'100%'}
+                                   onChange={(colr,evnt)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.back_color = colr.hex;
+                                             this.forceUpdate();
+                                   }}     
+                                   />      
+                                   <div className='ele_pop_bdy_txt'>Text Color</div>
+                                   <TwitterPicker width={'100%'}
+                                   onChange={(colr,evnt)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.text_color = colr.hex;
+                                             this.forceUpdate();
+                                   }}     
+                                   />   
+                                    <div className='ele_pop_bdy_txt'>Border Color</div>
+                                   <TwitterPicker width={'100%'}
+                                   onChange={(colr,evnt)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.border_color = colr.hex;
+                                             this.forceUpdate();
+                                   }}     
+                                   />  
+                         </Tab>
+                         <Tab eventKey="pos" title="Position">
+
+
+                                   <div className='ele_pop_bdy_txt'>Margin top</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_top =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_top =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Margin bottom</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding right</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_left =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_left =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding right</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_right =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_right =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding top</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_top =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_top =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding bottom</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+
+                         </Tab>
+                         </Tabs>
                          </div>
                </div>
                </Popover>)     
@@ -349,7 +625,9 @@ export default class LandAct extends React.Component{
           if(_ELEMENT_CORE_ARRAY!==null){
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
+                         if(element.deleted===false){
                          res.push(new elementRender(element,this._get_popover(element.element_type_id,element.element_id))._render_element_overlay());
+                         }
                }
           );
           }
@@ -387,7 +665,9 @@ export default class LandAct extends React.Component{
           _GEN_CODE = '';
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
+                    if(element.deleted===false){
                     _GEN_CODE += this._get_page_type_render(element);
+                    }
                }
           )
           _GEN_CODE += renderToString(new elementRender()._foot_code());
