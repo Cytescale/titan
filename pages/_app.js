@@ -1,3 +1,6 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 import 'react-rangeslider/lib/index.css'
 import '../styles/noti.css';
 import '../styles/globals.css'
