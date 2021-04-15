@@ -5,6 +5,6 @@ module.exports = {
     
      env: {
        APP_NAME:"Titan",
-       DEV_VERSION:"0.0.69",
+       DEV_VERSION:"0.0.7",
      },
    }
