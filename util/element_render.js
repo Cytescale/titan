@@ -106,15 +106,14 @@ export default class elementRender{
                          borderStyle:this.element.style.bordered===true?'solid':'none',
                          borderWidth:this.element.style.border_width,
                          borderColor:this.element.style.border_color,
+                         padding:this.element.style.padding+"px",
                          paddingTop:this.element.style.padding_top,
                          paddingBottom:this.element.style.padding_bottom,
                          paddingRight:this.element.style.padding_right,
                          paddingLeft:this.element.style.padding_left,
+                         margin:this.element.style.margin+"px",
                          marginTop:this.element.style.margin_top,
                          marginBottom:this.element.style.margin_bottom,
-                         textDecoration:this.element.style.underline===true?'underline':'none',
-                         margin:this.element.style.margin+"px",
-                         padding:this.element.style.padding+"px",
                          fontSize:this.element.style.font_size+"px",
                          color:this.element.style.text_color,
                          backgroundColor:this.element.style.back_color,
@@ -142,15 +141,15 @@ export default class elementRender{
                                                             borderStyle:this.element.style.bordered===true?'solid':'none',
                                                             borderWidth:this.element.style.border_width,
                                                             borderColor:this.element.style.border_color,
+                                                            padding:this.element.style.padding+"px",
                                                             paddingTop:this.element.style.padding_top,
                                                             paddingBottom:this.element.style.padding_bottom,
                                                             paddingRight:this.element.style.padding_right,
                                                             paddingLeft:this.element.style.padding_left,
+                                                            margin:this.element.style.margin+"px",
                                                             marginTop:this.element.style.margin_top,
                                                             marginBottom:this.element.style.margin_bottom,
                                                             textDecoration:this.element.style.underline===true?'underline':'none',
-                                                            margin:this.element.style.margin+"px",
-                                                            padding:this.element.style.padding+"px",
                                                             fontSize:this.element.style.font_size+"px",
                                                             color:this.element.style.text_color,
                                                             backgroundColor:this.element.style.back_color,
@@ -184,7 +183,7 @@ export default class elementRender{
                                        >     
                                         Made with ♥️ by Titan
                                        </div>
-                             <div className="_page_element_overlay" ></div>
+                             
                              </div>
                    </div>
                     );
@@ -203,33 +202,30 @@ export default class elementRender{
      _render_profile_element(){
                     return(
                          <div className='_page_element_main_bdy'>
-                               <div className="_page_element_head_main_body">
-                              <div className="_page_element_head_left_bdy">
-                                   Profile
-                              </div>
-                              <div className="_page_element_head_rgt_bdy">
-                            
-                              </div>
-                              </div>
                                    <div>
                                              <div 
                                              className='_page_element_profile_main_bdy'
                                              >
+                                                  
+                                                  
+                                                  <div className='_page_element_profile_txt_main_cont'>
+                                                  <div className='_page_element_profile_nam_bdy'>
+                                                            Hola,
+                                                  </div>
+                                                  <div className='_page_element_profile_abut_bdy'>
+                                                            This is NameHolder
+                                                  </div>
+                                                  <div className='_page_element_profile_sub_line_bdy'>
+                                                            The creator
+                                                  </div>
+                                                  </div>
+
+
                                                   <div  className='_page_element_profile_pic_bdy'>
                                                   <img src='http://simpleicon.com/wp-content/uploads/account.png' 
                                                   className='_page_element_profile_pic_bdy_ico'></img>                                   
                                                   </div>
-                                                  <div className='_page_element_profile_pic_bdy'>
-                                                       <div className='_page_element_profile_nam_bdy'>
-                                                            Name placeholder
-                                                       </div>
-                                                  </div>
-                                                  <div className='_page_element_profile_abut_bdy'>
-                                                       <div className='_page_element_profile_abt_bdy'>
-                                                            About placeholder line
-                                                       </div>
-                                                  </div>
-          
+
                                              </div>
                                    <div className="_page_element_overlay" ></div>
                                    </div>

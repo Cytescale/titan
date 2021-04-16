@@ -3,15 +3,26 @@
      
 }
 .feed_back_pop_tit_cont{
-color: #fff;
-padding-left: 12px;
+color: #727272;
 padding-top: 7px;
+padding-bottom: 10px;
 padding-right: 7px;
 font-size: 15px;
 }
+.feed_back_pop_tit_txt_ara{
+     width: 100%;
+     resize: none;
+     padding: 5px;
+     border: 1px solid #e0e0e0;
+     height: 100px;
+}
 .feed_back_pop_main_cont{
 width: 300px;
-background-color: #000;
+padding: 12px;
+}
+.feed_back_sub_butt{
+     width: 100%;
+     margin-top: 10px;
 }
 .land_act_head_save_cont{
      font-size: 14px;
@@ -27,8 +38,10 @@ background-color: #000;
 
 }
 .land_act_gen_butt{
+     height: 52px;
+     border-radius: 8px;
      width: 100%;
-          margin-bottom: 12px;
+     margin-bottom: 12px;
 }
 .land_act_head_main_cont{
      width: 100%;
@@ -36,7 +49,16 @@ background-color: #000;
      height: 62px;
      z-index: 30;
      display: inline-flex;
-     background-color: #000;
+     background-color: #fff;
+     box-shadow: 0px 5px 8px rgba(0,0,0,0.06);
+     
+}
+.land_act_head_tit_cont_logo{
+     width: 32px;
+     height: 32px;
+     border-radius: 100px;
+     margin-right: -15px;
+     background: linear-gradient(180deg, #FFD644 0%, #FFA73F 100%);
 }
 .land_act_head_tit_cont{
      margin-left: 32px;
@@ -46,9 +68,10 @@ background-color: #000;
      display: flex;
      align-items: center;
      justify-content: center;
-     font-size: 18px;
-     font-weight: 700;
-     color: #fff;
+     font-size:  20px;
+     font-weight: 800;
+     font-family: quicksand;
+     color: #000;
 }
 .land_act_head_cent_main_cont{
      width: 100%;
@@ -60,6 +83,9 @@ background-color: #000;
 }
 .land_act_head_cent_link_cont{
      padding-left: 15px;
+     height: 100%;
+     display:flex;
+     align-items: center;
      padding-right: 15px;
 }
 .land_act_head_cent_link{
@@ -70,7 +96,19 @@ background-color: #000;
 .land_act_head_cent_link_selec{
      font-size: 17px;
      font-weight: 600;
+     height: 100%;
+     padding-left: 7px;
+     padding-right: 7px;
+     display:flex;
+     align-items: center;
+     border-bottom: 5px solid blue;
      color: blue;
+}
+.land_act_head_cent_link_selec:hover{
+     text-decoration: none;
+}
+.land_act_head_cent_link:hover{
+     text-decoration: none;
 }
 .land_act_head_rght_main_cont{
      padding-left: 32px;
@@ -104,16 +142,18 @@ background-color: #000;
      bottom: 0;
      right: 0;
      left: 0;
-     display: flex;
-     align-items: center;
-     justify-content: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
      margin: 32px;
-
+     margin-left: 0px;
+     margin-right: 0px;
 }
 .land_act_creat_butt{
      border-radius: 100px;
-     padding-left: 62px;
-     padding-right: 62px;
+     padding-left: 132px;
+     padding-right: 132px;
+     font-size: 18px;
      background-color: blue;
 }
 .land_act_elem_add_cont{
@@ -139,6 +179,15 @@ background-color: #000;
      margin-right: 6px;
      
 }
+@keyframes appr_back {
+     0% {
+         opacity: 0;
+     }
+     100% {
+         opacity: 1;
+
+     }
+ }
 
 .land_act_creat_main_cont{
      width: 100%;
@@ -149,12 +198,19 @@ background-color: #000;
      /* background-size: 1em 1em; */
      min-height: 100vh;
      display: flex;
+     animation: appr_back 0.6s ease;
+     z-index: 0;     
      justify-content: center;
      align-items: center;
 }
+.land_act_creat_tit_main_cont{
+     font-size: 62px;
+     font-weight: 500;
+     margin-bottom: 12px;
+}
 .land_act_creat_sub_cont{
      width: 550px;
-
+     opacity: 1;
      /* box-shadow: 0px 7px 10px #e0e0e0; */
      border-radius: 8px;
      overflow: hidden;
@@ -186,7 +242,7 @@ height: 100%;
      height: 58px;
      width: 100%;
      background-color: #fff;
-     box-shadow: 0px 7px 10px rgba(0,0,0,0);
+     box-shadow: 0px 7px 10px rgba(0,0,0,0.09);
      border-radius: 8px;
      overflow: hidden;
      display: inline-flex;
@@ -256,6 +312,7 @@ height: 100%;
 position: fixed;
 margin:22px;
 margin-top: 82px;
+z-index: 30;
 }
 .land_act_back_cust_butt{
 background-color: #fff;
@@ -266,7 +323,7 @@ height: 62px;
 display: flex;
 justify-content: center;
 align-items: center;
-box-shadow: 0px 3px 7px #bdbdbd;
+box-shadow: 0px 3px 7px rgba(0,0,0,0.09);
 }
 .land_act_back_cust_butt_ico{
 width: 32px;
@@ -307,4 +364,21 @@ height: 32px;
 .popover_back_class_color_selec_pick{
      margin-top: 12px;
      box-shadow: 0px 0px 0px #fff;
+}
+
+._insrt_new_ele_inf_cont{
+     padding-top: 18px;
+     padding-bottom: 18px;
+     border-radius: 8px;
+     font-size: 14px;
+     font-weight: 500;
+     text-align: center;
+     background-color: rgba(169,255,159,1);
+     box-shadow: 0px 5px 8px rgba(0,0,0,0.06);
+     margin-top: 22px;
+}
+._insrt_new_ele_inf_cont_ico{
+     width: 22px;
+     height: 22px;
+     margin-right: 6px;
 }

@@ -14,10 +14,12 @@
 @keyframes noti_anim {
      from
      {
+          opacity: 0;
      transform: translateX(100%);
      }
      to
      {
+          opacity: 1;
      transform: translateX(0%);
      }
 }
@@ -26,6 +28,27 @@
      margin: 0px;
      animation-name: noti_anim;
      animation-duration: 0.3s;
+     animation-timing-function: ease-in;
      animation-fill-mode: forwards;
+     
+}
+.feed_back_pop_feed_emo_main_cont{
+     width: 100%;
+     max-width: 300px;
+     overflow-x: hidden;
+}
+.feed_back_pop_feed_emo{
+     width: 100%;
+}
+.feed_back_err_main_cont{
+     color: red;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     
+}
+.feed_back_succ_main_cont{
+     color: #A9EB9F;
+     margin-top: 5px;
+     margin-bottom: 5px;
      
 }

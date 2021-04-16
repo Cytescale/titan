@@ -50,9 +50,9 @@ var STLYE_ELEMENT_TEXT ={
      margin_top:0,
      margin_bottom:0,
      padding_right:0,
-     padding_left:10,
-     padding_top:0,
-     padding_bottom:0,
+     padding_left:20,
+     padding_top:20,
+     padding_bottom:20,
      padding:0,
      border_radius:0,
      border_width:2,
@@ -68,12 +68,21 @@ var STLYE_ELEMENT_TEXT ={
 
 }
 
+const back_preset_gradient = [
+     ['#ff9a9e','#fad0c4'],
+     ['#a18cd1','#fbc2eb'],
+     ['#fad0c4','#ffd1ff'],
+     ['#ffecd2','#fcb69f'],
+     ['#fbc2eb','#a6c1ee'],
+     ['#a6c0fe','#f68084'],
+]
+
 class backgrounClass{
      constructor(){
           this.selec_color = 0;
           this.grad_deg = 160;
           this.back_type = 1;
-          this.colors_array = ['#FFB3A2','#FDD075'];
+          this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
           this.solid_color = '#e0e0e0';
           this.default_value = {
                backgroundColor:'#f1f1f1',
@@ -1182,7 +1191,8 @@ export default class LandAct extends React.Component{
 
      _render_component(){
           let res = [];
-          //res.push(new elementRender()._render_profile_element());
+          res.push(new elementRender()._render_profile_element());
+
           if(_ELEMENT_CORE_ARRAY!==null){
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
@@ -1192,7 +1202,17 @@ export default class LandAct extends React.Component{
                }
           );
           }
+          if(_ELEMENT_CORE_ARRAY.length==0){
+               res.push(
+                    <div className='_insrt_new_ele_inf_cont'>
+                         <svg className='_insrt_new_ele_inf_cont_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
+                         Add new elements , Go crazy 😄
+                    </div>
+               )
+          }
+
           res.push(new elementRender()._render_foot_element());
+
           return res;
      }
 
@@ -1244,14 +1264,14 @@ export default class LandAct extends React.Component{
 
           console.log(_GEN_CODE);
 
-          let up_res = await storeHelper._update_page_data(_SEND_DATA);
-          if(up_res.errBool===false){
-               this._add_notification("Saved","success",2000);
-               this._set_unsaved_bool(false);
-          }
-          else{
-               this._add_notification("Error Occurred","danger",2000);
-          }
+          // let up_res = await storeHelper._update_page_data(_SEND_DATA);
+          // if(up_res.errBool===false){
+          //      this._add_notification("Saved","success",2000);
+          //      this._set_unsaved_bool(false);
+          // }
+          // else{
+          //      this._add_notification("Error Occurred","danger",2000);
+          // }
 
           //console.log("SEND DATA"+JSON.stringify(_SEND_DATA));
      }
@@ -1281,11 +1301,11 @@ export default class LandAct extends React.Component{
                
                <div className='land_act_head_main_cont'>
                     {this._element_add_modal()}
-                    <div className='land_act_head_tit_cont'>{process.env.APP_NAME}.Aplha 
-                    <div className='land_act_head_save_cont' style={{
+                    <div className='land_act_head_tit_cont'> <div className='land_act_head_tit_cont_logo'/>Project {process.env.APP_NAME} 
+                    {/* <div className='land_act_head_save_cont' style={{
                          color:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
                          borderColor:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
-                    }}>{this.state.isUnSaved===true?'Unsaved':'Saved'}</div>
+                    }}>{this.state.isUnSaved===true?'Unsaved':'Saved'}</div> */}
                     </div>  
                     <div className='land_act_head_cent_main_cont'>
                               <div className='land_act_head_cent_link_cont'><a href='#' className='land_act_head_cent_link_selec'>Editor</a></div>
@@ -1325,9 +1345,8 @@ export default class LandAct extends React.Component{
                     style={this._set_curr_back()}
                     >
                          <div>
-                              <Button className='land_act_gen_butt' onClick={()=>{
-                              this._gen_page_code();
-                         }}>Save</Button>
+
+                              {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
                                         <div className='land_act_prv_add_bar_cont'>
                                         <div className='land_act_prv_add_bar'>
                                              <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
@@ -1363,7 +1382,7 @@ export default class LandAct extends React.Component{
                     </div> */}
                </div>
                <div className='land_act_creat_butt_main_cont'>
-                    <Button variant={"primary"} onClick={()=>{this._set_elem_mod(true)}}className='land_act_creat_butt'>Add Element +</Button>
+                    <Button variant={"primary"} onClick={()=>{this._set_elem_mod(true)}}className='land_act_creat_butt'>add element +</Button>
                </div>
                {this._render_notif()}
           <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
@@ -1377,18 +1396,95 @@ export default class LandAct extends React.Component{
 class FeedbackComp extends React.Component{
      constructor(props){
           super(props)
+          this.state={
+               feedData:'',
+               errCode:0,
+               errMessage:'',
+               radioValue:0,
+               emojiArray:[
+               { name: '😶', value: '1' },
+               { name: '😛', value: '2' },
+               { name: '😨', value: '3' },
+               { name: '😘', value: '4' },
+               { name: '😍', value: '5' },]
+          }
+          this._set_emoji_value = this._set_emoji_value.bind(this);
+          this._set_err_state = this._set_err_state.bind(this);
+          this._set_feed_mess = this._set_feed_mess.bind(this);
+          this.send_req  = this.send_req.bind(this);
+     }
+
+     _set_err_state(code,mess){
+          this.setState({errCode:code,errMessage:mess})
+     }
+
+     _set_feed_mess(e){
+          this.setState({feedData:e.target.value})
+     }
+
+     async send_req(){
+          if(this.state.feedData.length>0){
+               if(this.state.radioValue!==0){
+                    this._set_err_state(0);       
+                    const SEND_DATA = {
+                         UID:cookies.get('accessToken'),
+                         mess:this.state.feedData,
+                         satisfaction:this.state.radioValue
+                    }
+                    let feed_res = await storeHelper._send_feedback_data(SEND_DATA);
+                    console.log('\n\n\n FEED RES\n'+JSON.stringify(feed_res));
+                    if(feed_res.errBool===false){
+                         this._set_err_state(2,"Thank you :)");       
+                    }else{
+                         this._set_err_state(1,"Request failed");       
+                    }
+                    
+               }
+               else{
+                    this._set_err_state(1,'Select any reaction')         
+               }
+          }
+          else{
+               this._set_err_state(1,'Write any message')    
+          }
+     }
+
+     _set_emoji_value(val){
+          this.setState({radioValue:val});
      }
 
      feedBackPop(){
           return(
                 <Popover id="popover-basic" className='feed_back_pop_main_cont'>
-                     <div>
-                          <div className='feed_back_pop_tit_cont'>What do you think?</div>
+                         <div>
+
+                          <div className='feed_back_pop_tit_cont'>Feeback</div>
                          <textarea
-                         placeholder='Please tell us any suggestions or bugs'
-                         >
-                              
-                              </textarea> 
+                         placeholder='Please tell us any feedback/suggestions or bugs, your opinion matters to us.'
+                         value={this.state.feedData}
+                         onChange={this._set_feed_mess}
+                         className='feed_back_pop_tit_txt_ara'
+                         />
+                         <div className='feed_back_pop_feed_emo_main_cont'>
+                         <ButtonGroup className='feed_back_pop_feed_emo' toggle>
+                              {this.state.emojiArray.map((radio, idx) => (
+                                   <ToggleButton  
+                                   key={idx}
+                                   type="radio"
+                                   variant="light"
+                                   name="radio"
+                                   value={this.state.radioValue}
+                                   checked={this.state.radioValue === radio.value}
+                                   onChange={(e) => {this._set_emoji_value(e.currentTarget.value)}}
+                                   >
+                                   {radio.name}
+                                   </ToggleButton>
+                              ))}
+                              </ButtonGroup>
+                         </div>
+                         <div className='feed_back_err_main_cont'>{this.state.errCode===1?this.state.errMessage:<span></span>}</div>
+                         <div className='feed_back_succ_main_cont'>{this.state.errCode===2?this.state.errMessage:<span></span>}</div>
+                         <Button variant={'primary'} className='feed_back_sub_butt' onClick={this.send_req}>Send</Button>
                      </div>
                </Popover>
         )
@@ -1397,8 +1493,8 @@ class FeedbackComp extends React.Component{
      render(){
           return(
                <div className='feed_back_main_cont'>
-               <OverlayTrigger trigger="click" target={this} placement="bottom" overlay={this.feedBackPop()}>
-               <Button variant={'outline-light'}>Feedback</Button>
+               <OverlayTrigger trigger="click" rootClose={true} target={this} placement="bottom" overlay={this.feedBackPop()}>
+               <Button variant={'outline-dark'}>Feedback</Button>
                </OverlayTrigger>     
                </div>
           )
