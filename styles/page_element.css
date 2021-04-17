@@ -272,8 +272,10 @@ cursor: pointer;
      background-color: #f1f1f1     ;
 }
 ._page_element_profile_nam_bdy{
-     font-size: 24px;
-
+     height: fit-content;
+     width: 100%;
+     font-weight: 600;
+     font-size: 27px;
 }
 ._page_element_profile_abut_bdy{
      height: fit-content;
@@ -284,8 +286,8 @@ cursor: pointer;
 ._page_element_profile_sub_line_bdy{
      height: fit-content;
      width: 100%;
-     font-weight: 500;
-     font-size: 18px;
+     font-weight: 600;
+     font-size: 27px;
 }
 ._page_element_footer_main_bdy{
      color:#525252;

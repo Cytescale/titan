@@ -11,8 +11,9 @@ import $ from 'jquery';
 import portDriverCode from '../../../util/port_driver_code';
 import elementRender from '../../../util/element_render';
 import copy from "copy-to-clipboard";  
+import ImageUploading from 'react-images-uploading';
 
-import  _, { concat } from 'lodash';
+import  _, { concat, repeat } from 'lodash';
 import Cookies from 'universal-cookie';
 
 
@@ -61,11 +62,13 @@ var STLYE_ELEMENT_TEXT ={
      back_color:'#fff',
      text_color:'#000',
      font_size:17,
+     font_weight:500,
      bold:false,
      italic:false,
      underline:false,
      text_align:'start',
-
+     image_width:'100',
+     image_height:'100',
 }
 
 const back_preset_gradient = [
@@ -82,6 +85,7 @@ class backgrounClass{
           this.selec_color = 0;
           this.grad_deg = 160;
           this.back_type = 1;
+          this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
           this.solid_color = '#e0e0e0';
           this.default_value = {
@@ -128,12 +132,24 @@ class _Element_Link{
      
 }
 
+
+class _Element_Image{
+     constructor(in_style){
+          this.deleted = false;
+          this.enabled = true;
+          this.element_type_id = 2;
+          this.element_id =_ELEMENT_CORE_ARRAY.length;
+          this.image_data = null;
+          this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
+     }
+}
+
 class _Element_Text{
      constructor(text,in_style){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 0;
-          this.element_id =_ELEMENT_CORE_ARRAY.length,
+          this.element_id =_ELEMENT_CORE_ARRAY.length;
           this.data = text!==null?text:"Lorem Ipsum";
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
@@ -174,6 +190,7 @@ export default class LandAct extends React.Component{
           this._popover_back_overlay = this._popover_back_overlay.bind(this);
           this._get_back_picker = this._get_back_picker.bind(this);
           this._set_curr_back = this._set_curr_back.bind(this);
+          this._add_image_element = this._add_image_element.bind(this);
           this.noti_pool = [];     
 
      }
@@ -284,6 +301,23 @@ export default class LandAct extends React.Component{
                          
                          break;
                     }
+                    case 2:{
+                         if(_BACK_DATA.back_image!==null){
+                         let linerString = 'url("';
+                         _BACK_DATA.back_image.map((e,ind)=>{
+                              let tr = e ;
+                              if(tr!==null){
+                                   linerString += tr['data_url']+'")';
+                              }
+                         })
+                         set_style = {
+                              backgroundImage:linerString,
+                              backgroundPosition: 'center',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundSize: 'cover',
+                         }}
+                         break;
+                    }
                     default:{
                          set_style = _BACK_DATA.default_value
                          break;
@@ -298,6 +332,7 @@ export default class LandAct extends React.Component{
           switch(_BACK_DATA.back_type){
                case 0:{return 'Solid'}
                case 1:{return 'Linear gradient'}
+               case 2:{return 'Image'}
                default:{return 'Loading'}
           }}
      }
@@ -392,6 +427,45 @@ export default class LandAct extends React.Component{
 
                          </div>
                     )}
+                    case 2:{
+                         return(
+                              <div>
+                                    <ImageUploading
+                                        multiple={false}
+                                        value={_BACK_DATA.back_image}
+                                        onChange={(imageList,addUpdateIndex)=>{
+                                             _BACK_DATA.back_image = imageList;
+                                             this.forceUpdate(); 
+                                        }}
+                                        maxNumber={1}
+                                        dataURLKey="data_url"
+                                        >
+                                        {({
+                                             imageList,
+                                             onImageUpload,
+                                             onImageRemoveAll,
+                                             onImageUpdate,
+                                             onImageRemove,
+                                             isDragging,
+                                             dragProps,
+                                        }) => (
+                                             <div className="upload__image-wrapper">
+                                             {_BACK_DATA.back_image===null?<Button variant={'primary'} className='upload__image-wrapper_butt' onClick={onImageUpload}>Upload</Button>:undefined}
+                                             {imageList.map((image, index) => (
+                                             <div key={index} className="image-item">
+                                                  <img src={image['data_url']} className='image_img' alt="" width="100" />
+                                                  <div className="image-item__btn-wrapper">
+                                                  <Button variant={'primary'} className='image-item__btn-wrapper_butt'  onClick={() => onImageUpdate(index)}>Update</Button>
+                                                  {/* <Button variant={'primary'} className='image-item__btn-wrapper_butt'  onClick={() => onImageRemove(index)}>Remove</Button> */}
+                                                  </div>
+                                             </div>
+                                             ))}
+                                             </div>
+                                        )}
+                                        </ImageUploading>
+                              </div>
+                         );
+                    }
                     default:{return 'Loading'}
                }}
      }
@@ -416,6 +490,12 @@ export default class LandAct extends React.Component{
                                    this.forceUpdate();
                                    }}
                               >Linear Gradient</Dropdown.Item>
+                               <Dropdown.Item as="button"
+                                   onClick={()=>{
+                                   _BACK_DATA.back_type = 2;
+                                   this.forceUpdate();
+                                   }}
+                              >Image</Dropdown.Item>
                               </Dropdown.Menu>
                               </Dropdown>
                               <div className='popover_back_class_main_pick_cont'>
@@ -424,6 +504,272 @@ export default class LandAct extends React.Component{
                     </div>
                </Popover>
           )
+     }
+     _popover_img_overlay(element_id){
+          if(_ELEMENT_CORE_ARRAY[element_id]!==undefined&&_ELEMENT_CORE_ARRAY[element_id]!==null){
+               return(          
+                    <Popover id="popover-basic" className='popover_txt_class'>
+                    <div className='ele_pop_main_bdy'>
+                              <div className='pop_txt_head_main_cont'>
+                                        <div className='pop_txt_head_txt'>Image</div>
+                                             <div className='pop_txt_head_rght_cont'>
+                                             <div className='pop_txt_head_rght_cont_swt'>
+                                             <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
+                                                  _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                                  this.forceUpdate();
+                                             }} />
+                                             <label for="switch" className='ele_pop_elem_lab'>Toggle</label>
+                                             </div>
+                                             <div className='pop_txt_head_rght_cont_del_swt'>
+                                                       <button className='pop_txt_head_rght_cont_del_swt_butt'
+                                                        onClick={()=>{
+                                                            _ELEMENT_CORE_ARRAY[element_id].deleted = true;
+                                                            this._add_notification("Text element deleted","danger",1000);
+                                                            $('.popover_txt_class').hide();
+                                                            this.forceUpdate();           
+                                                       }}>
+                                                       <svg
+                                                       className='pop_txt_head_rght_cont_del_swt_ico'
+                                                       viewBox='0 0 512 512'>
+                                                       <path d='M112 112l20 320c.95 18.49 14.4 32 32 32h184c17.67 0 30.87-13.51 32-32l20-320' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M80 112h352'/><path d='M192 112V72h0a23.93 23.93 0 0124-24h80a23.93 23.93 0 0124 24h0v40M256 176v224M184 176l8 224M328 176l-8 224' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/>
+                                                       </svg>
+                                                       </button>
+                                             </div>
+                                        
+                                        </div>
+     
+     
+     
+                              </div>
+                              <div className='ele_pop_bdy'>
+                              <Tabs defaultActiveKey="text" id="uncontrolled-tab-example">
+                              <Tab eventKey="text" title="Image">
+                              <div>
+                               
+                                             <div>
+                                                            <ImageUploading
+                                                                 multiple={false}
+                                                                 value={_ELEMENT_CORE_ARRAY[element_id].image_data}
+                                                                 onChange={(imageList,addUpdateIndex)=>{
+                                                                      _ELEMENT_CORE_ARRAY[element_id].image_data = imageList;
+                                                                      console.log(imageList);
+                                                                      this.forceUpdate(); 
+                                                                 }}
+                                                                 maxNumber={1}
+                                                                 dataURLKey="data_url"
+                                                                 >
+                                                                 {({
+                                                                      imageList,
+                                                                      onImageUpload,
+                                                                      onImageRemoveAll,
+                                                                      onImageUpdate,
+                                                                      onImageRemove,
+                                                                      isDragging,
+                                                                      dragProps,
+                                                                 }) => (
+                                                                      <div className="upload__image-wrapper">
+                                                                      {_ELEMENT_CORE_ARRAY[element_id].image_data===null?<Button variant={'primary'} className='upload__image-wrapper_butt' onClick={onImageUpload}>Upload</Button>:undefined}
+                                                                      {imageList.map((image, index) => (
+                                                                      <div key={index} className="image-item">
+                                                                           <img src={image['data_url']} className='image_img' alt="" width="100" />
+                                                                           <div className="image-item__btn-wrapper">
+                                                                           <Button variant={'primary'} className='image-item__btn-wrapper_butt'  onClick={() => onImageUpdate(index)}>Update</Button>
+                                                                           {/* <Button variant={'primary'} className='image-item__btn-wrapper_butt'  onClick={() => onImageRemove(index)}>Remove</Button> */}
+                                                                           </div>
+                                                                      </div>
+                                                                      ))}
+                                                                      </div>
+                                                                 )}
+                                                                 </ImageUploading>
+                                                  </div>
+                                                       {_ELEMENT_CORE_ARRAY[element_id].image_data!==null?
+                                                       <div>
+                                                                 <div className='ele_pop_bdy_txt'>Border raidus</div>    
+                                                                 <div className='ele_pop_bdy_slid_cont'>
+                                                                      <div className='ele_pop_bdy_slid_hold'>
+                                                                      <Slider
+                                                                      orientation="horizontal"
+                                                                      tooltip={false}
+                                                                      value={_ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                                                      onChange={(val) =>{
+                                                                           _ELEMENT_CORE_ARRAY[element_id].style.border_radius =val;   
+                                                                           this.forceUpdate();
+                                                                      }}
+                                                                      />
+                                                                      </div>
+                                                                 <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                                                 onChange={(e)=>{
+                                                                      _ELEMENT_CORE_ARRAY[element_id].style.border_radius =e.target.value;   
+                                                                      this.forceUpdate();
+                                                                 }}
+                                                                 />
+                                                                 </div>   
+
+                                                                 <div className='ele_pop_bdy_txt'>Image width</div>    
+                                                                 <div className='ele_pop_bdy_slid_cont'>
+                                                                      <div className='ele_pop_bdy_slid_hold'>
+                                                                      <Slider
+                                                                      orientation="horizontal"
+                                                                      tooltip={false}
+                                                                      value={_ELEMENT_CORE_ARRAY[element_id].style.image_width}
+                                                                      onChange={(val) =>{
+                                                                           _ELEMENT_CORE_ARRAY[element_id].style.image_width =val;   
+                                                                           this.forceUpdate();
+                                                                      }}
+                                                                      />
+                                                                      </div>
+                                                                 <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.image_width}
+                                                                 onChange={(e)=>{
+                                                                      _ELEMENT_CORE_ARRAY[element_id].style.image_width =e.target.value;   
+                                                                      this.forceUpdate();
+                                                                 }}
+                                                                 />
+                                                                 </div>   
+                                                                      <div className='ele_pop_bdy_txt'>Image alignment</div>        
+                                                                           <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={_ELEMENT_CORE_ARRAY[element_id].style.text_align} className="mb-2"
+                                                                           onChange={(val)=>{
+                                                                                _ELEMENT_CORE_ARRAY[element_id].style.text_align =  val;
+                                                                                this.forceUpdate();
+                                                                           }}
+                                                                           >
+                                                                           <ToggleButton value={'start'}>Left</ToggleButton>
+                                                                           <ToggleButton value={'center'}>Center</ToggleButton>
+                                                                           <ToggleButton value={'end'}>Right </ToggleButton>
+                                                                           </ToggleButtonGroup>
+                                                                 
+                                                            </div>:undefined}
+                                        </div>
+                              </Tab>
+                              <Tab eventKey="pos" title="Position">
+     
+     
+                                        <div className='ele_pop_bdy_txt'>Margin top</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={_ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                             onChange={(val) =>{
+                                                  _ELEMENT_CORE_ARRAY[element_id].style.margin_top =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                        onChange={(e)=>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_top =e.target.value;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                        <div className='ele_pop_bdy_txt'>Margin bottom</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={_ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                             onChange={(val) =>{
+                                                  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                        onChange={(e)=>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =e.target.value;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                        <div className='ele_pop_bdy_txt'>Padding left</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={_ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                             onChange={(val) =>{
+                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_left =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                        onChange={(e)=>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_left =e.target.value;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                        <div className='ele_pop_bdy_txt'>Padding right</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={_ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                             onChange={(val) =>{
+                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_right =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                        onChange={(e)=>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_right =e.target.value;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                        <div className='ele_pop_bdy_txt'>Padding top</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={_ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                             onChange={(val) =>{
+                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_top =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                        onChange={(e)=>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_top =e.target.value;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                        <div className='ele_pop_bdy_txt'>Padding bottom</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={_ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                             onChange={(val) =>{
+                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                        onChange={(e)=>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =e.target.value;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+     
+                              </Tab>
+                              </Tabs>
+                              </div>
+                    </div>
+                    </Popover>)     
+          }
      }
      _popover_txt_overlay(element_id){
      if(_ELEMENT_CORE_ARRAY[element_id]!==undefined&&_ELEMENT_CORE_ARRAY[element_id]!==null){
@@ -495,7 +841,27 @@ export default class LandAct extends React.Component{
                                    }}
                                    />
                                    </div>
-                                   
+                                   <div className='ele_pop_bdy_txt'>Font weight</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                   <div className='ele_pop_bdy_slid_hold'>
+                                   <Slider
+                                   orientation="horizontal"
+                                   max='900' 
+                                   tooltip={false}
+                                   value={_ELEMENT_CORE_ARRAY[element_id].style.font_weight}
+                                   onChange={(val) =>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.font_weight =val;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={_ELEMENT_CORE_ARRAY[element_id].style.font_weight}
+                                   onChange={(e)=>{
+                                   _ELEMENT_CORE_ARRAY[element_id].style.font_weight = e.target.value;   
+                                   this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
                                    <div className='ele_pop_bdy_txt'>Border width</div>    
                                    <div className='ele_pop_bdy_slid_cont'>
                                    <div className='ele_pop_bdy_slid_hold'>
@@ -1142,16 +1508,20 @@ export default class LandAct extends React.Component{
                          Link</Button>
                 </div>
                 <div className='land_act_elem_add_cont'>
-                <Button variant={'light'} className='land_act_elem_add_butt'>
+                <Button variant={'light'} className='land_act_elem_add_butt' onClick={this._add_image_element}>
                          <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Image</title><rect x='48' y='80' width='416' height='352' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><circle cx='336' cy='176' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path d='M304 335.79l-90.66-90.49a32 32 0 00-43.87-1.3L48 352M224 432l123.34-123.34a32 32 0 0143.11-2L464 368' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                          Image</Button>
                 </div>
                 <div className='land_act_elem_add_cont'>
                 <Button variant={'light'} className='land_act_elem_add_butt'>
+                         <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Logo Twitter</title><path d='M496 109.5a201.8 201.8 0 01-56.55 15.3 97.51 97.51 0 0043.33-53.6 197.74 197.74 0 01-62.56 23.5A99.14 99.14 0 00348.31 64c-54.42 0-98.46 43.4-98.46 96.9a93.21 93.21 0 002.54 22.1 280.7 280.7 0 01-203-101.3A95.69 95.69 0 0036 130.4c0 33.6 17.53 63.3 44 80.7A97.5 97.5 0 0135.22 199v1.2c0 47 34 86.1 79 95a100.76 100.76 0 01-25.94 3.4 94.38 94.38 0 01-18.51-1.8c12.51 38.5 48.92 66.5 92.05 67.3A199.59 199.59 0 0139.5 405.6a203 203 0 01-23.5-1.4A278.68 278.68 0 00166.74 448c181.36 0 280.44-147.7 280.44-275.8 0-4.2-.11-8.4-.31-12.5A198.48 198.48 0 00496 109.5z'/></svg>
+                         Tweet</Button>
+                </div>
+                <div className='land_act_elem_add_cont'>
+                <Button variant={'light'} className='land_act_elem_add_butt'>
                          <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Play Skip Forward</title><path d='M112 111v290c0 17.44 17 28.52 31 20.16l247.9-148.37c12.12-7.25 12.12-26.33 0-33.58L143 90.84c-14-8.36-31 2.72-31 20.16z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M400 80v352'/></svg>
                          Audio player</Button>
-                </div>
-                
+                </div>         
                 <div className='land_act_elem_add_cont'>
                     <Button variant={'light'} className='land_act_elem_add_butt'  onClick={this._add_video_ytube_element}>
                          <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Videocam</title><path d='M374.79 308.78L457.5 367a16 16 0 0022.5-14.62V159.62A16 16 0 00457.5 145l-82.71 58.22A16 16 0 00368 216.3v79.4a16 16 0 006.79 13.08z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M268 384H84a52.15 52.15 0 01-52-52V180a52.15 52.15 0 0152-52h184.48A51.68 51.68 0 01320 179.52V332a52.15 52.15 0 01-52 52z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
@@ -1161,6 +1531,14 @@ export default class LandAct extends React.Component{
             </Modal>
           );
         }  
+        
+     _add_image_element(){
+          _ELEMENT_CORE_ARRAY.push(new _Element_Image());
+          console.log("ELEMENT | ELEMENT IMAGE ADDED | SIZE "+_ELEMENT_CORE_ARRAY.length);
+          this._set_element_count(_ELEMENT_CORE_ARRAY.length);
+          this._set_elem_mod(false);
+     }
+
      _add_text_element(){
           _ELEMENT_CORE_ARRAY.push(new _Element_Text("Text Element"));
           console.log("ELEMENT | ELEMENT TEXT ADDED | SIZE "+_ELEMENT_CORE_ARRAY.length);
@@ -1184,6 +1562,7 @@ export default class LandAct extends React.Component{
      switch(element_type_id){
           case 0:{return(this._popover_txt_overlay(ele_id))}
           case 1:{return(this._popover_lnk_overlay(ele_id))}
+          case 2:{return(this._popover_img_overlay(ele_id))}
           case 4:{return(this._popover_vid_ytube_overlay(ele_id))}
           default:{break}
           }
@@ -1382,7 +1761,9 @@ export default class LandAct extends React.Component{
                     </div> */}
                </div>
                <div className='land_act_creat_butt_main_cont'>
-                    <Button variant={"primary"} onClick={()=>{this._set_elem_mod(true)}}className='land_act_creat_butt'>add element +</Button>
+                    <Button variant={"primary"} onClick={()=>{this._set_elem_mod(true)}}className='land_act_creat_butt'>
+                    add element 
+                    <svg className='land_act_creat_butt_ico' viewBox='0 0 512 512'><title>Add Circle</title><path d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 176v160M336 256H176'/></svg></Button>
                </div>
                {this._render_notif()}
           <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>

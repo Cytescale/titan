@@ -22,6 +22,9 @@ export default class elementRender{
                case 1:{
                     return(this._render_link_element(this.element))                
                }
+               case 2:{
+                    return(this._render_image_element(this.element))                
+               }
                case 4:{
                     return(this._render_vid_yout_element(this.element))
                }
@@ -32,22 +35,6 @@ export default class elementRender{
 
 
      }
-
-     _get_type_element_title(){
-          switch(this.element.element_type_id){
-               case 0:{
-                    return("Text")
-                   
-               }
-               case 4:{
-                    return("Video player")
-               }
-               default:{
-                    break;
-               }
-          }
-     }
-
      _render_element_overlay(){
           
           return(
@@ -59,14 +46,6 @@ export default class elementRender{
                >
                      <div className="_page_element_main_bdy" >
                         <div className="_page_element_main_bdy" style={{opacity:this.element.enabled===true?1:0.6,}}>
-                              {/* <div className="_page_element_head_main_body">
-                                   <div className="_page_element_head_left_bdy">
-                                        {this._get_type_element_title()}
-                                   </div>
-                                   <div className="_page_element_head_rgt_bdy">
-
-                                   </div>
-                              </div>   */}
                                    <div>
                                         {this._get_type_element(this.element)}
                                         <div className="_page_element_overlay" ></div>
@@ -131,6 +110,48 @@ export default class elementRender{
                );
      }
 
+     _render_image_element(){
+          return(                                  
+               <div 
+               style={
+                    {
+                         textAlign:this.element.style.text_align,
+                         borderStyle:this.element.style.bordered===true?'solid':'none',
+                         borderWidth:this.element.style.border_width,
+                         borderColor:this.element.style.border_color,
+                         padding:this.element.style.padding+"px",
+                         paddingTop:this.element.style.padding_top,
+                         paddingBottom:this.element.style.padding_bottom,
+                         paddingRight:this.element.style.padding_right,
+                         paddingLeft:this.element.style.padding_left,
+                         margin:this.element.style.margin+"px",
+                         marginTop:this.element.style.margin_top,
+                         marginBottom:this.element.style.margin_bottom,
+                         textDecoration:this.element.style.underline===true?'underline':'none',
+                         fontSize:this.element.style.font_size+"px",
+                         fontWeight:this.element.style.font_weight,
+                         color:this.element.style.text_color,
+                         backgroundColor:this.element.image_data===null?this.element.style.back_color:undefined,
+                         //borderRadius:this.element.style.border_radius+"px",
+                         whiteSpace:'pre',
+                    }
+               }
+               className='_page_element_text_class'
+               >
+                 {this.element.image_data!==null?this.element.image_data.map((image, index) => (
+                                                  <img src={image['data_url']}
+                                                  style={{
+                                                       width:this.element.style.image_width+"%",
+                                                       height:this.element.style.image_height+"%",
+                                                       borderRadius:this.element.style.border_radius+"px",
+
+                                                  }}
+                                                  ></img>   
+                                                  )):<div>Image element</div>}
+               </div>
+);
+     }
+
      _render_text_element(){ 
                     return(
                                                   
@@ -151,6 +172,7 @@ export default class elementRender{
                                                             marginBottom:this.element.style.margin_bottom,
                                                             textDecoration:this.element.style.underline===true?'underline':'none',
                                                             fontSize:this.element.style.font_size+"px",
+                                                            fontWeight:this.element.style.font_weight,
                                                             color:this.element.style.text_color,
                                                             backgroundColor:this.element.style.back_color,
                                                             borderRadius:this.element.style.border_radius+"px",

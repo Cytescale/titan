@@ -40,7 +40,7 @@
      background-color: #fff;
      border:1px solid #bdbdbd;
      height: 36px;
-     color: #fefefe;
+     color: #000;
      padding-left: 10px;
      margin-top: 12px;
 }
@@ -151,7 +151,7 @@ color: #0E98FF;
      background-color: #212121;
      border:1px solid #323232;
      height: 36px;
-     color: #fefefe;
+     color: #000;
 }
 
 .info_main_form_fld_sub_class{
