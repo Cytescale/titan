@@ -13,7 +13,6 @@
 width: 100%;
 position: relative;
 animation: slide-up 0.6s ease;
-
 }
 
 .alert-danger{
@@ -457,4 +456,18 @@ cursor: pointer;
         display: inline-flex;
           margin-top: 12px;
         width: 100%;
+   }
+   .element_drag_over_lay{
+        height: 200px;
+        width: 100%;
+        margin-top: 12px;
+        margin-bottom: 12px;
+        background-color: #9BE98F;
+   }
+   #font_choice_drop_menu{
+width: 100%;
+   }
+   .dropdown-menu {
+        max-height: 300px;
+        overflow-y: scroll;
    }

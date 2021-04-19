@@ -1,4 +1,4 @@
-import React, { useState,useEffect  } from 'react';
+import React, { useState,useEffect,Suspense } from 'react';
 import { renderToString } from 'react-dom/server'
 import Router from "next/router";
 import firebaseHelper from '../../../util/firebase_helper';
@@ -12,12 +12,8 @@ import portDriverCode from '../../../util/port_driver_code';
 import elementRender from '../../../util/element_render';
 import copy from "copy-to-clipboard";  
 import ImageUploading from 'react-images-uploading';
-
 import  _, { concat, repeat } from 'lodash';
 import Cookies from 'universal-cookie';
-
-
-
 import { TwitterPicker,ChromePicker} from 'react-color'
 
 const cookies  = new Cookies();
@@ -38,6 +34,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 
 
 var _ELEMENT_CORE_ARRAY = [];
+var  RENDER_ELEMENT_ARRAY = [];
 var _PAGE_ID = null;
 var _VIEW_ID = null;
 var _PAGE_CODE = '';
@@ -45,19 +42,83 @@ var _GEN_CODE ='';
 var _PRIVEW_GEN_CODE = '';
 var _BACK_DATA = null;
 
+const FONT_FAMILY_NAMES = [
+     'Limelight',
+     'Lexend',
+     'Abril Fatface',
+     'Comfortaa',
+     'Varela Round',
+     'Teko',
+     'Bebas Neue',
+     'Lobster',
+     'Josefin Sans',
+     'Quicksand',
+     'Dela Gothic One',
+     'Nunito',
+     'Raleway',
+     'Poppins',
+     'Montserrat',
+     'Antonio',
+     'Zen Dots',
+     'Dancing Script',
+     'Pacifico',
+     'Prompt',
+     'Questrial',
+     'Fredoka One',
+     'Righteous',
+     'Cinzel',
+     'Orbitron',
+     'Playfair Display SC',
+     'DM Serif Display',
+     'Monoton',
+     'Pirata One',
+     'Julius Sans One',
+     'Alata',
+     'Varela',
+     'Pinyon Script',
+     'Reem Kufi',
+     'Alegreya Sans SC',
+     'Michroma',
+     'Sen',
+     'Cinzel Decorative',
+     'Charm',
+     'Marcellus SC',
+     'Allerta Stencil',
+     'Rozha One',
+     'Rye',
+     'Copse',
+     'Merienda One',
+     'Calligraffitti',
+     'UnifrakturMaguntia',
+     'Bowlby One',
+     'Rammetto One',
+     'Cherry Cream Soda',
+     'Coiny',
+     'UnifrakturCook',
+     'Bellota',
+     'Chango',
+     'Lexend Exa',
+     'Metal Mania',
+     'Lexend Mega',
+     'Lexend Giga',
+     'Stalinist One',
+     'Lexend Peta',
+     'Nova Cut'
+]
 
 var STLYE_ELEMENT_TEXT ={
      margin:0,
-     margin_top:0,
+     margin_top:12,
      margin_bottom:0,
      padding_right:0,
-     padding_left:20,
-     padding_top:20,
-     padding_bottom:20,
+     padding_left:0,
+     padding_top:0,
+     padding_bottom:0,
      padding:0,
      border_radius:0,
      border_width:2,
      bordered:false,
+     font_family:'Poppins',
      border_color:'#000',
      back_color:'#fff',
      text_color:'#000',
@@ -95,7 +156,6 @@ class backgrounClass{
           }
      }
 }
-
 class notiClass{
      constructor(txt,type,dura){
           this.closed = false;
@@ -104,8 +164,6 @@ class notiClass{
           this.dura = dura;
      }
 }
-
-
 class _Element_Video_Youtube{
    
      constructor(in_style){
@@ -114,11 +172,11 @@ class _Element_Video_Youtube{
           this.element_type_id = 4;
           this.element_id =_ELEMENT_CORE_ARRAY.length,
           this.data ='';
+          this.element_render_class_name = ''
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
     
 }
-
 class _Element_Link{
      constructor(text,url,in_style){
           this.deleted = false;
@@ -131,8 +189,6 @@ class _Element_Link{
      }
      
 }
-
-
 class _Element_Image{
      constructor(in_style){
           this.deleted = false;
@@ -156,6 +212,8 @@ class _Element_Text{
      
   
 }
+
+
 
 
 import UserClass from '../../../util/User';
@@ -293,7 +351,6 @@ export default class LandAct extends React.Component{
                               linerString += tr;
                          })
                          linerString += ')'
-                         console.log(linerString);
                          set_style = {
                               backgroundImage:linerString,
                               backgroundSize:'100%',
@@ -771,6 +828,16 @@ export default class LandAct extends React.Component{
                     </Popover>)     
           }
      }
+     _draw_font_family(element_id){
+          let res = []
+               FONT_FAMILY_NAMES.map((e,ind)=>{
+                 res.push(<Dropdown.Item as="button" onClick={()=>{
+                    _ELEMENT_CORE_ARRAY[element_id].style.font_family = e;
+                    this.forceUpdate();
+                 }}>{e}</Dropdown.Item>);
+               })
+          return res;
+     }
      _popover_txt_overlay(element_id){
      if(_ELEMENT_CORE_ARRAY[element_id]!==undefined&&_ELEMENT_CORE_ARRAY[element_id]!==null){
           return(          
@@ -821,6 +888,10 @@ export default class LandAct extends React.Component{
                                    _ELEMENT_CORE_ARRAY[element_id].data  = e.target.value;
                                    this.forceUpdate();
                               }} />
+                                     <DropdownButton variant={'light'} id="font_choice_drop_menu" title={_ELEMENT_CORE_ARRAY[element_id].style.font_family}>
+                                        {this._draw_font_family(element_id)}
+                                     </DropdownButton>
+
                                      <div className='ele_pop_bdy_txt'>Font Size</div>    
                                         <div className='ele_pop_bdy_slid_cont'>
                                         <div className='ele_pop_bdy_slid_hold'>
@@ -1129,7 +1200,7 @@ export default class LandAct extends React.Component{
                                                        <button className='pop_txt_head_rght_cont_del_swt_butt'
                                                         onClick={()=>{
                                                             _ELEMENT_CORE_ARRAY[element_id].deleted = true;
-                                                            this._add_notification("Text element deleted","danger",1000);
+                                                            this._add_notification("Link element deleted","danger",1000);
                                                             $('.popover_txt_class').hide();
                                                             this.forceUpdate();           
                                                        }}>
@@ -1445,17 +1516,41 @@ export default class LandAct extends React.Component{
           return(
           <Popover id="popover-basic" className='popover_txt_class'>
           <div className='ele_pop_main_bdy'>
-                    <div className='pop_txt_head_main_cont'>
-                              <div className='pop_txt_head_txt'>Video player</div>
-                              <div className='pop_txt_head_rght_cont'>
-                              <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
-                                        _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
-                                        this.forceUpdate();
-                                   }} />
-                                   <label for="switch">Toggle</label>
-                              </div>
-                    </div>
-                    <div className='ele_pop_bdy'>
+          <div className='pop_txt_head_main_cont'>
+                                   <div className='pop_txt_head_txt'>Embeded</div>
+                                        <div className='pop_txt_head_rght_cont'>
+                                        <div className='pop_txt_head_rght_cont_swt'>
+                                        <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
+                                             _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                             this.forceUpdate();
+                                        }} />
+                                        <label for="switch" className='ele_pop_elem_lab'>Toggle</label>
+                                        </div>
+                                        <div className='pop_txt_head_rght_cont_del_swt'>
+                                                  <button className='pop_txt_head_rght_cont_del_swt_butt'
+                                                   onClick={()=>{
+                                                       _ELEMENT_CORE_ARRAY[element_id].deleted = true;
+                                                       this._add_notification("Emeded element deleted","danger",1000);
+                                                       $('.popover_txt_class').hide();
+                                                       this.forceUpdate();           
+                                                  }}>
+                                                  <svg
+                                                  className='pop_txt_head_rght_cont_del_swt_ico'
+                                                  viewBox='0 0 512 512'>
+                                                  <path d='M112 112l20 320c.95 18.49 14.4 32 32 32h184c17.67 0 30.87-13.51 32-32l20-320' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M80 112h352'/><path d='M192 112V72h0a23.93 23.93 0 0124-24h80a23.93 23.93 0 0124 24h0v40M256 176v224M184 176l8 224M328 176l-8 224' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/>
+                                                  </svg>
+                                                  </button>
+                                        </div>
+                                   
+                                   </div>
+
+
+
+                         </div>
+                         <div className='ele_pop_bdy'>
+                         <Tabs defaultActiveKey="text" id="uncontrolled-tab-example">
+                         <Tab eventKey="text" title="Data">
+                         <div>
                          <div className='ele_pop_bdy_txt'>Embeded Link</div>
                          <input 
                               type='url'
@@ -1465,9 +1560,156 @@ export default class LandAct extends React.Component{
                          onChange={(e)=>{
                               _ELEMENT_CORE_ARRAY[element_id].data = e.target.value;
                               this.forceUpdate();
-                         }} />
-                              
-                    </div>
+                         }} />     
+                                   <div className='ele_pop_bdy_txt'>Border raidus</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.border_radius =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.border_radius =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   </div>
+                         </Tab>
+                         <Tab eventKey="pos" title="Position">
+
+
+                                   <div className='ele_pop_bdy_txt'>Margin top</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_top =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_top =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Margin bottom</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding left</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_left =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_left =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding right</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_right =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_right =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding top</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_top =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_top =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+                                   <div className='ele_pop_bdy_txt'>Padding bottom</div>    
+                                   <div className='ele_pop_bdy_slid_cont'>
+                                        <div className='ele_pop_bdy_slid_hold'>
+                                        <Slider
+                                        orientation="horizontal"
+                                        tooltip={false}
+                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                        onChange={(val) =>{
+                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =val;   
+                                             this.forceUpdate();
+                                        }}
+                                        />
+                                        </div>
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                   onChange={(e)=>{
+                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =e.target.value;   
+                                        this.forceUpdate();
+                                   }}
+                                   />
+                                   </div>
+
+                         </Tab>
+                         </Tabs>
+                         </div>
           </div>
           </Popover>)     
      }
@@ -1511,21 +1753,10 @@ export default class LandAct extends React.Component{
                 <Button variant={'light'} className='land_act_elem_add_butt' onClick={this._add_image_element}>
                          <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Image</title><rect x='48' y='80' width='416' height='352' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><circle cx='336' cy='176' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path d='M304 335.79l-90.66-90.49a32 32 0 00-43.87-1.3L48 352M224 432l123.34-123.34a32 32 0 0143.11-2L464 368' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                          Image</Button>
-                </div>
-                <div className='land_act_elem_add_cont'>
-                <Button variant={'light'} className='land_act_elem_add_butt'>
-                         <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Logo Twitter</title><path d='M496 109.5a201.8 201.8 0 01-56.55 15.3 97.51 97.51 0 0043.33-53.6 197.74 197.74 0 01-62.56 23.5A99.14 99.14 0 00348.31 64c-54.42 0-98.46 43.4-98.46 96.9a93.21 93.21 0 002.54 22.1 280.7 280.7 0 01-203-101.3A95.69 95.69 0 0036 130.4c0 33.6 17.53 63.3 44 80.7A97.5 97.5 0 0135.22 199v1.2c0 47 34 86.1 79 95a100.76 100.76 0 01-25.94 3.4 94.38 94.38 0 01-18.51-1.8c12.51 38.5 48.92 66.5 92.05 67.3A199.59 199.59 0 0139.5 405.6a203 203 0 01-23.5-1.4A278.68 278.68 0 00166.74 448c181.36 0 280.44-147.7 280.44-275.8 0-4.2-.11-8.4-.31-12.5A198.48 198.48 0 00496 109.5z'/></svg>
-                         Tweet</Button>
-                </div>
-                <div className='land_act_elem_add_cont'>
-                <Button variant={'light'} className='land_act_elem_add_butt'>
-                         <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Play Skip Forward</title><path d='M112 111v290c0 17.44 17 28.52 31 20.16l247.9-148.37c12.12-7.25 12.12-26.33 0-33.58L143 90.84c-14-8.36-31 2.72-31 20.16z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M400 80v352'/></svg>
-                         Audio player</Button>
-                </div>         
+                </div>        
                 <div className='land_act_elem_add_cont'>
                     <Button variant={'light'} className='land_act_elem_add_butt'  onClick={this._add_video_ytube_element}>
-                         <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Videocam</title><path d='M374.79 308.78L457.5 367a16 16 0 0022.5-14.62V159.62A16 16 0 00457.5 145l-82.71 58.22A16 16 0 00368 216.3v79.4a16 16 0 006.79 13.08z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M268 384H84a52.15 52.15 0 01-52-52V180a52.15 52.15 0 0152-52h184.48A51.68 51.68 0 01320 179.52V332a52.15 52.15 0 01-52 52z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
-                         Video Player</Button>
+                         Embeded</Button>
                </div>
               </Modal.Body>
             </Modal>
@@ -1568,31 +1799,31 @@ export default class LandAct extends React.Component{
           }
     }
 
+    _embeded_element_render_classback(element_indx,str){
+         _ELEMENT_CORE_ARRAY[element_indx].element_render_class_name = str; 
+    }
      _render_component(){
-          let res = [];
-          res.push(new elementRender()._render_profile_element());
-
+          RENDER_ELEMENT_ARRAY = [];
+       RENDER_ELEMENT_ARRAY.push(new elementRender()._render_profile_element());
           if(_ELEMENT_CORE_ARRAY!==null){
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
-                         if(element.deleted===false){
-                         res.push(new elementRender(element,this._get_popover(element.element_type_id,element.element_id))._render_element_overlay());
+                         if(element.deleted===false){ 
+                              RENDER_ELEMENT_ARRAY.push(new elementRender(element,this._get_popover(element.element_type_id,element.element_id))._render_element_overlay(this._embeded_element_render_classback));
                          }
                }
           );
           }
           if(_ELEMENT_CORE_ARRAY.length==0){
-               res.push(
+               RENDER_ELEMENT_ARRAY.push(
                     <div className='_insrt_new_ele_inf_cont'>
                          <svg className='_insrt_new_ele_inf_cont_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
                          Add new elements , Go crazy 😄
                     </div>
                )
           }
-
-          res.push(new elementRender()._render_foot_element());
-
-          return res;
+          RENDER_ELEMENT_ARRAY.push(new elementRender()._render_foot_element());
+          return RENDER_ELEMENT_ARRAY;
      }
 
      _get_page_type_render(element){
@@ -1668,10 +1899,9 @@ export default class LandAct extends React.Component{
      componentDidMount(){  
           firebaseHelp._init_user_check(null,process.env.APP_NAME+'src/login');
           this._init_land_data();
-          console.log();
-          
      }
-     render(){          
+
+     render(){               
      return(
           this.state.loading===true?
           <LoaderHelper/>:
@@ -1740,10 +1970,9 @@ export default class LandAct extends React.Component{
                                         }}
                                         ><svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Copy</title><rect x='128' y='128' width='336' height='336' rx='57' ry='57' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path d='M383.5 128l.5-24a56.16 56.16 0 00-56-56H112a64.19 64.19 0 00-64 64v216a56.16 56.16 0 0056 56h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg></button>
                               </div>
-
-
-                         <div className='land_act_creat_sub_cont'>
-                              {this._render_component()}
+                                        
+                         <div className='land_act_creat_sub_cont'>         
+                                   {this._render_component()}
                          </div>
                          </div>
                     </div>

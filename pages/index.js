@@ -11,6 +11,8 @@ import LoaderHelper from './src/loader_helper';
 
 var User = new UserClass();
 const firebaseHelp = new firebaseHelper(User);
+firebaseHelp._init_firebase_app();
+firebaseHelp._app_init_auth_state_inti();
 export default class Home extends React.Component{
   constructor(props){
     super(props);

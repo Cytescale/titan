@@ -1,9 +1,9 @@
-import React, { useState,useEffect  } from 'react';
-
+"use strict";
+import React, { useState,useEffect,Suspense  } from 'react';
 import { Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
 import Embed from 'react-embed';
-
-
+import { renderToString } from 'react-dom/server'
+var tslib_1 = require("tslib");
 
 export default class elementRender{
      constructor(element,overlay){
@@ -14,19 +14,19 @@ export default class elementRender{
      _update_element(new_element){
           this.element = new_element;
      }
-     _get_type_element(){
+     _get_type_element(callback){
           switch(this.element.element_type_id){
                case 0:{
-                    return(this._render_text_element(this.element))   
+                    return(this._render_text_element(callback))
                }
                case 1:{
-                    return(this._render_link_element(this.element))                
+                    return(this._render_link_element(callback))
                }
                case 2:{
-                    return(this._render_image_element(this.element))                
+                    return(this._render_image_element(callback))
                }
                case 4:{
-                    return(this._render_vid_yout_element(this.element))
+                    return(this._render_vid_yout_element(callback))
                }
                default:{
                     break;
@@ -35,52 +35,79 @@ export default class elementRender{
 
 
      }
-     _render_element_overlay(){
-          
+     _render_element_overlay(callback){
+
           return(
-               <OverlayTrigger 
-               trigger="click" 
+               <OverlayTrigger
+               trigger="click"
                placement="right"
-               rootClose={true} 
+               rootClose={true}
                overlay={this.overlay}
                >
-                     <div className="_page_element_main_bdy" >
-                        <div className="_page_element_main_bdy" style={{opacity:this.element.enabled===true?1:0.6,}}>
-                                   <div>
-                                        {this._get_type_element(this.element)}
+                     <div  className="_page_element_main_bdy" >
+                                        {this._get_type_element(callback)}
                                         <div className="_page_element_overlay" ></div>
-                                   </div>
-                              </div>
                     </div>
                </OverlayTrigger>
           )
      }
-     _render_vid_yout_element(){
+
+     _render_vid_yout_element(callback){
           return(
-                         <div 
-                         style={
+                         <div style={
                               {
-                                   margin:this.element.style.margin+"px",
+                                   overflow:'hidden',
+                                   textAlign:this.element.style.text_align,
+                                   borderStyle:this.element.style.bordered===true?'solid':'none',
+                                   borderWidth:this.element.style.border_width,
+                                   borderColor:this.element.style.border_color,
                                    padding:this.element.style.padding+"px",
+                                   paddingTop:this.element.style.padding_top,
+                                   paddingBottom:this.element.style.padding_bottom,
+                                   paddingRight:this.element.style.padding_right,
+                                   paddingLeft:this.element.style.padding_left,
+                                   margin:this.element.style.margin+"px",
+                                   marginTop:this.element.style.margin_top,
+                                   marginBottom:this.element.style.margin_bottom,
                                    fontSize:this.element.style.font_size+"px",
-                                   backgroundColor:this.element.style.back_color,
+                                   borderRadius:this.element.style.border_radius+"px",
+                                   whiteSpace:'pre',
                               }
                          }
+                         id={`_page_element_embd_id_`+this.element.element_id}
                          className='_page_element_text_class'
                          >
-                         {this.element.data.length>0?<Embed url={this.element.data} className='_page_element_vid_class'/>:<div className='_page_element_vid_empt_class'>Enter video player url</div>}    
+                         {this.element.data.length>0?
+                         <Embed url={this.element.data} 
+                         className='_page_element_vid_class'
+                         children={{child:true}}
+                         render={
+                              (Block, id, props, state)=>{          
+                                        console.log(JSON.stringify(Block)+"\n\n"+JSON.stringify(props))
+                                        var renderVoid = function (error) { return props.renderVoid(props, state, error); };
+                                        return (React.createElement(Block, tslib_1.__assign({}, state.url, { id: id, width: props.width, isDark: props.isDark, renderWrap: props.renderWrap, renderVoid: renderVoid })));
+                              }
+                         }
+                         renderVoid={(_b)=>{
+                              console.log(_b);
+                              return(<div className='_page_element_vid_empt_class'>False embeded url</div>)
+                         }}
+                         renderWrap={(_a)=>{          
+                              callback(this.element.element_id,`_page_element_embd_id_`+this.element.element_id)
+                              console.log("\n\n"+JSON.stringify(_a.props)+"\n\n");
+                              return(_a)}}
+                         />:
+                         <div className='_page_element_vid_empt_class'>Enter embeded link</div>}
                          </div>
-              
           );
      }
-
-
-     _render_link_element(){
+     _render_link_element(callback){
           return(
-               <a href={this.element.element_url!==null?this.element.element_url:'#'}>                              
-               <div 
+               <a href={this.element.element_url!==null?this.element.element_url:'#'}>
+               <div
                style={
                     {
+                         overflow:'hidden',
                          textAlign:this.element.style.text_align,
                          borderStyle:this.element.style.bordered===true?'solid':'none',
                          borderWidth:this.element.style.border_width,
@@ -102,19 +129,21 @@ export default class elementRender{
                }
                className='_page_element_text_class'
                >
-                
+
                     {this.element.data}
-                    
+
                </div>
                </a>
                );
      }
 
-     _render_image_element(){
-          return(                                  
-               <div 
+     _render_image_element(callback){
+          return(
+               <div
+            
                style={
                     {
+                         overflow:'hidden',
                          textAlign:this.element.style.text_align,
                          borderStyle:this.element.style.bordered===true?'solid':'none',
                          borderWidth:this.element.style.border_width,
@@ -146,18 +175,19 @@ export default class elementRender{
                                                        borderRadius:this.element.style.border_radius+"px",
 
                                                   }}
-                                                  ></img>   
+                                                  ></img>
                                                   )):<div>Image element</div>}
                </div>
 );
      }
 
-     _render_text_element(){ 
+     _render_text_element(callback){
                     return(
-                                                  
-                                                  <div 
+
+                                                  <div
                                                   style={
                                                        {
+                                                            overflow:'hidden',
                                                             textAlign:this.element.style.text_align,
                                                             borderStyle:this.element.style.bordered===true?'solid':'none',
                                                             borderWidth:this.element.style.border_width,
@@ -168,6 +198,7 @@ export default class elementRender{
                                                             paddingRight:this.element.style.padding_right,
                                                             paddingLeft:this.element.style.padding_left,
                                                             margin:this.element.style.margin+"px",
+                                                            fontFamily:this.element.style.font_family,
                                                             marginTop:this.element.style.margin_top,
                                                             marginBottom:this.element.style.margin_bottom,
                                                             textDecoration:this.element.style.underline===true?'underline':'none',
@@ -181,9 +212,9 @@ export default class elementRender{
                                                   }
                                                   className='_page_element_text_class'
                                                   >
-                                                  
+
                                                        {this.element.data}
-                                                  
+
                                                   </div>
                        );
      }
@@ -196,40 +227,40 @@ export default class elementRender{
                              Footer
                         </div>
                         <div className="_page_element_head_rgt_bdy">
-                      
+
                         </div>
                         </div> */}
                              <div>
-                                       <div 
+                                       <div
                                        className='_page_element_footer_main_bdy'
-                                       >     
+                                       >
                                         Made with ♥️ by Titan
                                        </div>
-                             
+
                              </div>
                    </div>
                     );
      }
      _foot_code(){
           return(
-                             
-                                        <div 
+
+                                        <div
                                        className='_page_element_footer_main_bdy'
-                                       >     
+                                       >
                                         Made with ♥️ by Titan
                                        </div>
-                             
+
           )
      }
      _render_profile_element(){
                     return(
                          <div className='_page_element_main_bdy'>
                                    <div>
-                                             <div 
+                                             <div
                                              className='_page_element_profile_main_bdy'
                                              >
-                                                  
-                                                  
+
+
                                                   <div className='_page_element_profile_txt_main_cont'>
                                                   <div className='_page_element_profile_nam_bdy'>
                                                             Hola,
@@ -244,8 +275,8 @@ export default class elementRender{
 
 
                                                   <div  className='_page_element_profile_pic_bdy'>
-                                                  <img src='http://simpleicon.com/wp-content/uploads/account.png' 
-                                                  className='_page_element_profile_pic_bdy_ico'></img>                                   
+                                                  <img src='http://simpleicon.com/wp-content/uploads/account.png'
+                                                  className='_page_element_profile_pic_bdy_ico'></img>
                                                   </div>
 
                                              </div>
