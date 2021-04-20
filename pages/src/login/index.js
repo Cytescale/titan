@@ -108,11 +108,14 @@ export default class LoginAct extends React.Component{
                     background-image: linear-gradient(#e0e0e0 .1em, transparent .1em), linear-gradient(90deg, #e0e0e0 .1em, transparent .1em);
                     background-size: 1em 1em; 
                     
+background-image: linear-gradient(45deg, #212121 .1em, transparent .1em);
+background-size: 1em 1em; 
+
                     */}
                     <div className='login_act_main_form_body'>
                               <div className='login_act_main_form_body_sub'>
                                    <div className='login_act_ext'>
-                                        
+                                        <div className='login_act_ext_cir'></div>
                                         </div>
                                    <div className='login_act_sub_form_body'>
                                    <div className='login_act_tit_cont'>Already a family member?</div>
@@ -131,7 +134,7 @@ export default class LoginAct extends React.Component{
                                    
                                    </div>
                                    <div className='login_act_sgnup_cont'>
-                                        <a href='/src/signup' className='login_act_sgnup_cont_lnk'>Create Account</a>
+                                        <a href='/src/signup' className='login_act_sgnup_cont_lnk'>Create account now</a>
                                    </div>
                               
                               </div>
