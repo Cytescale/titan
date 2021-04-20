@@ -90,12 +90,26 @@ z-index: 999;
      color: #000;
      
 }
+@keyframes deco_amim {
+     from {
+          transform: rotate(4deg);
+     }
+     to {
+          transform: rotate(-4deg);
+     }
+   }
 .login_act_tit_deco{
      width: 100%;
      height: auto;
      display: inline-flex;
      align-items: center;
      transform: rotate(3deg);
+     animation-name: deco_amim;
+     animation-delay: 2s;
+     animation-timing-function: ease-in-out;
+     animation-duration: 2s;
+     animation-iteration-count: infinite;
+     animation-direction:alternate-reverse;
 
 }
 .login_act_tit_deco_cir{
