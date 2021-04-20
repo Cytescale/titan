@@ -1,59 +1,199 @@
+.login_act_main_cont{
+width: 100%;
+height: 100%;
+min-height: 100vh;
+display: inline-flex;
+align-items: center;
+flex-direction: row;
+flex: 1;
+padding-top: 0px;
+padding-bottom: 0px;
+}
+.login_act_tit_main_cont{
+flex: 1;
+line-height: 90px;
+height: 100vh;
+display: flex;
+padding-left: 72px;
+align-items: center;
+position: relative;
+overflow: hidden;
+background-image: linear-gradient(#f9f9f9 .1em, transparent .1em), linear-gradient(90deg, #f9f9f9 .1em, transparent .1em);
+background-size: 1em 1em; 
+border-right: 1px solid #e0e0e0;
+}
+
+.login_act_main_cont_bg_txt{
+     position: absolute;
+     font-size: 132px;
+     font-weight: 700;    
+     line-height: 100%;
+     
+     right: 0;
+     bottom: 0;
+     color: #f8f8f8;
+     margin-right: -62px;
+}
+
+.login_act_main_form_body_sub{
+     width: 100%;
+}
+.login_act_main_form_body{
+     width: 450px;
+     border-radius: 8px;
+     height: 100%;
+
+     min-height: 100vh;
+     display: flex;
+     align-items: center;
+     position: relative;
+    
+}    
+.login_act_ext{
+     width: 100%;
+     height: 72px;
+     position: absolute;
+     right: 0;
+     z-index: 999;
+     top: 0;
+     background-color: #f8f8f8;
+
+     border-bottom: 1px solid #e0e0e0;
+     border-left: 1px solid #e0e0e0;
+}
+
+.login_act_tit{
+     font-family: inter;
+font-size: 82px;
+font-weight: 700;
+background: -webkit-linear-gradient(180deg, #FFD644 0%, #FFA73F 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+z-index: 999;
+}
+
+.login_act_sub_tit{
+     background: -webkit-linear-gradient(180deg, #000 0%, #000 100%);
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+     font-size: 62px;    
+     font-weight: 600;     
+}
+
 .login_act_main_body{
-     height: 100vh;
-     width: 100wh;
+     height: 100%;
+     width: 100%;
+     min-height: 100vh;
      justify-content: center;
      align-items: center;
      display: flex;
      color: #000;
-     background-color: #fff;
+     
+}
+.login_act_tit_deco{
+     width: 100%;
+     height: auto;
+     display: inline-flex;
+     align-items: center;
+     transform: rotate(3deg);
+
+}
+.login_act_tit_deco_cir{
+     width: 22px;
+     height: 22px;
+     background: rgba(133, 203, 255, 0.51);
+     border-radius: 100px;
+     z-index: 10;
+}
+.login_act_tit_deco_bar{
+     width: auto;
+     flex: 1;
+     margin-left: -12px;
+     margin-right: -12px;
+     height: 17px;
+
+     background-color: #f1f1f1;
 }
 .login_act_main_head_body{
      position: fixed;
      top: 0;
-     height: 62px;
+     height: 72px;
      width: 100%;
-     font-size: 22px;
      text-align: center;
-     padding-top: 12px;
-     box-shadow: 0px 3px 6px #525252;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background-color: #fff;
+     z-index: 40;
+     border-bottom: 1px solid #e0e0e0;
 }
-.login_act_main_form_body{
-     width: 324px;
-     border-radius: 8px;
-     background-color: #fefefe;
-     border: 1px solid #e0e0e0;
-     padding: 12px;
+.login_act_foot_main_cont{
+     position: fixed;
+     bottom: 0;
+     height: 72px;
+     width: 100%;
+     text-align: center;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background-color: #fff;
+     border-top: 1px solid #e0e0e0;
 }
+
+.login_act_foot_sys_cont{
+     display: inline-flex;
+     align-items: center;
+     font-size: 14px;
+     color: #323232;
+}
+.login_act_foot_ver_cont{
+     font-size: 14px;
+     color: #323232;
+     margin-left: 22px;
+}
+.login_act_foot_sys_indi{
+width: 12px;
+margin-left: 7px;
+height: 12px;     
+background: #96FF86;
+box-shadow: 0px 0px 6px #4EFF33;
+border-radius: 66px;
+}
+
+.login_act_sub_form_body{
+     border-bottom: 1px solid #e0e0e0;
+     padding: 24px;
+     padding-left: 42px;
+     padding-bottom: 42px;
+     padding-right: 72px;
+}
+
 .login_act_main_unm_txt{
-     width: 300px;
-     border-radius: 8px;
+     flex: 1;
+     width: 100%;
+     min-width: 100%;
+     font-family: 'Courier New', Courier, monospace;
+     font-weight: 500;
+     border-radius: 4px;
      background-color: #fff;
-     border:1px solid #bdbdbd;
-     height: 36px;
+     border:1px solid #e0e0e0;
+     height: 42px;
      color: #000;
-     padding-left: 10px;
-}
-.login_act_main_pass_txt{
-     width: 300px;
-     height: 36px;
-     border-radius: 8px;
-     background-color: #fff;
-     border:1px solid #bdbdbd;
-     height: 36px;
-     color: #000;
-     padding-left: 10px;
-     margin-top: 12px;
+     
+     padding-left: 10px; 
+     margin-bottom: 12px;
 }
 
 .login_act_main_sub_butt{
      width: 100%;
      margin-top: 12px;
-     height: 32px;
+     height: 42px;
      border-style: none;
      border-radius: 8px;
      cursor: pointer;
      color:#000;
-     background-color: #A9EB9F;
+     font-family: inter;
+     background: linear-gradient(180deg, #96FFA7 0%, #7BF58F 95.06%);
   
 }
 .login_act_or_txt{
@@ -67,11 +207,18 @@
      height: 42px;
      background-color: #0E98FF;
      border-style: none;
-     border-radius: 12px;
+     border-radius: 4px;
      font-size: 16px;
-     font-weight: 600;
+     font-weight: 500;
      color:#fefefe;
      cursor: pointer;
+}
+.login_act_gog_butt_ico{
+     width: 20px;
+     height: 20px;
+     margin-right: 7px;
+     color: #fff;
+
 }
 .login_act_for_lnk{
      padding-top: 10px;
@@ -86,22 +233,31 @@
 }
 .login_act_sgnup_cont{
 text-align: center;
-padding-top: 8px;
-padding-bottom: 8px;
-margin-top: 10px;
+padding-top: 12px;
+padding-bottom: 12px;
 color: #0E98FF;
 
+border-bottom: 1px solid #e0e0e0;
 }
+
+.login_act_sgnup_cont_lnk{
+     width: 100%;
+     height: 100%;
+     
+}
+.login_act_sgnup_cont_lnk:hover{
+     text-decoration: none;
+}
+
 .login_act_tit_cont{
      padding-top: 10px;
      padding-bottom: 5px;
      margin-bottom: 10px;
      width: 100%;
-     font-weight: 700;
-     font-family: quicksand;
+     font-weight: 500;
+     font-size: 14px;
+     color: #727272;
      text-align: center;
-     font-size: 19px;
-     color: #000;
 }
 
 .app_ver_cont{

@@ -19,13 +19,14 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-// firebaseHelp._init_firebase_app();
+ firebaseHelp._init_firebase_app();
 // firebaseHelp._app_init_auth_state_inti();
 function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />
 }
 
 
+//https://titan-  -cytescale.vercel.app/
 //access token : 2lXzwPH77uwrb15GeprylE3s
 
 export default MyApp
