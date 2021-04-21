@@ -13,8 +13,8 @@ const firebaseHelp = new firebaseHelper();
 
 
 console.log("Hey there 👋");
-
-if(process.env.NEXT_HOSTED===true){
+console.log(process.env.NEXT_HOSTED);
+if(process.env.NEXT_HOSTED==true){
   Sentry.init({
     dsn: "https://d292d344ba224f96a8ad06e72938eaba@o574764.ingest.sentry.io/5726162",
     integrations: [new Integrations.BrowserTracing()],
