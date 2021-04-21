@@ -89,16 +89,12 @@ export default class firestoreHelper{
                data: qs.stringify(send_data)
              })
              .then(res=>{
-                    if(res.data.errBool===false){
-                         _PAGE_DATA = res.data;
-                    }
-                    else{
-                         _PAGE_DATA = null;
+                    if(res.data!==null && res.status === 200){
+                              _PAGE_DATA = res.data;
                     }
              })
              .catch(err=>{
                   console.log(err);
-                  _PAGE_DATA = null;
              });
              return _PAGE_DATA;
      }

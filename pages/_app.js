@@ -9,9 +9,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
 import firebaseHelper from '../util/firebase_helper';
-import UserClass from '../util/User';
-var User = new UserClass();
-const firebaseHelp = new firebaseHelper(User);
+const firebaseHelp = new firebaseHelper();
 
 Sentry.init({
   dsn: "https://d292d344ba224f96a8ad06e72938eaba@o574764.ingest.sentry.io/5726162",
@@ -19,9 +17,10 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
- firebaseHelp._init_firebase_app();
-// firebaseHelp._app_init_auth_state_inti();
-function MyApp({ Component, pageProps }) {
+console.log("Hey there 👋");
+firebaseHelp._init_firebase_app();
+firebaseHelp._app_init_auth_state_inti();
+function start({ Component, pageProps }) { 
   return <Component {...pageProps} />
 }
 
@@ -29,4 +28,4 @@ function MyApp({ Component, pageProps }) {
 //https://titan-  -cytescale.vercel.app/
 //access token : 2lXzwPH77uwrb15GeprylE3s
 
-export default MyApp
+export default start

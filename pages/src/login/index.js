@@ -1,17 +1,16 @@
-import React, { useState,useEffect  } from 'react';
-import Router from "next/router";
+"use strict"
+import React from 'react';
 import firebaseHelper from '../../../util/firebase_helper';
 import UserClass from '../../../util/User';
-import {Spinner} from 'react-bootstrap';
-
+import FooterClass from '../utils/footer';
 
 var User = new UserClass();
 const firebaseHelp = new firebaseHelper(User);
-export default class LoginAct extends React.Component{
 
+export default class LoginAct extends React.Component{
      constructor(props){
           super(props);  
-          this.state = {loading:false,errCode:0,errMess:null,eml:'',pass:''};
+          this.state = {loading:false,errCode:0,errMess:null,eml:undefined,pass:undefined};
           this._loginActGoogleSignIn = this._loginActGoogleSignIn.bind(this);
           this.handleEmailFormSubmit = this.handleEmailFormSubmit.bind(this);
           this.handleEmlChange = this.handleEmlChange.bind(this);
@@ -21,44 +20,32 @@ export default class LoginAct extends React.Component{
           
      }
 
-     _set_err(code,mess){
-          this.setState({errCode:code,errMess:mess});
-     }
-     _set_load_bool(bool){
-          this.setState({loading:bool});
-     }
+     _set_err(code,mess){this.setState({errCode:code,errMess:mess});}
+     _set_load_bool(bool){this.setState({loading:bool});}
+     componentDidMount(){firebaseHelp._init_user_check(process.env.NEXT_PUBLIC_HOST+'src/land',null);}
+     handleEmlChange(event) {this.setState({eml: event.target.value});}
+     handlePassChange(event) {this.setState({pass: event.target.value});}
 
-     componentDidMount(){
-          firebaseHelp._init_user_check(process.env.NEXT_PUBLIC_HOST+'src/land',null);
-     }
-
-     handleEmlChange(event) {
-          this.setState({eml: event.target.value});
-     }
-     handlePassChange(event) {
-          this.setState({pass: event.target.value});
-     }
      handleEmailFormSubmit(event){
           event.preventDefault();
           this._set_load_bool(true);
           if(this.state.eml!==''&&this.state.pass!==''){
-               if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.state.eml))
-               {
+               if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.state.eml)){
                     this._loginActEmailSignIn();
                }
                else{
                     this._set_err(2,"Enter valid email address");
-                    
                     this._set_load_bool(false);
                }
-          }else{
+          }
+          else{
                this._set_err(1,"Enter all details");
                this._set_load_bool(false);
           }
      }
 
-     _loginActEmailSignIn(){
-          firebaseHelp._firebaseEmailSignInInit(this.state.eml,this.state.pass).then(res=>{
+     async _loginActEmailSignIn(){
+          await firebaseHelp._firebaseEmailSignInInit(this.state.eml,this.state.pass).then(res=>{
                if(res.err===true){
                     switch(res.errCode){
                          case "auth/user-not-found":{
@@ -70,7 +57,8 @@ export default class LoginAct extends React.Component{
                               break;
                          }
                          default:{
-
+                              this._set_err(1,"Error occured");
+                              break;
                          }
                     }
                     this._set_load_bool(false);
@@ -84,12 +72,11 @@ export default class LoginAct extends React.Component{
 
      render(){
      return(
+     <React.StrictMode>
        <div className='login_act_main_body'>
                     <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
                     <title>Titan login</title>     
-                    <div className='login_act_main_head_body'>
-                         <div className='land_act_head_tit_cont_logo'/>
-                    </div>
+                    <div className='login_act_main_head_body'><div className='land_act_head_tit_cont_logo'/></div>
                     <div className='login_act_main_cont'>
                     <div className='login_act_tit_main_cont'>
                               <div className='login_act_main_cont_bg_txt'>Plain<br/>And<br/>Easy<br/>For<br/>All</div>
@@ -104,14 +91,6 @@ export default class LoginAct extends React.Component{
                               </div>
 
                     </div> 
-                    {/* 
-                    background-image: linear-gradient(#e0e0e0 .1em, transparent .1em), linear-gradient(90deg, #e0e0e0 .1em, transparent .1em);
-                    background-size: 1em 1em; 
-                    
-background-image: linear-gradient(45deg, #212121 .1em, transparent .1em);
-background-size: 1em 1em; 
-
-                    */}
                     <div className='login_act_main_form_body'>
                               <div className='login_act_main_form_body_sub'>
                                    <div className='login_act_ext'>
@@ -120,9 +99,9 @@ background-size: 1em 1em;
                                    <div className='login_act_sub_form_body'>
                                    <div className='login_act_tit_cont'>Already a family member?</div>
                                    <form onSubmit={this.handleEmailFormSubmit}>
-                                   <div><input type='text' disabled={this.state.loading} placeholder='Email' value={this.state.eml} onChange={this.handleEmlChange}  className='login_act_main_unm_txt'/></div>
+                                   <div><input type='text' disabled={this.state.loading} placeholder='Email' value={this.state.eml} autoComplete='username'  onChange={this.handleEmlChange}  className='login_act_main_unm_txt'/></div>
                                    {this.state.errCode==2?<div className='login_act_err_cont'>{this.state.errMess}</div>:<span/>}
-                                   <div><input type='password' disabled={this.state.loading} placeholder='Password'  value={this.state.pass} onChange={this.handlePassChange} className='login_act_main_unm_txt'/></div>
+                                   <div><input type='password' disabled={this.state.loading} placeholder='Password'  autoComplete='current-password' value={this.state.pass} onChange={this.handlePassChange} className='login_act_main_unm_txt'/></div>
                                    {this.state.errCode==1?<div className='login_act_err_cont'>{this.state.errMess}</div>:<span/>}
                                    <div><a className='login_act_for_lnk' href='#'>Forgot password?</a></div>
                                    <div><input type='submit' value={this.state.loading===true?'Loading':'Login'} disabled={this.state.loading} className='login_act_main_sub_butt' ></input></div>
@@ -140,20 +119,10 @@ background-size: 1em 1em;
                               </div>
                     </div>
                     </div>
-                    <div className='login_act_foot_main_cont'> 
-                              <div className='login_act_foot_sys_cont'>
-                                        All systems nominal <div  className='login_act_foot_sys_indi'></div>
-                              </div>
-                              <div className='login_act_foot_ver_cont'>
-                                   Version: {process.env.DEV_VERSION}.Alpha
-                              </div>    
-                              <div className='login_act_foot_ver_cont'>
-                                   Made with ❤️
-                              </div>    
-                              
-                    </div>    
+                    <FooterClass/>
 
        </div>   
+       </React.StrictMode>
      );
      }
 }

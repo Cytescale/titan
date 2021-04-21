@@ -1,20 +1,18 @@
 import React, { useState,useEffect,Suspense } from 'react';
-import { renderToString } from 'react-dom/server'
-import Router from "next/router";
+import { renderToString } from 'react-dom/server';
 import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
 import {Alert,Button,Dropdown,Modal,OverlayTrigger,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
 import Slider from 'react-rangeslider'
-import Embed from 'react-embed';
 import $ from 'jquery';
-import portDriverCode from '../../../util/port_driver_code';
 import elementRender from '../../../util/element_render';
 import copy from "copy-to-clipboard";  
 import ImageUploading from 'react-images-uploading';
 import  _, { concat, repeat } from 'lodash';
 import Cookies from 'universal-cookie';
-import { TwitterPicker,ChromePicker} from 'react-color'
+import { TwitterPicker,ChromePicker, SwatchesPicker} from 'react-color'
+import _URLS from '../../../util/website_urls';
 
 const cookies  = new Cookies();
 const storeHelper = new firestoreHelper(cookies.get('accessToken'));
@@ -145,10 +143,10 @@ class backgrounClass{
      constructor(){
           this.selec_color = 0;
           this.grad_deg = 160;
-          this.back_type = 1;
+          this.back_type = 0;
           this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
-          this.solid_color = '#e0e0e0';
+          this.solid_color = '#fefefe';
           this.default_value = {
                backgroundColor:'#f1f1f1',
                backgroundImage:'linear-gradient(160deg,#fff,#FDD075)',
@@ -214,11 +212,7 @@ class _Element_Text{
 }
 
 
-
-
-import UserClass from '../../../util/User';
-var User = new UserClass();
-const firebaseHelp = new firebaseHelper(User);
+const firebaseHelp = new firebaseHelper();
 export default class LandAct extends React.Component{
      
      constructor(props){
@@ -302,27 +296,67 @@ export default class LandAct extends React.Component{
                </div>
           )
      }
-     async _init_land_data(){
+     async _init_land_data(req_count){
           this._set_load_bool(true);      
+          if(req_count>5){
+               console.log(req_count);
+               console.log('FIRESTORE Choke error occured');
+               this._add_notification('Choke error occured','danger',5000);
+               return;
+          }
           _BACK_DATA = new backgrounClass();
           await storeHelper._get_page_data().then(res=>{
                //console.log("OUTSIDE RES "+JSON.stringify(res.page_data));
-               if(res.errBool===false){
-                    if(res.page_data!==null){ 
-                    _PAGE_ID = res.page_id;
-                     _PAGE_CODE = res.page_data;
-                     _VIEW_ID = res.page_data._VISIT_CODE;
-                     
-                    const GOT_ARRAY =  JSON.parse(res.page_data._PAGE_CORE_ARRAY);
-                    if(GOT_ARRAY!==null){
-                         _ELEMENT_CORE_ARRAY = GOT_ARRAY;     
+               if(res!==null){
+                    if(res.errBool===false){
+                              this._set_load_bool(false);
+                                   if(res.page_data!==null){ 
+                                   console.log('LAND: Page data load success');
+                                   _PAGE_ID = res.page_id;
+                                   _PAGE_CODE = res.page_data;
+                                   _VIEW_ID = res.page_data._VISIT_CODE;
+                                   const GOT_ARRAY =  JSON.parse(res.page_data._PAGE_CORE_ARRAY);
+                                   if(GOT_ARRAY!==null){
+                                        _ELEMENT_CORE_ARRAY = GOT_ARRAY;     
+                                   }
+                              }
+                         else{
+                              console.log('LAND: Page data load failure');
+                              this._add_notification('Page data failure','danger',5000);
+                         }
                     }
-                    this._update_preview_wind();
-                    //console.log(GOT_ARRAY);
+                    else{
+                         switch(res.errCode){
+                              case 1:{
+                                   console.log('FIRESTORE Existant page not found')
+                                   this._add_notification('Existant page not found','danger',5000);
+                                   this._init_land_data((req_count+1))
+                                   break;
+                              }
+                              case 2:{
+                                   console.log('FIRESTORE new page creation failed')
+                                   this._add_notification('New page creation failed','danger',5000);
+                                   this._init_land_data((req_count+1))
+                                   break;
+                              }
+                              case 3:{
+                                   console.log('FIRESTORE NULL/invalid UID supplied')
+                                   this._add_notification('NULL/invalid UID supplied','danger',5000);
+                                   this._init_land_data((req_count+1))
+                                   break;
+                              }
+                              default:{
+                                   console.log('FIRESTORE Unknown error occured');
+                                   this._add_notification('Unknown error occured','danger',5000);
+                                   this._init_land_data((req_count+1))
+                                   break;
+                              }
+                         }
                     }
                }else{
+                    this._add_notification('Fatal error occured Please reload','danger',5000);
                }
-               this._set_load_bool(false);
+               
           });
      }
      _set_load_bool(bool){
@@ -1804,7 +1838,7 @@ export default class LandAct extends React.Component{
     }
      _render_component(){
           RENDER_ELEMENT_ARRAY = [];
-       RENDER_ELEMENT_ARRAY.push(new elementRender()._render_profile_element());
+       ///RENDER_ELEMENT_ARRAY.push(new elementRender()._render_profile_element());
           if(_ELEMENT_CORE_ARRAY!==null){
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
@@ -1896,15 +1930,28 @@ export default class LandAct extends React.Component{
           this.forceUpdate();
      }
 
+     async _init_land_user_check(){
+          this._set_load_bool(true);
+          await firebaseHelp._init_user_check(null,_URLS.login).then((res)=>{
+               if(res===true){
+                    this._init_land_data(1);          
+               }
+          }
+     );
+     }
+
      componentDidMount(){  
-          firebaseHelp._init_user_check(null,process.env.APP_NAME+'src/login');
-          this._init_land_data();
+          this._init_land_user_check();   
+          
      }
 
      render(){               
      return(
           this.state.loading===true?
-          <LoaderHelper/>:
+          <div>
+               <LoaderHelper/>     
+               {this._render_notif()}
+          </div>:
           <div>
                <title>{process.env.APP_NAME}</title>
                
@@ -1917,9 +1964,19 @@ export default class LandAct extends React.Component{
                     }}>{this.state.isUnSaved===true?'Unsaved':'Saved'}</div> */}
                     </div>  
                     <div className='land_act_head_cent_main_cont'>
-                              <div className='land_act_head_cent_link_cont'><a href='#' className='land_act_head_cent_link_selec'>Editor</a></div>
-                              <div className='land_act_head_cent_link_cont'><a href='#' className='land_act_head_cent_link'>Analytics</a></div>
-                              <div className='land_act_head_cent_link_cont'><a href='#' className='land_act_head_cent_link'>Preview</a></div>
+                              <div className='land_act_head_cent_link_cont'>
+                                   <a href='#' className='land_act_head_cent_link_selec'>
+                                        <svg className='land_act_head_cent_link_selec_ico' viewBox='0 0 512 512'><title>Brush</title><path d='M452.37 59.63h0a40.49 40.49 0 00-57.26 0L184 294.74c23.08 4.7 46.12 27.29 49.26 49.26l219.11-227.11a40.49 40.49 0 000-57.26zM138 336c-29.88 0-54 24.5-54 54.86 0 23.95-20.88 36.57-36 36.57C64.56 449.74 92.82 464 120 464c39.78 0 72-32.73 72-73.14 0-30.36-24.12-54.86-54-54.86z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                        Editor</a>
+                                   </div>
+                              <div className='land_act_head_cent_link_cont'>
+                                   <a href='#' className='land_act_head_cent_link'>
+                                   <svg  className='land_act_head_cent_link_ico' viewBox='0 0 512 512'><title>Analytics</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M344 280l88-88M232 216l64 64M80 320l104-104'/><circle cx='456' cy='168' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='320' cy='304' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='208' cy='192' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='56' cy='344' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                   Analytics</a></div>
+                              <div className='land_act_head_cent_link_cont'>
+                                   <a href='#' className='land_act_head_cent_link'>
+                                        <svg className='land_act_head_cent_link_ico' viewBox='0 0 512 512'><title>Play</title><path d='M112 111v290c0 17.44 17 28.52 31 20.16l247.9-148.37c12.12-7.25 12.12-26.33 0-33.58L143 90.84c-14-8.36-31 2.72-31 20.16z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
+                                        Preview</a></div>
                     </div>
                     <div className='land_act_head_rght_main_cont'>
                               <div className='land_act_head_rght_feed_butt_cont'>
@@ -1941,22 +1998,34 @@ export default class LandAct extends React.Component{
                </div>     
 
                <div className='land_act_main_bdy_cont'>
-                    <div className='land_act_back_cust_body'>
-                                   <OverlayTrigger trigger="click" placement="auto" overlay={this._popover_back_overlay} rootClose={true}>
-                                   <button className='land_act_back_cust_butt'>
-                                   <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
-                                   </button>
-                                   </OverlayTrigger>
-                   
+                    <div className='land_act_main_bdy_left_main'>
+                                        <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
+                    
+                                        <OverlayTrigger trigger="click" placement="right" overlay={this._popover_back_overlay} rootClose={true}>
+                                        <button className='land_act_back_cust_butt'>
+                                        <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
+                                        </button>
+                                        </OverlayTrigger>
+
+                                        <button className='land_act_back_cust_butt'>
+                                             <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                        </button>
+                    
                     </div>
+                    
 
                     <div className='land_act_creat_main_cont'
                     style={this._set_curr_back()}
-                    >
-                         <div>
+                    >    <div className='land_act_creat_main_cont_grd_back'></div>
+                         <div className='land_act_creat_main_sub_cont'>
 
                               {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
                                         <div className='land_act_prv_add_bar_cont'>
+                                        <div className='land_act_prv_add_bar_cir_cont'>
+                                        <div  className='land_act_prv_add_bar_cir'></div>
+                                        <div  className='land_act_prv_add_bar_cir'></div>
+                                        <div  className='land_act_prv_add_bar_cir'></div>
+                                        </div>
                                         <div className='land_act_prv_add_bar'>
                                              <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
                                              <a className='land_act_prv_add_lnk' href={process.env.NEXT_PUBLIC_HOST+'api/view?q='+_VIEW_ID}>
@@ -1969,6 +2038,7 @@ export default class LandAct extends React.Component{
                                              this._add_notification("Link copied to clipboard","success",1000);
                                         }}
                                         ><svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Copy</title><rect x='128' y='128' width='336' height='336' rx='57' ry='57' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path d='M383.5 128l.5-24a56.16 56.16 0 00-56-56H112a64.19 64.19 0 00-64 64v216a56.16 56.16 0 0056 56h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg></button>
+                                        
                               </div>
                                         
                          <div className='land_act_creat_sub_cont'>         
@@ -1989,11 +2059,11 @@ export default class LandAct extends React.Component{
                          </div>
                     </div> */}
                </div>
-               <div className='land_act_creat_butt_main_cont'>
+               {/* <div className='land_act_creat_butt_main_cont'>
                     <Button variant={"primary"} onClick={()=>{this._set_elem_mod(true)}}className='land_act_creat_butt'>
                     add element 
                     <svg className='land_act_creat_butt_ico' viewBox='0 0 512 512'><title>Add Circle</title><path d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 176v160M336 256H176'/></svg></Button>
-               </div>
+               </div> */}
                {this._render_notif()}
           <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
         
@@ -2104,7 +2174,7 @@ class FeedbackComp extends React.Component{
           return(
                <div className='feed_back_main_cont'>
                <OverlayTrigger trigger="click" rootClose={true} target={this} placement="bottom" overlay={this.feedBackPop()}>
-               <Button variant={'outline-dark'}>Feedback</Button>
+               <Button variant={'outline-light'}>Feedback</Button>
                </OverlayTrigger>     
                </div>
           )

@@ -5,7 +5,7 @@ var serviceAccount = require("../../util/firebase_admin_cert.json");
 var init_bool =  false;
 if(admin.apps.length<1)
 {
-     console.log("FIREBASE FIRESTORE INIT");
+     console.log("FIREBASE: Firebase backend init");
      init_bool = true;
      admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 }
