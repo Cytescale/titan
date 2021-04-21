@@ -1949,13 +1949,14 @@ export default class LandAct extends React.Component{
                
                <div className='land_act_head_main_cont'>
                     {this._element_add_modal()}
-                    <div className='land_act_head_tit_cont'> <div className='land_act_head_tit_cont_logo'/>Project {process.env.APP_NAME} 
+                    <div className='land_act_head_tit_cont'> <div className='land_act_head_tit_cont_logo'/>{process.env.APP_NAME} 
                     {/* <div className='land_act_head_save_cont' style={{
                          color:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
                          borderColor:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
                     }}>{this.state.isUnSaved===true?'Unsaved':'Saved'}</div> */}
                     </div>  
                     <div className='land_act_head_cent_main_cont'>
+                              
                               <div className='land_act_head_cent_link_cont'>
                                    <a href='#' className='land_act_head_cent_link_selec'>
                                         <svg className='land_act_head_cent_link_selec_ico' viewBox='0 0 512 512'><title>Brush</title><path d='M452.37 59.63h0a40.49 40.49 0 00-57.26 0L184 294.74c23.08 4.7 46.12 27.29 49.26 49.26l219.11-227.11a40.49 40.49 0 000-57.26zM138 336c-29.88 0-54 24.5-54 54.86 0 23.95-20.88 36.57-36 36.57C64.56 449.74 92.82 464 120 464c39.78 0 72-32.73 72-73.14 0-30.36-24.12-54.86-54-54.86z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
@@ -1993,6 +1994,7 @@ export default class LandAct extends React.Component{
                </div>     
                
                <div className='land_act_main_bdy_cont'>
+                 
                     <div className='land_act_main_bdy_left_main'>
                                         <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
                                         <OverlayTrigger placement="right"  rootClose={true} delay={{ show: 200, hide: 100 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Background</Tooltip>)}>
@@ -2022,7 +2024,7 @@ export default class LandAct extends React.Component{
                     <div className='land_act_creat_main_cont'
                     style={this._set_curr_back()}
                     >
-                             {/* <div className='land_act_creat_main_cont_grd_back'></div> */}
+                             <div className='land_act_creat_main_cont_grd_back'></div>
                          <div className='land_act_creat_main_sub_cont'>
 
                               {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
@@ -2038,12 +2040,20 @@ export default class LandAct extends React.Component{
                                              {process.env.NEXT_PUBLIC_HOST+'api/view?q='+_VIEW_ID}
                                              </a>
                                         </div>
+                                        <button className='land_act_prv_add_cpy_butt'>
+                                             <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Create</title><path d='M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z'/></svg>
+                                        </button>
+
                                         <button className='land_act_prv_add_cpy_butt'
                                         onClick={()=>{
                                              this.copytoClip(process.env.NEXT_PUBLIC_HOST+'api/view?q='+_VIEW_ID);
                                              this._add_notification("Link copied to clipboard","success",1000);
                                         }}
                                         ><svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Copy</title><rect x='128' y='128' width='336' height='336' rx='57' ry='57' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path d='M383.5 128l.5-24a56.16 56.16 0 00-56-56H112a64.19 64.19 0 00-64 64v216a56.16 56.16 0 0056 56h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg></button>
+
+                                        <button className='land_act_prv_add_cpy_butt'>
+                                             <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Share</title><path d='M336 192h40a40 40 0 0140 40v192a40 40 0 01-40 40H136a40 40 0 01-40-40V232a40 40 0 0140-40h40M336 128l-80-80-80 80M256 321V48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                        </button>
                                         
                               </div>
                                         
@@ -2054,7 +2064,7 @@ export default class LandAct extends React.Component{
                     </div>
                </div>            
                {this._render_notif()}
-               {/* <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div> */}
+               <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
         </div>
      );
 }
