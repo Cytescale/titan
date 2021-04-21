@@ -2,7 +2,7 @@ import React, { useState,useEffect,Suspense } from 'react';
 import { renderToString } from 'react-dom/server';
 import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
-import {Alert,Button,Dropdown,Modal,OverlayTrigger,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
+import {Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
 import Slider from 'react-rangeslider'
 import $ from 'jquery';
@@ -16,6 +16,16 @@ import _URLS from '../../../util/website_urls';
 
 const cookies  = new Cookies();
 const storeHelper = new firestoreHelper(cookies.get('accessToken'));
+
+const renderTooltip = (props,data) => {
+     console.log(data)
+     return(
+     <Tooltip id="button-tooltip" {...props}>
+       Simple tooltip
+     </Tooltip>
+   )};
+
+   
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
      <a
        href=""
@@ -146,7 +156,7 @@ class backgrounClass{
           this.back_type = 0;
           this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
-          this.solid_color = '#fefefe';
+          this.solid_color = '#F4FFFD';
           this.default_value = {
                backgroundColor:'#f1f1f1',
                backgroundImage:'linear-gradient(160deg,#fff,#FDD075)',
@@ -1996,27 +2006,36 @@ export default class LandAct extends React.Component{
                               </div>
                     </div>
                </div>     
-
+               
                <div className='land_act_main_bdy_cont'>
                     <div className='land_act_main_bdy_left_main'>
+                                        <OverlayTrigger  placement="right" delay={{ show: 50, hide: 200 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Add element</Tooltip>)}>
                                         <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
-                    
-                                        <OverlayTrigger trigger="click" placement="right" overlay={this._popover_back_overlay} rootClose={true}>
-                                        <button className='land_act_back_cust_butt'>
-                                        <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
-                                        </button>
                                         </OverlayTrigger>
 
+                                        <OverlayTrigger placement="right" delay={{ show: 50, hide: 200 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Background</Tooltip>)}>
+                                             <div>
+                                                  <OverlayTrigger trigger="click" placement="right" overlay={this._popover_back_overlay} rootClose={true}>
+                                                       <button className='land_act_back_cust_butt'>
+                                                       <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
+                                                       </button>
+                                                  </OverlayTrigger>
+                                             </div>
+                                        </OverlayTrigger>
+
+                                        <OverlayTrigger placement="right" delay={{ show: 50, hide: 200 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Page settings</Tooltip>)}>
                                         <button className='land_act_back_cust_butt'>
                                              <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                                         </button>
+                                        </OverlayTrigger>
                     
                     </div>
                     
 
                     <div className='land_act_creat_main_cont'
                     style={this._set_curr_back()}
-                    >    <div className='land_act_creat_main_cont_grd_back'></div>
+                    >
+                             {/* <div className='land_act_creat_main_cont_grd_back'></div> */}
                          <div className='land_act_creat_main_sub_cont'>
 
                               {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
