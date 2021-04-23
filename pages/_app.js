@@ -8,6 +8,7 @@ import '../styles/page_element.css';
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
+
 import firebaseHelper from '../util/firebase_helper';
 const firebaseHelp = new firebaseHelper();
 
@@ -26,7 +27,8 @@ else{
 }
 
 firebaseHelp._init_firebase_app();
-firebaseHelp._app_init_auth_state_inti();
+
+//firebaseHelp._app_init_auth_state_inti();
 function start({ Component, pageProps }) { 
   return <Component {...pageProps} />
 }

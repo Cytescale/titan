@@ -13,7 +13,8 @@ import  _, { concat, repeat } from 'lodash';
 import Cookies from 'universal-cookie';
 import { TwitterPicker,ChromePicker, SwatchesPicker} from 'react-color'
 import _URLS from '../../../util/website_urls';
-
+import Router from 'next/router'
+import EditMenu from './landEditMenu';
 
 const cookies  = new Cookies();
 const storeHelper = new firestoreHelper(cookies.get('accessToken'));
@@ -30,6 +31,8 @@ var _PAGE_CODE = '';
 var _GEN_CODE ='';
 var _PRIVEW_GEN_CODE = '';
 var _BACK_DATA = null;
+var _SELECTED_ELEMENT_ID=undefined;
+var _INSERT_BOOL = 1;
 
 const FONT_FAMILY_NAMES = [
      'Limelight',
@@ -100,16 +103,16 @@ var STLYE_ELEMENT_TEXT ={
      margin_top:12,
      margin_bottom:0,
      padding_right:0,
-     padding_left:0,
-     padding_top:0,
-     padding_bottom:0,
+     padding_left:12,
+     padding_top:20,
+     padding_bottom:20,
      padding:0,
      border_radius:0,
      border_width:2,
      bordered:false,
      font_family:'Poppins',
      border_color:'#000',
-     back_color:'#fff',
+     back_color:'null',
      text_color:'#000',
      font_size:17,
      font_weight:500,
@@ -154,12 +157,11 @@ class notiClass{
      }
 }
 class _Element_Video_Youtube{
-   
-     constructor(in_style){
+     constructor(in_style,index_id){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 4;
-          this.element_id =_ELEMENT_CORE_ARRAY.length,
+          this.element_id = index_id,
           this.data ='';
           this.element_render_class_name = ''
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
@@ -167,13 +169,13 @@ class _Element_Video_Youtube{
     
 }
 class _Element_Link{
-     constructor(text,url,in_style){
+     constructor(in_style){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 1;
           this.element_url = '';
           this.element_id =_ELEMENT_CORE_ARRAY.length,
-          this.data = text!==null?text:"Link";
+          this.data ="Placeholder Link";
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
      
@@ -188,20 +190,18 @@ class _Element_Image{
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
 }
-
 class _Element_Text{
-     constructor(text,in_style){
+     constructor(in_style){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 0;
           this.element_id =_ELEMENT_CORE_ARRAY.length;
-          this.data = text!==null?text:"Lorem Ipsum";
+          this.data = "Lorem Ipsum";
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
      
   
 }
-
 
 const firebaseHelp = new firebaseHelper();
 export default class LandAct extends React.Component{
@@ -213,18 +213,21 @@ export default class LandAct extends React.Component{
                isUnSaved:false,
                dname:"Not done..",
                element_count:0,
+               _select_element_id:-1,
                _add_elem_mod_show:false,
                _txt_pop_shw:false,
+               _edit_menu_x : 100,
+               _edit_menu_y : 100,
+               _edit_menu_old_x:0,
+               _edit_menu_old_y:0,
           }
+         
           this._set_load_bool = this._set_load_bool.bind(this);
           this._set_txt_pop_show = this._set_txt_pop_show.bind(this);
           this._set_elem_mod = this._set_elem_mod.bind(this);
           this._set_dname = this._set_dname.bind(this);
           this._add_element_count = this._add_element_count.bind(this);
           this._set_element_count = this._set_element_count.bind(this);
-          this._add_text_element = this._add_text_element.bind(this);
-          this._add_link_element = this._add_link_element.bind(this);
-          this._add_video_ytube_element = this._add_video_ytube_element.bind(this);
           this._get_popover = this._get_popover.bind(this);
           this._get_page_type_render = this._get_page_type_render.bind(this);
           this._set_unsaved_bool = this._set_unsaved_bool.bind(this);     
@@ -233,13 +236,28 @@ export default class LandAct extends React.Component{
           this._popover_back_overlay = this._popover_back_overlay.bind(this);
           this._get_back_picker = this._get_back_picker.bind(this);
           this._set_curr_back = this._set_curr_back.bind(this);
-          this._add_image_element = this._add_image_element.bind(this);
+          this.renderer_add_butt_callback = this.renderer_add_butt_callback.bind(this);
+          this._ELEMENT_ADDER_TO_ARRAY = this._ELEMENT_ADDER_TO_ARRAY.bind(this);
+          this._set_url_param_selec_id = this._set_url_param_selec_id.bind(this);
+          this._set_selec_element_id = this._set_selec_element_id.bind(this);
+          this._set_menu_x_y_posi = this._set_menu_x_y_posi.bind(this);
           this.noti_pool = [];     
 
      }
 
      copytoClip(txt){
           copy(txt);  
+     }
+     _set_selec_element_id(val){
+          this.setState({_select_element_id:val})
+     }
+     _set_menu_x_y_posi(x,y,old_x,old_y){
+          this.setState({
+               _edit_menu_x : x,
+               _edit_menu_y : y,
+               _edit_menu_old_x:old_x,
+               _edit_menu_old_y:old_y,
+          })
      }
      _set_unsaved_bool(bool){
           this.setState({isUnSaved:bool});
@@ -1739,6 +1757,7 @@ export default class LandAct extends React.Component{
           </div>
           </Popover>)     
      }
+
      _set_element_count(int){
           this.setState({element_count:int});
      }
@@ -1747,6 +1766,10 @@ export default class LandAct extends React.Component{
      }
      _set_elem_mod(bool){
           this.setState({_add_elem_mod_show:bool})
+          if(bool===false){
+               _SELECTED_ELEMENT_ID=undefined;
+               _INSERT_BOOL = 1;
+          }
      }
      _set_dname(val){
           this.setState({dname:val});
@@ -1765,56 +1788,86 @@ export default class LandAct extends React.Component{
               </Modal.Header>
               <Modal.Body className='land_act_elem_add_cont_bdy'>
                 <div className='land_act_elem_add_cont'>
-                     <Button variant={'light'} className='land_act_elem_add_butt' onClick={this._add_text_element}>
+                     <Button variant={'light'} className='land_act_elem_add_butt' onClick={()=>this._ELEMENT_ADDER_TO_ARRAY(0)}>
                           <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Text</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M32 415.5l120-320 120 320M230 303.5H74M326 239.5c12.19-28.69 41-48 74-48h0c46 0 80 32 80 80v144'/><path d='M320 358.5c0 36 26.86 58 60 58 54 0 100-27 100-106v-15c-20 0-58 1-92 5-32.77 3.86-68 19-68 58z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                           Text
                           </Button> 
                 </div>
                 <div className='land_act_elem_add_cont'>
-                <Button variant={'light'} className='land_act_elem_add_butt' onClick={this._add_link_element}>
+                <Button variant={'light'} className='land_act_elem_add_butt' onClick={()=>this._ELEMENT_ADDER_TO_ARRAY(1)}>
                          <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Link</title><path d='M208 352h-64a96 96 0 010-192h64M304 160h64a96 96 0 010 192h-64M163.29 256h187.42' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='36'/></svg>
                          Link</Button>
                 </div>
                 <div className='land_act_elem_add_cont'>
-                <Button variant={'light'} className='land_act_elem_add_butt' onClick={this._add_image_element}>
+                <Button variant={'light'} className='land_act_elem_add_butt' onClick={()=>this._ELEMENT_ADDER_TO_ARRAY(2)}>
                          <svg className='land_act_elem_add_cont_ico' viewBox='0 0 512 512'><title>Image</title><rect x='48' y='80' width='416' height='352' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><circle cx='336' cy='176' r='32' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path d='M304 335.79l-90.66-90.49a32 32 0 00-43.87-1.3L48 352M224 432l123.34-123.34a32 32 0 0143.11-2L464 368' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                          Image</Button>
                 </div>        
                 <div className='land_act_elem_add_cont'>
-                    <Button variant={'light'} className='land_act_elem_add_butt'  onClick={this._add_video_ytube_element}>
+                    <Button variant={'light'} className='land_act_elem_add_butt'  onClick={()=>this._ELEMENT_ADDER_TO_ARRAY(4)}>
                          Embeded</Button>
                </div>
               </Modal.Body>
             </Modal>
           );
         }  
+
+
+     _ELEMENT_ADDER_TO_ARRAY(element_type_id)
+     {
+          let insert_id = null;
+          let gotElement = this._get_speci_element_class(element_type_id);
+                    if(_SELECTED_ELEMENT_ID===undefined||_SELECTED_ELEMENT_ID===null){
+                         _ELEMENT_CORE_ARRAY.push(gotElement);
+                         insert_id = (_ELEMENT_CORE_ARRAY.length-1); 
+                    }     
+                    else{
+                         switch(_INSERT_BOOL){
+                              case 0:{
+                                   _ELEMENT_CORE_ARRAY.splice(_SELECTED_ELEMENT_ID,0,gotElement);
+                                   insert_id = _SELECTED_ELEMENT_ID;
+                                   break;
+                              }
+                              case 1:{
+                                   _ELEMENT_CORE_ARRAY.splice(_SELECTED_ELEMENT_ID+1,0,gotElement);
+                                   insert_id = _SELECTED_ELEMENT_ID+1;
+                                   break;
+                              }
+                              default:{
+                                   _ELEMENT_CORE_ARRAY.splice(_SELECTED_ELEMENT_ID+1,0,gotElement);
+                                   insert_id = _SELECTED_ELEMENT_ID+1;
+                                   break;
+                              }
+                         }
+                    }    
+          console.log(`LAND: Element Added | TYPE `+element_type_id+` | SIZE `+_ELEMENT_CORE_ARRAY.length);
+          this._set_element_count(_ELEMENT_CORE_ARRAY.length);
+          this._set_elem_mod(false);
+          this._calc_element_index_ids();
+          if(insert_id!==null){
+               this._set_url_param_selec_id(insert_id);     
+          }else{
+               this._set_url_param_selec_id(-1);     
+          }
+          this.forceUpdate();
+     }
+
+     _calc_element_index_ids(){
+          for(let j = 0 ; j < _ELEMENT_CORE_ARRAY.length ; j++){
+               _ELEMENT_CORE_ARRAY[j].element_id = j
+          }
+     }
+
+     _get_speci_element_class(element_type_id){
+          switch(element_type_id){
+               case 0:{return(new _Element_Text())}
+               case 1:{return(new _Element_Link())}
+               case 2:{return(new _Element_Image())}
+               case 4:{return(new _Element_Video_Youtube())}
+               default:{break}     
+          }
+     }
         
-     _add_image_element(){
-          _ELEMENT_CORE_ARRAY.push(new _Element_Image());
-          console.log("ELEMENT | ELEMENT IMAGE ADDED | SIZE "+_ELEMENT_CORE_ARRAY.length);
-          this._set_element_count(_ELEMENT_CORE_ARRAY.length);
-          this._set_elem_mod(false);
-     }
-
-     _add_text_element(){
-          _ELEMENT_CORE_ARRAY.push(new _Element_Text("Text Element"));
-          console.log("ELEMENT | ELEMENT TEXT ADDED | SIZE "+_ELEMENT_CORE_ARRAY.length);
-          this._set_element_count(_ELEMENT_CORE_ARRAY.length);
-          this._set_elem_mod(false);
-     }
-     _add_video_ytube_element(){
-          _ELEMENT_CORE_ARRAY.push(new _Element_Video_Youtube());
-          console.log("ELEMENT | ELEMENT VIDEO YTUBE ADDED | SIZE "+_ELEMENT_CORE_ARRAY.length);
-          this._set_element_count(_ELEMENT_CORE_ARRAY.length);
-          this._set_elem_mod(false);
-     }
-     _add_link_element(){
-          _ELEMENT_CORE_ARRAY.push(new _Element_Link("Link Element","null"));
-          console.log("ELEMENT | ELEMENT LUNK ADDED | SIZE "+_ELEMENT_CORE_ARRAY.length);
-          this._set_element_count(_ELEMENT_CORE_ARRAY.length);
-          this._set_elem_mod(false);
-     }
-
     _get_popover(element_type_id,ele_id){
      switch(element_type_id){
           case 0:{return(this._popover_txt_overlay(ele_id))}
@@ -1828,6 +1881,22 @@ export default class LandAct extends React.Component{
     _embeded_element_render_classback(element_indx,str){
          _ELEMENT_CORE_ARRAY[element_indx].element_render_class_name = str; 
     }
+
+    _set_url_param_selec_id(element_index_id){
+     Router.push({query:{ select_id:element_index_id }},null,{scroll:false,shallow:true});
+     this._set_selec_element_id(element_index_id);
+     this.forceUpdate();
+    }
+
+
+    renderer_add_butt_callback(elem_id,direc_bool){
+     if(elem_id!==null && direc_bool!==null){
+          _SELECTED_ELEMENT_ID = elem_id;
+          _INSERT_BOOL = direc_bool;
+          this._set_elem_mod(true)
+     }
+}
+
      _render_component(){
           RENDER_ELEMENT_ARRAY = [];
        ///RENDER_ELEMENT_ARRAY.push(new elementRender()._render_profile_element());
@@ -1835,7 +1904,13 @@ export default class LandAct extends React.Component{
           _ELEMENT_CORE_ARRAY.map(
                (element,index)=>{
                          if(element.deleted===false){ 
-                              RENDER_ELEMENT_ARRAY.push(new elementRender(element,this._get_popover(element.element_type_id,element.element_id))._render_element_overlay(this._embeded_element_render_classback));
+                              RENDER_ELEMENT_ARRAY.push(
+                                   new elementRender(element,
+                                        Router.query.select_id,
+                                        this._get_popover(element.element_type_id,element.element_id))
+                                        ._render_element_overlay(this._set_url_param_selec_id,
+                                                                 this.renderer_add_butt_callback,
+                                                                 this._embeded_element_render_classback));
                          }
                }
           );
@@ -1860,20 +1935,6 @@ export default class LandAct extends React.Component{
                }
      }
 
-
-     _update_preview_wind(){
-          
-          let gcoode = '';
-          if(_ELEMENT_CORE_ARRAY!==null){
-          _ELEMENT_CORE_ARRAY.map(
-               (element,index)=>{
-                    gcoode += this._get_page_type_render(element);
-               }
-          )
-          gcoode += renderToString(new elementRender()._foot_code());
-          _PRIVEW_GEN_CODE = portDriverCode(gcoode);
-          }
-     }
 
      async _gen_page_code(){
           console.log(JSON.stringify(_ELEMENT_CORE_ARRAY));
@@ -1931,6 +1992,8 @@ export default class LandAct extends React.Component{
           }
      );
      }
+
+  
 
      componentDidMount(){  
           this._init_land_user_check();   
@@ -2024,7 +2087,7 @@ export default class LandAct extends React.Component{
                     <div className='land_act_creat_main_cont'
                     style={this._set_curr_back()}
                     >
-                             <div className='land_act_creat_main_cont_grd_back'></div>
+                             <div className='land_act_creat_main_cont_grd_back' onMouseDown={()=>this._set_url_param_selec_id(-1)}></div>
                          <div className='land_act_creat_main_sub_cont'>
 
                               {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
@@ -2061,9 +2124,13 @@ export default class LandAct extends React.Component{
                                    {this._render_component()}
                          </div>
                          </div>
+                         {    
+                              //this.state._select_element_id>=0?<EditMenu selectId={this.state._select_element_id} />:undefined
+                          }    
                     </div>
                </div>            
                {this._render_notif()}
+             
                <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
         </div>
      );

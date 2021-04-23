@@ -1,14 +1,22 @@
 "use strict";
-import React, { useState,useEffect,Suspense  } from 'react';
+import React from 'react';
 import { Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
 import Embed from 'react-embed';
-import { renderToString } from 'react-dom/server'
+import Router from 'next/router'
+import { isElementAccessExpression } from 'typescript';
 var tslib_1 = require("tslib");
 
 export default class elementRender{
-     constructor(element,overlay){
+     constructor(element,selec_id,overlay){
           this.element = element;
           this.overlay = overlay;
+          if(this.element!==undefined){
+          if(selec_id == this.element.element_id){
+               this.isSelected = true;
+          }
+          else{
+               this.isSelected = false;
+          }}
      }
 
      _update_element(new_element){
@@ -35,20 +43,43 @@ export default class elementRender{
 
 
      }
-     _render_element_overlay(callback){
-
+     _render_element_overlay(set_selec_callback,add_butt_callback,callback){
           return(
+               <div className='overlay_build_lines'>
+                          <div className='overlay_build_line_1' style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>
+                         <div className='overlay_build_line_2' style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>
+               <div className='overlay_trig_cont'
+               style={{
+                    opacity:this.element.enabled===true?1:0.5
+               }}
+               >
+               <div className='overlay_add_butt_cont'>
+                    <button className="_page_element_overlay_add_top" style={{
+                         opacity:this.isSelected==true?1:0
+                    }} 
+                    onClick={()=>add_butt_callback(this.element.element_id,0)}>+ Add Above</button>
+                    <button className="_page_element_overlay_add_bottom" style={{
+                         opacity:this.isSelected==true?1:0
+                    }}  onClick={()=>add_butt_callback(this.element.element_id,1)}>+ Add Below</button>
+                    </div>
                <OverlayTrigger
                trigger="click"
                placement="right"
                rootClose={true}
                overlay={this.overlay}
                >
-                     <div  className="_page_element_main_bdy" >
+                     <div  className="_page_element_main_bdy" id={'_page_element_spci_'+this.element.element_id} 
+                                        onMouseDown={()=>{
+                                             if(this.isSelected===true){set_selec_callback(-1)
+                                             }else{set_selec_callback(this.element.element_id);}
+                                        }}
+                                        >
                                         {this._get_type_element(callback)}
-                                        <div className="_page_element_overlay" ></div>
+                                        <div className={this.isSelected==true?"_page_element_overlay":"_page_element_overlay_non"} ></div>
                     </div>
                </OverlayTrigger>
+               </div>
+               </div>
           )
      }
 
@@ -240,17 +271,6 @@ export default class elementRender{
                              </div>
                    </div>
                     );
-     }
-     _foot_code(){
-          return(
-
-                                        <div
-                                       className='_page_element_footer_main_bdy'
-                                       >
-                                        Made with ♥️ by Titan
-                                       </div>
-
-          )
      }
      _render_profile_element(){
                     return(
