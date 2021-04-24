@@ -49,8 +49,8 @@ padding: 12px;
      height: 56px;
      z-index: 100;
      display: inline-flex;
-     background: #212121 ;
-     
+     background: #fff ;
+     border-bottom: 1px solid #e0e0e0;
      
 }
 .land_act_head_tit_cont_logo{
@@ -71,9 +71,7 @@ padding: 12px;
      font-size:  16px;
      font-weight: 800;
      font-family: quicksand;
-     background: -webkit-linear-gradient(180deg, #FFD644 0%, #FFA73F 100%);
-     -webkit-background-clip: text;
-     -webkit-text-fill-color: transparent;
+     color: #212121;
 }
 .land_act_head_cent_main_cont{
      width: 100%;
@@ -117,10 +115,10 @@ padding: 12px;
      padding-right: 17px;
      display:flex;
      border-radius: 100px;
-     background-color: #323232;
+     background-color: #f1f1f1;
      
      align-items: center;
-     color: #fff;
+     color: #000;
 }
 .land_act_head_cent_link_selec_ico{
      width: 19px;
@@ -221,6 +219,8 @@ padding: 12px;
 
 .land_act_creat_main_cont{
      width: 100%;
+     margin-right: 75px;
+     border-right: 1px solid #e0e0e0;
      left: 0;
      padding-top: 84px;
      margin-left: 75px;
@@ -277,9 +277,11 @@ padding: 12px;
      width: auto;
      padding: 12px;
      height: 100%;
-     background-color: #fff;
+     
      border-right: 1px solid #e0e0e0;
      /* box-shadow: 0px 7px 10px rgba(0,0,0,0.07); */
+     display: flex;
+     align-items: center;
      padding-top: 72px;
      position: fixed;
      z-index: 30;
@@ -296,7 +298,7 @@ padding: 12px;
      color: #fff;
      margin-bottom: 17px;
      display: flex;
-     font-size: 38px;
+     font-size: 32px;
      justify-content: center;
      align-items: center;
      box-shadow: 0px 3px 7px rgba(0,0,0,0.2);
@@ -434,23 +436,31 @@ height: 26px;
      background-color: #f1f1f1;
 }
 .popover_back_class_main_cont_tit{
+     
      margin-bottom: 12px;
-     font-size: 14px;
-     font-weight: bold;
-     color: #626262;
+     font-size: 13px;
+     border-bottom: 1px solid #e0e0e0;
+     padding-bottom: 8px;
+     color: #323232;
 }
 .popover_back_class{
      width: 250px;
      padding: 12px;
-     position: fixed;
-     margin:22px;
-     margin-left: 102px;
-     margin-top: 82px;
 }
 #popover_back_class_selec_butt{
      width: 100%;
-
+     font-size: 14px;
+     font-family: inter;
+     border: 1px solid #e0e0e0;
+     text-align: start;
 }
+
+.popover_back_class_selec_menu{
+     width: 200px;
+     margin-top: 12px;
+     overflow: hidden;
+}
+
 .popover_back_class_main_pick_cont{
      margin-top: 12px;
 }
@@ -525,13 +535,15 @@ flex: 1;
      padding-right: 18px;
 }
 .land_act_main_bdy_right_main{
-     position:fixed;
+     /* position:fixed;
      right: 0;
      top: 0;
      z-index: 100;
-     width: 300px;
-     height: 100%;
+     width: auto;
+     
      padding-top: 56px;
+     pointer-events: none; */
+     height: 100%;
 }
 
 
@@ -551,8 +563,20 @@ flex: 1;
      width: 100%;
      z-index: 100;
      height: 100%;
+     pointer-events: all;
      background-color: #fff;
      overflow: hidden;
+     position: relative;
      border-left: 1px solid #e0e0e0;
      animation: menu_slide 0.2s ease-in;
 }
+.land_act_main_bdy_right_sub_resizer{
+     position: absolute;
+     top: 0;
+     bottom: 0;
+     left: 0;
+     width: 2px;
+     height: auto;
+     background-color: #e0e0e0;
+
+}    

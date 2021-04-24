@@ -2,11 +2,10 @@
      position: fixed;
      z-index: 99999999;
      top:0;
-     right: 0;
+     left: 40%;
      margin: 32px;
      margin-top: 78px;
-     
-     width: 300px;
+     width: 350px;
      max-height: 50vh;    
      overflow: hidden;
      font-weight: bold;
@@ -15,12 +14,12 @@
      from
      {
           opacity: 0;
-     transform: translateX(100%);
+          transform: translateY(-100%);
      }
      to
      {
           opacity: 1;
-     transform: translateX(0%);
+     transform: translateY(0%);
      }
 }
 

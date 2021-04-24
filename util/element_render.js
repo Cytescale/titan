@@ -21,6 +21,7 @@ export default class elementRender{
      _update_element(new_element){
           this.element = new_element;
      }
+
      _get_type_element(callback){
           switch(this.element.element_type_id){
                case 0:{
@@ -44,6 +45,31 @@ export default class elementRender{
      }
 
   
+     _get_element_name(){
+          switch(this.element.element_type_id){
+               case 0:{
+                    return 'Text';
+                    break;
+               }
+               case 1:{
+                    return 'Link';
+                    break;
+               }
+               case 2:{
+                    return 'Image';
+                    break;
+               }
+
+               case 4:{
+                    return 'Embeded';
+                    break;
+               }
+               default:{
+                    return 'Fault element'
+                    break;
+               }
+          }
+     }
 
      _render_element_overlay(set_selec_callback,add_butt_callback,callback){
           return(
@@ -56,6 +82,7 @@ export default class elementRender{
                }}
                >
                          <div className='overlay_add_butt_cont'>
+                                   <div className='overlay_element_label' style={{visibility:this.isSelected===true?'visible':'hidden'}}>{this._get_element_name()} <i class="cur_arrow so_down"></i></div>
                                    <button className="_page_element_overlay_add_top" style={{
                                         opacity:this.isSelected==true?1:0,
                                         visibility:this.isSelected===true?'visible':'hidden',
@@ -77,6 +104,7 @@ export default class elementRender{
                                              <div className={this.isSelected==true?"_page_element_overlay":"_page_element_overlay_non"} ></div>
                          </div>
                </div>
+               <div className='overlay_build_line_2' style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>   
                </div>
           )
      }
@@ -130,7 +158,7 @@ export default class elementRender{
                          </div>
           );
      }
-     _render_link_element(callback){
+     _render_link_element(callback){    
           return(
                <a href={this.element.element_url!==null?this.element.element_url:'#'}>
                <div
