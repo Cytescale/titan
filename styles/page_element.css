@@ -35,6 +35,7 @@ position: relative;
 
 .element_row_main_cont{
      display: inline-flex;
+     flex-wrap: wrap;
      width: 100%;
      margin: -12px;
      padding: 12px;
