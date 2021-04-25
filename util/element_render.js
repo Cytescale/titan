@@ -74,12 +74,10 @@ export default class elementRender{
           _render_element_overlay(set_selec_callback,add_butt_callback,callback){
           return(
                <div className='overlay_build_lines'
-               
-               
                >
                           <div className='overlay_build_line_1'  style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>
                          <div className='overlay_build_line_2' style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>
-               <div className='overlay_trig_cont'
+                         <div className='overlay_trig_cont'
                style={{
                     opacity:this.element.enabled===true?1:0.5
                }}
@@ -226,6 +224,8 @@ export default class elementRender{
                style={
                     {
                          overflow:'hidden',
+                         width:this.element.style.element_width+'px',
+                         height:this.element.style.element_height+'px',
                          textAlign:this.element.style.text_align,
                          borderStyle:this.element.style.bordered===true?'solid':'none',
                          borderWidth:this.element.style.border_width,

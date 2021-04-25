@@ -231,7 +231,7 @@ export default class LandAct extends React.Component{
                _select_row_id:-1,
                _add_elem_mod_show:false,
                _txt_pop_shw:false,
-               _edit_menu_width:250,
+               _edit_menu_width:260,
           }
          
           this._set_load_bool = this._set_load_bool.bind(this);
@@ -2208,7 +2208,7 @@ export default class LandAct extends React.Component{
                               }
                               case 3:{
                                    let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
-                                   _ELEMENT_ROWS_CORE_ARRAY[_SELECTED_ELEMENT_ROW_ID].push(gotElement)
+                                   _ELEMENT_ROWS_CORE_ARRAY[_SELECTED_ELEMENT_ROW_ID].splice(_SELECTED_ELEMENT_ID+1,0,gotElement);           
                                    //insert_id = _SELECTED_ELEMENT_ID+1;
                                    break;
                               }
