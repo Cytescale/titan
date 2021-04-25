@@ -35,7 +35,8 @@ position: relative;
 
 .element_row_main_cont{
      display: inline-flex;
-     flex-wrap: wrap;
+     flex-wrap: wrap;    
+
      width: 100%;
      margin: -12px;
      padding: 12px;
@@ -98,8 +99,7 @@ border-bottom-right-radius: 4px;
 
 .overlay_build_lines{
      width: auto;
-     flex: 1;
-     min-width: 360px;
+     min-width: 32px;
 
 }
 
@@ -202,7 +202,6 @@ left: 0;
 right:0;
 bottom: 0;
 border: 1px solid #0E98FF;
-
 border-radius: 4px;
 cursor: pointer;
 }

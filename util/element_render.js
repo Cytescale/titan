@@ -73,7 +73,10 @@ export default class elementRender{
 
           _render_element_overlay(set_selec_callback,add_butt_callback,callback){
           return(
-               <div className='overlay_build_lines'>
+               <div className='overlay_build_lines'
+               
+               
+               >
                           <div className='overlay_build_line_1'  style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>
                          <div className='overlay_build_line_2' style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>
                <div className='overlay_trig_cont'
@@ -130,6 +133,8 @@ export default class elementRender{
                          <div style={
                               {
                                    overflow:'hidden',
+                                   width:this.element.style.element_width+'px',
+                                   height:this.element.style.element_element_height+'px',
                                    textAlign:this.element.style.text_align,
                                    borderStyle:this.element.style.bordered===true?'solid':'none',
                                    borderWidth:this.element.style.border_width,
@@ -181,6 +186,8 @@ export default class elementRender{
                style={
                     {
                          overflow:'hidden',
+                         width:this.element.style.element_width+'px',
+                         height:this.element.style.element_element_height+'px',
                          fontFamily:this.element.style.font_family,
                          textAlign:this.element.style.text_align,
                          borderStyle:this.element.style.bordered===true?'solid':'none',
@@ -195,6 +202,7 @@ export default class elementRender{
                          marginTop:this.element.style.margin_top,
                          marginBottom:this.element.style.margin_bottom,
                          fontSize:this.element.style.font_size+"px",
+                         fontWeight:this.element.style.font_weight,
                          color:this.element.style.text_color,
                          backgroundColor:this.element.style.back_color,
                          borderRadius:this.element.style.border_radius+"px",
@@ -262,6 +270,8 @@ export default class elementRender{
                                                   style={
                                                        {
                                                             overflow:'hidden',
+                                                            width:this.element.style.element_width+'px',
+                                                            height:this.element.style.element_height+'px',
                                                             textAlign:this.element.style.text_align,
                                                             borderStyle:this.element.style.bordered===true?'solid':'none',
                                                             borderWidth:this.element.style.border_width,
@@ -275,6 +285,8 @@ export default class elementRender{
                                                             fontFamily:this.element.style.font_family,
                                                             marginTop:this.element.style.margin_top,
                                                             marginBottom:this.element.style.margin_bottom,
+                                                            marginLeft:this.element.style.margin_left,
+                                                            marginRight:this.element.style.margin_right,
                                                             textDecoration:this.element.style.underline===true?'underline':'none',
                                                             fontSize:this.element.style.font_size+"px",
                                                             fontWeight:this.element.style.font_weight,

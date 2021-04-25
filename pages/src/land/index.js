@@ -25,7 +25,7 @@ const storeHelper = new firestoreHelper(cookies.get('accessToken'));
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (<a href="" ref={ref} onClick={(e) => { e.preventDefault();onClick(e);}}>{children}</a>));
 
 
-
+const FINAL_WEBSITE_WIDTH =  900;
 var _ELEMENT_ROWS_CORE_ARRAY = [];
 var _ELEMENT_CORE_ARRAY = [];
 var  RENDER_ELEMENT_ARRAY = [];
@@ -105,8 +105,12 @@ const FONT_FAMILY_NAMES = [
 
 var STLYE_ELEMENT_TEXT ={
      margin:0,
+     element_width:320,
+     element_height:70,     
      margin_top:0,
      margin_bottom:0,
+     margin_left:0,
+     margin_right:0,
      padding_right:0,
      padding_left:12,
      padding_top:20,
@@ -117,7 +121,7 @@ var STLYE_ELEMENT_TEXT ={
      bordered:false,
      font_family:'Poppins',
      border_color:'#000',
-     back_color:undefined,
+     back_color:'#eeedf3',
      text_color:'#000',
      font_size:17,
      font_weight:500,
@@ -227,7 +231,7 @@ export default class LandAct extends React.Component{
                _select_row_id:-1,
                _add_elem_mod_show:false,
                _txt_pop_shw:false,
-               _edit_menu_width:250     ,
+               _edit_menu_width:250,
           }
          
           this._set_load_bool = this._set_load_bool.bind(this);
@@ -260,11 +264,9 @@ export default class LandAct extends React.Component{
                          _select_row_id:row_id
                          })
      }
-
      _set_edit_menu_width(val){
           this.setState({_edit_menu_width:val})
      }
-
      _set_unsaved_bool(bool){
           this.setState({isUnSaved:bool});
      }
@@ -433,7 +435,6 @@ export default class LandAct extends React.Component{
           }
           return set_style;
      }
-
      _get_back_type(){
           if(_BACK_DATA!==null){
           switch(_BACK_DATA.back_type){
@@ -586,7 +587,6 @@ export default class LandAct extends React.Component{
                })
           return res;
      }
-     
      _set_element_count(int){
           this.setState({element_count:int});
      }
@@ -639,8 +639,7 @@ export default class LandAct extends React.Component{
               </Modal.Body>
             </Modal>
           );
-        }  
-
+        } 
      _get_element_by_index(row_id,indx_id){
           if(_ELEMENT_ROWS_CORE_ARRAY[row_id][indx_id]!==undefined){
                return(_ELEMENT_ROWS_CORE_ARRAY[row_id][indx_id]);
@@ -650,7 +649,6 @@ export default class LandAct extends React.Component{
           }
           
      }
-
      _render_embeded_menu(element_id,row_id){
           if(this._get_element_by_index(row_id,element_id)!==false){ 
                return(
@@ -724,7 +722,50 @@ export default class LandAct extends React.Component{
                                    </Tab>
                                    <Tab eventKey="pos" title="Position"  className='tab_class'>
           
-          
+                                   <div className='ele_pop_bdy_txt'>Width</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_width =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_width =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+                                             <div className='ele_pop_bdy_txt'>Height</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_height =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_height =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
                                              <div className='ele_pop_bdy_txt'>Margin top</div>    
                                              <div className='ele_pop_bdy_slid_cont'>
                                                   <div className='ele_pop_bdy_slid_hold'>
@@ -856,7 +897,6 @@ export default class LandAct extends React.Component{
                return(<div>Fault Menu</div>)
           }
      }
-
      _render_image_menu(element_id,row_id){
           if(this._get_element_by_index(row_id,element_id)!==false){ 
                return(
@@ -992,6 +1032,49 @@ export default class LandAct extends React.Component{
                               </div>
                     </Tab>
                     <Tab eventKey="pos" title="Position" className='tab_class'>
+                    <div className='ele_pop_bdy_txt'>Width</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_width =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_width =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+                                             <div className='ele_pop_bdy_txt'>Height</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_height =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_height =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
 
 
                               <div className='ele_pop_bdy_txt'>Margin top</div>    
@@ -1400,6 +1483,49 @@ export default class LandAct extends React.Component{
                                    </OverlayTrigger>                                   
                          </Tab>
                          <Tab eventKey="pos" title="Position" className='tab_class'>
+                         <div className='ele_pop_bdy_txt'>Width</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_width =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_width =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+                                             <div className='ele_pop_bdy_txt'>Height</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_height =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_height =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
 
 
                                    <div className='ele_pop_bdy_txt'>Margin top</div>    
@@ -1798,6 +1924,95 @@ export default class LandAct extends React.Component{
                          <Tab eventKey="pos" title="Position" className='tab_class'>
 
 
+                                   
+                                   <div className='ele_pop_bdy_txt'>Width</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_width =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_width}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_width =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+                                             <div className='ele_pop_bdy_txt'>Height</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  max={FINAL_WEBSITE_WIDTH}
+                                                  value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.element_height =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.element_height}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.element_height =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+
+                                   <div className='ele_pop_bdy_txt'>Margin left</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  value={this._get_element_by_index(row_id,element_id).style.margin_left}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.margin_left =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_left}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.margin_left =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+                                             <div className='ele_pop_bdy_txt'>Margin right</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  value={this._get_element_by_index(row_id,element_id).style.margin_right}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.margin_right =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_right}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.margin_right =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+
                                    <div className='ele_pop_bdy_txt'>Margin top</div>    
                                    <div className='ele_pop_bdy_slid_cont'>
                                         <div className='ele_pop_bdy_slid_hold'>
@@ -1955,7 +2170,6 @@ export default class LandAct extends React.Component{
           }
           
      }
-     
      _get_speci_element_class(element_type_id,row_id,indx_id){
           switch(element_type_id){
                case 0:{return(new _Element_Text(row_id,_ELEMENT_ROWS_CORE_ARRAY[row_id]!==undefined?_ELEMENT_ROWS_CORE_ARRAY[row_id].length:0))}
@@ -2027,20 +2241,14 @@ export default class LandAct extends React.Component{
           console.log(_ELEMENT_ROWS_CORE_ARRAY);
           
      }
-
-    
-
     _embeded_element_render_classback(element_indx,str){
          _ELEMENT_CORE_ARRAY[element_indx].element_render_class_name = str; 
     }
-
     _set_url_param_selec_id(element_index_id,element_row_id){
      Router.push({query:{ row_id:element_row_id,select_id:element_index_id }},null,{scroll:false,shallow:true});
      this._set_selec_element_id(element_index_id,element_row_id);
      this.forceUpdate();
     }
-
-
     renderer_add_butt_callback(elem_id,elm_row_id,direc_bool){
      if(elem_id!==null && direc_bool!==null){
           _SELECTED_ELEMENT_ID = elem_id;
@@ -2057,47 +2265,47 @@ _render_component(){
      if(_ELEMENT_CORE_ARRAY!==null){
      _ELEMENT_ROWS_CORE_ARRAY.map(
           (row,i)=>{
-               RENDER_ELEMENT_ARRAY.push(
-                    <div className={this.state._select_row_id===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}>
-                         <div className='element_row_adders_main_cont'>
-                                   {this.state._select_row_id===i?
-                                   <div >
-                                   <button className='element_row_adders_add_above add_above'
-                                   onClick={()=>{
-                                        this.renderer_add_butt_callback(0,i,0)
-                                   }}>
-                                   <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Up</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 328l144-144 144 144'/></svg>
-                                   </button>
-                                   <button className='element_row_adders_add_above add_below'
-                                   onClick={()=>{
-                                        this.renderer_add_butt_callback(0,i,1)
-                                   }}>
-                                        <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
-                                   </button>
-                                   </div>
-                                   :undefined}
+               if(row.length>0){
+                    RENDER_ELEMENT_ARRAY.push(
+                         <div className={this.state._select_row_id===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}>
+                              <div className='element_row_adders_main_cont'>
+                                        {this.state._select_row_id===i?
+                                        <div >
+                                        <button className='element_row_adders_add_above add_above'
+                                        onClick={()=>{
+                                             this.renderer_add_butt_callback(0,i,0)
+                                        }}>
+                                        <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Up</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 328l144-144 144 144'/></svg>
+                                        </button>
+                                        <button className='element_row_adders_add_above add_below'
+                                        onClick={()=>{
+                                             this.renderer_add_butt_callback(0,i,1)
+                                        }}>
+                                             <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                        </button>
+                                        </div>
+                                        :undefined}
+                              </div>
+                              { row.map((element,j)=>{
+                              if(element.deleted===false){ 
+                                        return(
+                                             new elementRender(element,
+                                             Router.query.row_id,
+                                             Router.query.select_id,)
+                                             ._render_element_overlay(
+                                                                      this._set_url_param_selec_id,
+                                                                      this.renderer_add_butt_callback,
+                                                                      this._embeded_element_render_classback));
+                                                  }
+     
+                         })}          
                          </div>
-                         
-                                   
-                         
-
-
-
-                         { row.map((element,j)=>{
-                         if(element.deleted===false){ 
-                                   return(
-                                        new elementRender(element,
-                                        Router.query.row_id,
-                                        Router.query.select_id,)
-                                        ._render_element_overlay(
-                                                                 this._set_url_param_selec_id,
-                                                                 this.renderer_add_butt_callback,
-                                                                 this._embeded_element_render_classback));
-                                             }
-
-                    })}          
-                    </div>
-               )
+                    )
+               }
+               else{
+                    return null;
+               }
+              
               
           }
      );
@@ -2117,34 +2325,6 @@ _render_component(){
 }
 
 
-     // _render_component(){
-     //      RENDER_ELEMENT_ARRAY = [];
-     //   ///RENDER_ELEMENT_ARRAY.push(new elementRender()._render_profile_element());
-     //      if(_ELEMENT_CORE_ARRAY!==null){
-     //      _ELEMENT_CORE_ARRAY.map(
-     //           (element,index)=>{
-     //                     if(element.deleted===false){ 
-     //                          RENDER_ELEMENT_ARRAY.push(
-     //                               new elementRender(element,
-     //                                    Router.query.select_id,)
-     //                                    ._render_element_overlay(this._set_url_param_selec_id,
-     //                                                             this.renderer_add_butt_callback,
-     //                                                             this._embeded_element_render_classback));
-     //                     }
-     //           }
-     //      );
-     //      }
-     //      if(_ELEMENT_CORE_ARRAY.length==0){
-     //           RENDER_ELEMENT_ARRAY.push(
-     //                <div className='_insrt_new_ele_inf_cont'>
-     //                     <svg className='_insrt_new_ele_inf_cont_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
-     //                     Add new elements , Go crazy 😄
-     //                </div>
-     //           )
-     //      }
-     //      RENDER_ELEMENT_ARRAY.push(new elementRender()._render_foot_element());
-     //      return RENDER_ELEMENT_ARRAY;
-     // }
 
      _get_page_type_render(element){
           switch(element.element_type_id){
@@ -2232,10 +2412,6 @@ _render_component(){
                <div className='land_act_head_main_cont'>
                     {this._element_add_modal()}
                     <div className='land_act_head_tit_cont'> <div className='land_act_head_tit_cont_logo'/>{process.env.APP_NAME} 
-                    {/* <div className='land_act_head_save_cont' style={{
-                         color:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
-                         borderColor:this.state.isUnSaved===true?'#F6BC4F':'#A9EB9F',
-                    }}>{this.state.isUnSaved===true?'Unsaved':'Saved'}</div> */}
                     </div>  
                     <div className='land_act_head_cent_main_cont'>
                               
@@ -2384,9 +2560,6 @@ _render_component(){
                                    {this._render_component()}
                          </div>
                          </div>
-                         {    
-                              //this.state._select_element_id>=0?<EditMenu selectId={this.state._select_element_id} />:undefined
-                          }    
                     </div>
                     {this.state._select_element_id>=0 && ((typeof this.state._select_element_id) == 'number') ?
                     <Resizable
