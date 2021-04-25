@@ -1,4 +1,5 @@
 .lander_base_main_cont{
+     
      background-color: #F2F7FB;
 }
 .backdrop{
@@ -224,13 +225,14 @@ padding: 12px;
      width: 100%;
      margin-right: 32px;
      margin-left: 95px;
-     box-shadow: 0px 0px 16px rgba(0,0,0,0.1);
-     border: 1px solid #e0e0e0;
+     box-shadow: 0px 0px 9px rgba(0,0,0,0.1);
+     
      border-radius: 12px;
      overflow: hidden;
      /* border-right: 1px solid #e0e0e0; */
      left: 0;
      margin-top: 74px;
+     padding-top: 82px;
      margin-bottom: 42px;
      padding-bottom: 64px;
      /* background-image: linear-gradient(#e0e0e0 .1em, transparent .1em), linear-gradient(90deg, #e0e0e0 .1em, transparent .1em); */
@@ -248,6 +250,7 @@ padding: 12px;
 .land_act_creat_main_cont_grd_back{
      position: absolute;
      top: 0;
+
      bottom: 0;
      left: 0;
      right: 0;
@@ -266,9 +269,8 @@ padding: 12px;
      
 }
 .land_act_creat_sub_cont{
-     width: 650px;
+     width: 900px;
      opacity: 1;
-     
      /* box-shadow: 0px 7px 10px #e0e0e0; */
      border-radius: 8px;
 }
@@ -323,6 +325,45 @@ padding: 12px;
      align-items: center;
      box-shadow: 0px 3px 7px rgba(0,0,0,0.2);
      }
+
+     .land_left_bdy_butt_main_cont{
+          position: relative;
+        }
+        .land_left_bdy_butt_main_tit_cont{
+             position: absolute;
+             width: max-content;
+             
+             margin-left: 55px;
+             padding-left: 12px;
+             padding-right: 12px;
+             height: 100%;
+             display: flex;
+             background-color: #000;
+             color: #fff;
+             border-radius: 8px;
+             align-items: center;
+             font-size: 12px;
+             visibility: hidden;
+        }
+
+.land_left_bdy_butt_main_tit_cont_arrow{
+     position: absolute;
+     top: 0;
+     left: 0;
+     margin-top: 4px;
+     margin-left: -9px;
+     width: 0; 
+     height: 0; 
+     border-top: 7px solid transparent;
+     border-bottom: 7px solid transparent; 
+     border-right:10px solid #000; 
+     z-index: 30;
+     
+}
+.land_left_bdy_butt_main_cont:hover  > .land_left_bdy_butt_main_tit_cont{
+     visibility: visible;
+        }
+
 .land_act_prv_main_cont{
      width: calc(100%-500px)  ;
      left: 500px;
@@ -440,6 +481,7 @@ height: 100%;
 width: 22px;
 color: #424242;
 height: 22px;
+z-index: 30;
 }
 .land_act_back_cust_butt:active{
      background-color: #f1f1f1;

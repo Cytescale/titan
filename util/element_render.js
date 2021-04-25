@@ -7,10 +7,10 @@ import { isElementAccessExpression } from 'typescript';
 var tslib_1 = require("tslib");
 
 export default class elementRender{
-     constructor(element,selec_id){
+     constructor(element,row_id,selec_id){
           this.element = element;
           if(this.element!==undefined){
-          if(selec_id == this.element.element_id){
+          if((selec_id == this.element.element_id) && (row_id == this.element.row_id)){
                this.isSelected = true;
           }
           else{
@@ -71,7 +71,7 @@ export default class elementRender{
           }
      }
 
-     _render_element_overlay(set_selec_callback,add_butt_callback,callback){
+          _render_element_overlay(set_selec_callback,add_butt_callback,callback){
           return(
                <div className='overlay_build_lines'>
                           <div className='overlay_build_line_1'  style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>
@@ -82,29 +82,45 @@ export default class elementRender{
                }}
                >
                          <div className='overlay_add_butt_cont'>
-                                   <div className='overlay_element_label' style={{visibility:this.isSelected===true?'visible':'hidden'}}>{this._get_element_name()} <i class="cur_arrow so_down"></i></div>
-                                   <button className="_page_element_overlay_add_top" style={{
+                                   {/* <div className='overlay_element_label' style={{visibility:this.isSelected===true?'visible':'hidden'}}>{this._get_element_name()} <i class="cur_arrow so_down"></i></div> */}
+                                   {/* <button className="_page_element_overlay_add_top" style={{
                                         opacity:this.isSelected==true?1:0,
                                         visibility:this.isSelected===true?'visible':'hidden',
 
                                    }} 
-                                   onClick={()=>add_butt_callback(this.element.element_id,0)}>+ Add Above</button>
-                                   <button className="_page_element_overlay_add_bottom" style={{
+                                   onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,0)}>+ Add Above</button> */}
+
+                                   <button className="_page_element_overlay_add_left" style={{
+                                        opacity:this.isSelected==true?1:0,
+                                          visibility:this.isSelected===true?'visible':'hidden',
+                                        }} 
+                                   onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,2)}>
+                                   <svg className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Back</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M328 112L184 256l144 144'/></svg></button>
+                                                                      
+
+                                   <button className="_page_element_overlay_add_right" style={{
                                         opacity:this.isSelected==true?1:0,
                                         visibility:this.isSelected===true?'visible':'hidden',
-                                   }}  onClick={()=>add_butt_callback(this.element.element_id,1)}>+ Add Below</button>
+
+                                   }} 
+                                   onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,3)}>
+                                   <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Forward</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M184 112l144 144-144 144'/></svg></button>
+                                   
+                                   {/* <button className="_page_element_overlay_add_bottom" style={{
+                                        opacity:this.isSelected==true?1:0,
+                                        visibility:this.isSelected===true?'visible':'hidden',
+                                   }}  onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,1)}>+ Add Below</button> */}
                          </div>
                          <div  className="_page_element_main_bdy" id={'_page_element_spci_'+this.element.element_id} 
                                              onMouseDown={()=>{
-                                                  if(this.isSelected===true){set_selec_callback(-1)
-                                                  }else{set_selec_callback(this.element.element_id);}
+                                                  if(this.isSelected===true){set_selec_callback(-1,-1)
+                                                  }else{set_selec_callback(this.element.element_id,this.element.row_id);}
                                              }}
                                              >
                                              {this._get_type_element(callback)}
                                              <div className={this.isSelected==true?"_page_element_overlay":"_page_element_overlay_non"} ></div>
                          </div>
                </div>
-               <div className='overlay_build_line_2' style={{visibility:this.isSelected===true?'visible':'hidden'}}></div>   
                </div>
           )
      }

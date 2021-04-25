@@ -25,6 +25,8 @@ const storeHelper = new firestoreHelper(cookies.get('accessToken'));
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (<a href="" ref={ref} onClick={(e) => { e.preventDefault();onClick(e);}}>{children}</a>));
 
 
+
+var _ELEMENT_ROWS_CORE_ARRAY = [];
 var _ELEMENT_CORE_ARRAY = [];
 var  RENDER_ELEMENT_ARRAY = [];
 var _PAGE_ID = null;
@@ -34,6 +36,7 @@ var _GEN_CODE ='';
 var _PRIVEW_GEN_CODE = '';
 var _BACK_DATA = null;
 var _SELECTED_ELEMENT_ID=undefined;
+var _SELECTED_ELEMENT_ROW_ID = undefined;
 var _INSERT_BOOL = 1;
 
 const FONT_FAMILY_NAMES = [
@@ -102,7 +105,7 @@ const FONT_FAMILY_NAMES = [
 
 var STLYE_ELEMENT_TEXT ={
      margin:0,
-     margin_top:12,
+     margin_top:0,
      margin_bottom:0,
      padding_right:0,
      padding_left:12,
@@ -142,7 +145,7 @@ class backgrounClass{
           this.back_type = 0;
           this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
-          this.solid_color = '#F4FFFD';
+          this.solid_color = '#F9FFF2';
           this.default_value = {
                backgroundColor:'#f1f1f1',
                backgroundImage:'linear-gradient(160deg,#fff,#FDD075)',
@@ -159,45 +162,48 @@ class notiClass{
      }
 }
 class _Element_Video_Youtube{
-     constructor(in_style,index_id){
+     constructor(row_id,indx_id,in_style){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 4;
-          this.element_id = index_id,
           this.data ='';
-          this.element_render_class_name = ''
+          this.row_id = row_id;
+          this.element_id =indx_id;
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
     
 }
 class _Element_Link{
-     constructor(in_style){
+     constructor(row_id,indx_id,in_style){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 1;
           this.element_url = '';
-          this.element_id =_ELEMENT_CORE_ARRAY.length,
+          this.row_id = row_id;
+          this.element_id =indx_id;
           this.data ="Placeholder Link";
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
      
 }
 class _Element_Image{
-     constructor(in_style){
+     constructor(row_id,indx_id,in_style){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 2;
-          this.element_id =_ELEMENT_CORE_ARRAY.length;
+          this.row_id = row_id;
+          this.element_id = indx_id;
           this.image_data = null;
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
 }
 class _Element_Text{
-     constructor(in_style){
+     constructor(row_id,indx_id,in_style){
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 0;
-          this.element_id =_ELEMENT_CORE_ARRAY.length;
+          this.row_id = row_id;
+          this.element_id = indx_id;
           this.data = "Lorem Ipsum";
           this.style = Object.assign({},STLYE_ELEMENT_TEXT,in_style);
      }
@@ -218,9 +224,10 @@ export default class LandAct extends React.Component{
                dname:"Not done..",
                element_count:0,
                _select_element_id:-1,
+               _select_row_id:-1,
                _add_elem_mod_show:false,
                _txt_pop_shw:false,
-               _edit_menu_width:300,
+               _edit_menu_width:250     ,
           }
          
           this._set_load_bool = this._set_load_bool.bind(this);
@@ -248,8 +255,10 @@ export default class LandAct extends React.Component{
      copytoClip(txt){
           copy(txt);  
      }
-     _set_selec_element_id(val){
-          this.setState({_select_element_id:val})
+     _set_selec_element_id(val,row_id){
+          this.setState({_select_element_id:val,
+                         _select_row_id:row_id
+                         })
      }
 
      _set_edit_menu_width(val){
@@ -567,11 +576,11 @@ export default class LandAct extends React.Component{
                     default:{return 'Loading'}
                }}
      }
-     _draw_font_family(element_id){
+     _draw_font_family(element_id,row_id){
           let res = []
                FONT_FAMILY_NAMES.map((e,ind)=>{
                  res.push(<Dropdown.Item as="button" onClick={()=>{
-                    _ELEMENT_CORE_ARRAY[element_id].style.font_family = e;
+                    this._get_element_by_index(row_id,element_id).style.font_family = e;
                     this.forceUpdate();
                  }}>{e}</Dropdown.Item>);
                })
@@ -631,17 +640,27 @@ export default class LandAct extends React.Component{
             </Modal>
           );
         }  
-     
-     _render_embeded_menu(element_id){
-          if(_ELEMENT_CORE_ARRAY[element_id]!==null&& _ELEMENT_CORE_ARRAY[element_id]!==undefined){
+
+     _get_element_by_index(row_id,indx_id){
+          if(_ELEMENT_ROWS_CORE_ARRAY[row_id][indx_id]!==undefined){
+               return(_ELEMENT_ROWS_CORE_ARRAY[row_id][indx_id]);
+          }
+          else{
+               return false;
+          }
+          
+     }
+
+     _render_embeded_menu(element_id,row_id){
+          if(this._get_element_by_index(row_id,element_id)!==false){ 
                return(
                     <div className='ele_pop_main_bdy'>
                     <div className='pop_txt_head_main_cont'>
                                              <div className='pop_txt_head_txt'>Embeded</div>
                                                   <div className='pop_txt_head_rght_cont'>
                                                   <div className='pop_txt_head_rght_cont_swt'>
-                                                  <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
-                                                       _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                                  <input type="checkbox" checked={this._get_element_by_index(row_id,element_id).enabled} id="switch" onChange={(e)=>{    
+                                                       this._get_element_by_index(row_id,element_id).enabled = !(this._get_element_by_index(row_id,element_id).enabled)
                                                        this.forceUpdate();
                                                   }} />
                                                   <label for="switch" className='ele_pop_elem_lab'>Toggle</label>
@@ -649,7 +668,7 @@ export default class LandAct extends React.Component{
                                                   <div className='pop_txt_head_rght_cont_del_swt'>
                                                             <button className='pop_txt_head_rght_cont_del_swt_butt'
                                                              onClick={()=>{
-                                                                 _ELEMENT_CORE_ARRAY[element_id].deleted = true;
+                                                                 this._get_element_by_index(row_id,element_id).deleted = true;
                                                                  this._add_notification("Emeded element deleted","danger",1000);
                                                                  $('.popover_txt_class').hide();
                                                                  this.forceUpdate();           
@@ -676,9 +695,9 @@ export default class LandAct extends React.Component{
                                         type='url'
                                     placeholder='Enter embeded url value' 
                                     className='ele_txt_pop_cont_color' 
-                                   value={_ELEMENT_CORE_ARRAY[element_id].data}
+                                   value={this._get_element_by_index(row_id,element_id).data}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].data = e.target.value;
+                                        this._get_element_by_index(row_id,element_id).data = e.target.value;
                                         this.forceUpdate();
                                    }} />     
                                              <div className='ele_pop_bdy_txt'>Border raidus</div>    
@@ -687,16 +706,16 @@ export default class LandAct extends React.Component{
                                                   <Slider
                                                   orientation="horizontal"
                                                   tooltip={false}
-                                                  value={_ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                                  value={this._get_element_by_index(row_id,element_id).style.border_radius}
                                                   onChange={(val) =>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].style.border_radius =val;   
+                                                       this._get_element_by_index(row_id,element_id).style.border_radius =val;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.border_radius}
                                              onChange={(e)=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].style.border_radius =e.target.value;   
+                                                  this._get_element_by_index(row_id,element_id).style.border_radius =e.target.value;   
                                                   this.forceUpdate();
                                              }}
                                              />
@@ -712,16 +731,16 @@ export default class LandAct extends React.Component{
                                                   <Slider
                                                   orientation="horizontal"
                                                   tooltip={false}
-                                                  value={_ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                                  value={this._get_element_by_index(row_id,element_id).style.margin_top}
                                                   onChange={(val) =>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].style.margin_top =val;   
+                                                       this._get_element_by_index(row_id,element_id).style.margin_top =val;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_top}
                                              onChange={(e)=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].style.margin_top =e.target.value;   
+                                                  this._get_element_by_index(row_id,element_id).style.margin_top =e.target.value;   
                                                   this.forceUpdate();
                                              }}
                                              />
@@ -732,16 +751,16 @@ export default class LandAct extends React.Component{
                                                   <Slider
                                                   orientation="horizontal"
                                                   tooltip={false}
-                                                  value={_ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                                  value={this._get_element_by_index(row_id,element_id).style.margin_bottom}
                                                   onChange={(val) =>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =val;   
+                                                       this._get_element_by_index(row_id,element_id).style.margin_bottom =val;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_bottom}
                                              onChange={(e)=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =e.target.value;   
+                                                  this._get_element_by_index(row_id,element_id).style.margin_bottom =e.target.value;   
                                                   this.forceUpdate();
                                              }}
                                              />
@@ -752,16 +771,16 @@ export default class LandAct extends React.Component{
                                                   <Slider
                                                   orientation="horizontal"
                                                   tooltip={false}
-                                                  value={_ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                                  value={this._get_element_by_index(row_id,element_id).style.padding_left}
                                                   onChange={(val) =>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].style.padding_left =val;   
+                                                       this._get_element_by_index(row_id,element_id).style.padding_left =val;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_left}
                                              onChange={(e)=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_left =e.target.value;   
+                                                  this._get_element_by_index(row_id,element_id).style.padding_left =e.target.value;   
                                                   this.forceUpdate();
                                              }}
                                              />
@@ -772,16 +791,16 @@ export default class LandAct extends React.Component{
                                                   <Slider
                                                   orientation="horizontal"
                                                   tooltip={false}
-                                                  value={_ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                                  value={this._get_element_by_index(row_id,element_id).style.padding_right}
                                                   onChange={(val) =>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].style.padding_right =val;   
+                                                       this._get_element_by_index(row_id,element_id).style.padding_right =val;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_right}
                                              onChange={(e)=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_right =e.target.value;   
+                                                  this._get_element_by_index(row_id,element_id).style.padding_right =e.target.value;   
                                                   this.forceUpdate();
                                              }}
                                              />
@@ -792,16 +811,16 @@ export default class LandAct extends React.Component{
                                                   <Slider
                                                   orientation="horizontal"
                                                   tooltip={false}
-                                                  value={_ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                                  value={this._get_element_by_index(row_id,element_id).style.padding_top}
                                                   onChange={(val) =>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].style.padding_top =val;   
+                                                       this._get_element_by_index(row_id,element_id).style.padding_top =val;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_top}
                                              onChange={(e)=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_top =e.target.value;   
+                                                  this._get_element_by_index(row_id,element_id).style.padding_top =e.target.value;   
                                                   this.forceUpdate();
                                              }}
                                              />
@@ -812,16 +831,16 @@ export default class LandAct extends React.Component{
                                                   <Slider
                                                   orientation="horizontal"
                                                   tooltip={false}
-                                                  value={_ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                                  value={this._get_element_by_index(row_id,element_id).style.padding_bottom}
                                                   onChange={(val) =>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =val;   
+                                                       this._get_element_by_index(row_id,element_id).style.padding_bottom =val;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_bottom}
                                              onChange={(e)=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =e.target.value;   
+                                                  this._get_element_by_index(row_id,element_id).style.padding_bottom =e.target.value;   
                                                   this.forceUpdate();
                                              }}
                                              />
@@ -838,16 +857,16 @@ export default class LandAct extends React.Component{
           }
      }
 
-     _render_image_menu(element_id){
-          if(_ELEMENT_CORE_ARRAY[element_id]!==null&& _ELEMENT_CORE_ARRAY[element_id]!==undefined){
+     _render_image_menu(element_id,row_id){
+          if(this._get_element_by_index(row_id,element_id)!==false){ 
                return(
                     <div className='ele_pop_main_bdy'>
                     <div className='pop_txt_head_main_cont'>
                               <div className='pop_txt_head_txt'>Image</div>
                                    <div className='pop_txt_head_rght_cont'>
                                    <div className='pop_txt_head_rght_cont_swt'>
-                                   <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
-                                        _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                   <input type="checkbox" checked={this._get_element_by_index(row_id,element_id).enabled} id="switch" onChange={(e)=>{    
+                                        this._get_element_by_index(row_id,element_id).enabled = !(this._get_element_by_index(row_id,element_id).enabled)
                                         this.forceUpdate();
                                    }} />
                                    <label for="switch" className='ele_pop_elem_lab'>Toggle</label>
@@ -855,7 +874,7 @@ export default class LandAct extends React.Component{
                                    <div className='pop_txt_head_rght_cont_del_swt'>
                                              <button className='pop_txt_head_rght_cont_del_swt_butt'
                                               onClick={()=>{
-                                                  _ELEMENT_CORE_ARRAY[element_id].deleted = true;
+                                                  this._get_element_by_index(row_id,element_id).deleted = true;
                                                   this._add_notification("Text element deleted","danger",1000);
                                                   this._set_url_param_selec_id(-1);
                                                   this.forceUpdate();           
@@ -881,9 +900,9 @@ export default class LandAct extends React.Component{
                                    <div>
                                                   <ImageUploading
                                                        multiple={false}
-                                                       value={_ELEMENT_CORE_ARRAY[element_id].image_data}
+                                                       value={this._get_element_by_index(row_id,element_id).image_data}
                                                        onChange={(imageList,addUpdateIndex)=>{
-                                                            _ELEMENT_CORE_ARRAY[element_id].image_data = imageList;
+                                                            this._get_element_by_index(row_id,element_id).image_data = imageList;
                                                             console.log(imageList);
                                                             this.forceUpdate(); 
                                                        }}
@@ -900,7 +919,7 @@ export default class LandAct extends React.Component{
                                                             dragProps,
                                                        }) => (
                                                             <div className="upload__image-wrapper">
-                                                            {_ELEMENT_CORE_ARRAY[element_id].image_data===null?<Button variant={'primary'} className='upload__image-wrapper_butt' onClick={onImageUpload}>Upload</Button>:undefined}
+                                                            {this._get_element_by_index(row_id,element_id).image_data===null?<Button variant={'primary'} className='upload__image-wrapper_butt' onClick={onImageUpload}>Upload</Button>:undefined}
                                                             {imageList.map((image, index) => (
                                                             <div key={index} className="image-item">
                                                                  <img src={image['data_url']} className='image_img' alt="" width="100" />
@@ -914,7 +933,7 @@ export default class LandAct extends React.Component{
                                                        )}
                                                        </ImageUploading>
                                         </div>
-                                             {_ELEMENT_CORE_ARRAY[element_id].image_data!==null?
+                                             {this._get_element_by_index(row_id,element_id).image_data!==null?
                                              <div>
                                                        <div className='ele_pop_bdy_txt'>Border raidus</div>    
                                                        <div className='ele_pop_bdy_slid_cont'>
@@ -922,16 +941,16 @@ export default class LandAct extends React.Component{
                                                             <Slider
                                                             orientation="horizontal"
                                                             tooltip={false}
-                                                            value={_ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                                            value={this._get_element_by_index(row_id,element_id).style.border_radius}
                                                             onChange={(val) =>{
-                                                                 _ELEMENT_CORE_ARRAY[element_id].style.border_radius =val;   
+                                                                 this._get_element_by_index(row_id,element_id).style.border_radius =val;   
                                                                  this.forceUpdate();
                                                             }}
                                                             />
                                                             </div>
-                                                       <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                                       <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.border_radius}
                                                        onChange={(e)=>{
-                                                            _ELEMENT_CORE_ARRAY[element_id].style.border_radius =e.target.value;   
+                                                            this._get_element_by_index(row_id,element_id).style.border_radius =e.target.value;   
                                                             this.forceUpdate();
                                                        }}
                                                        />
@@ -943,24 +962,24 @@ export default class LandAct extends React.Component{
                                                             <Slider
                                                             orientation="horizontal"
                                                             tooltip={false}
-                                                            value={_ELEMENT_CORE_ARRAY[element_id].style.image_width}
+                                                            value={this._get_element_by_index(row_id,element_id).style.image_width}
                                                             onChange={(val) =>{
-                                                                 _ELEMENT_CORE_ARRAY[element_id].style.image_width =val;   
+                                                                 this._get_element_by_index(row_id,element_id).style.image_width =val;   
                                                                  this.forceUpdate();
                                                             }}
                                                             />
                                                             </div>
-                                                       <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.image_width}
+                                                       <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.image_width}
                                                        onChange={(e)=>{
-                                                            _ELEMENT_CORE_ARRAY[element_id].style.image_width =e.target.value;   
+                                                            this._get_element_by_index(row_id,element_id).style.image_width =e.target.value;   
                                                             this.forceUpdate();
                                                        }}
                                                        />
                                                        </div>   
                                                             <div className='ele_pop_bdy_txt'>Image alignment</div>        
-                                                                 <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={_ELEMENT_CORE_ARRAY[element_id].style.text_align} className="mb-2"
+                                                                 <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={this._get_element_by_index(row_id,element_id).style.text_align} className="mb-2"
                                                                  onChange={(val)=>{
-                                                                      _ELEMENT_CORE_ARRAY[element_id].style.text_align =  val;
+                                                                      this._get_element_by_index(row_id,element_id).style.text_align =  val;
                                                                       this.forceUpdate();
                                                                  }}
                                                                  >
@@ -981,16 +1000,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                   value={this._get_element_by_index(row_id,element_id).style.margin_top}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_top =val;   
+                                        this._get_element_by_index(row_id,element_id).style.margin_top =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_top}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.margin_top =e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.margin_top =e.target.value;   
                                    this.forceUpdate();
                               }}
                               />
@@ -1001,16 +1020,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                   value={this._get_element_by_index(row_id,element_id).style.margin_bottom}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =val;   
+                                        this._get_element_by_index(row_id,element_id).style.margin_bottom =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_bottom}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.margin_bottom =e.target.value;   
                                    this.forceUpdate();
                               }}
                               />
@@ -1021,16 +1040,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                   value={this._get_element_by_index(row_id,element_id).style.padding_left}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_left =val;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_left =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_left}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.padding_left =e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.padding_left =e.target.value;   
                                    this.forceUpdate();
                               }}
                               />
@@ -1041,16 +1060,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                   value={this._get_element_by_index(row_id,element_id).style.padding_right}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_right =val;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_right =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_right}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.padding_right =e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.padding_right =e.target.value;   
                                    this.forceUpdate();
                               }}
                               />
@@ -1061,16 +1080,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                   value={this._get_element_by_index(row_id,element_id).style.padding_top}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_top =val;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_top =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_top}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.padding_top =e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.padding_top =e.target.value;   
                                    this.forceUpdate();
                               }}
                               />
@@ -1081,16 +1100,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                   value={this._get_element_by_index(row_id,element_id).style.padding_bottom}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =val;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_bottom =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                              <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_bottom}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.padding_bottom =e.target.value;   
                                    this.forceUpdate();
                               }}
                               />
@@ -1104,16 +1123,16 @@ export default class LandAct extends React.Component{
                     return(<div>Fault Menu</div>)
                }
      }
-     _render_link_menu(element_id){
-          if(_ELEMENT_CORE_ARRAY[element_id]!==null&& _ELEMENT_CORE_ARRAY[element_id]!==undefined){
+     _render_link_menu(element_id,row_id){
+          if(this._get_element_by_index(row_id,element_id)!==false){ 
                return(
                <div className='ele_pop_main_bdy'>
                          <div className='pop_txt_head_main_cont'>
                                    <div className='pop_txt_head_txt'>Link</div>
                                         <div className='pop_txt_head_rght_cont'>
                                         <div className='pop_txt_head_rght_cont_swt'>
-                                        <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
-                                             _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                        <input type="checkbox" checked={this._get_element_by_index(row_id,element_id).enabled} id="switch" onChange={(e)=>{    
+                                             this._get_element_by_index(row_id,element_id).enabled = !(this._get_element_by_index(row_id,element_id).enabled)
                                              this.forceUpdate();
                                         }} />
                                         <label for="switch" className='ele_pop_elem_lab'>Toggle</label>
@@ -1121,7 +1140,7 @@ export default class LandAct extends React.Component{
                                         <div className='pop_txt_head_rght_cont_del_swt'>
                                                   <button className='pop_txt_head_rght_cont_del_swt_butt'
                                                    onClick={()=>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].deleted = true;
+                                                       this._get_element_by_index(row_id,element_id).deleted = true;
                                                        this._add_notification("Text element deleted","danger",1000);
                                                        this._set_selec_element_id(-1)
                                                        //$('.popover_txt_class').hide();
@@ -1149,9 +1168,9 @@ export default class LandAct extends React.Component{
                                         type='url'
                                     placeholder='Text Value' 
                                     className='ele_lnk_tit_pop_cont' 
-                                   value={_ELEMENT_CORE_ARRAY[element_id].element_url!==undefined?_ELEMENT_CORE_ARRAY[element_id].element_url:"undefined"}
+                                   value={this._get_element_by_index(row_id,element_id).element_url!==undefined?this._get_element_by_index(row_id,element_id).element_url:"undefined"}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].element_url  = e.target.value;
+                                        this._get_element_by_index(row_id,element_id).element_url  = e.target.value;
                                         this.forceUpdate();
                                    }} />
 
@@ -1160,14 +1179,14 @@ export default class LandAct extends React.Component{
                                         type='text'
                                     placeholder='Text Value' 
                                     className='ele_lnk_tit_pop_cont' 
-                                   value={_ELEMENT_CORE_ARRAY[element_id].data!==undefined?_ELEMENT_CORE_ARRAY[element_id].data:"undefined"}
+                                   value={this._get_element_by_index(row_id,element_id).data!==undefined?this._get_element_by_index(row_id,element_id).data:"undefined"}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].data  = e.target.value;
+                                        this._get_element_by_index(row_id,element_id).data  = e.target.value;
                                         this.forceUpdate();
                                    }} />
 
-                                     <DropdownButton variant={'light'} id="font_choice_drop_menu" title={_ELEMENT_CORE_ARRAY[element_id].style.font_family}>
-                                        {this._draw_font_family(element_id)}
+                                     <DropdownButton variant={'light'} id="font_choice_drop_menu" title={this._get_element_by_index(row_id,element_id).style.font_family}>
+                                        {this._draw_font_family(element_id,row_id)}
                                      </DropdownButton>
 
                            
@@ -1178,16 +1197,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.font_size}
+                                        value={this._get_element_by_index(row_id,element_id).style.font_size}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.font_size =val;   
+                                             this._get_element_by_index(row_id,element_id).style.font_size =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.font_size}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.font_size}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.font_size =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.font_size =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1199,16 +1218,16 @@ export default class LandAct extends React.Component{
                                    orientation="horizontal"
                                    max='900' 
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.font_weight}
+                                   value={this._get_element_by_index(row_id,element_id).style.font_weight}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.font_weight =val;   
+                                        this._get_element_by_index(row_id,element_id).style.font_weight =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={_ELEMENT_CORE_ARRAY[element_id].style.font_weight}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.font_weight}
                                    onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.font_weight = e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.font_weight = e.target.value;   
                                    this.forceUpdate();
                                    }}
                                    />
@@ -1219,16 +1238,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.border_width}
+                                   value={this._get_element_by_index(row_id,element_id).style.border_width}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.border_width =val;   
+                                        this._get_element_by_index(row_id,element_id).style.border_width =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={_ELEMENT_CORE_ARRAY[element_id].style.border_width}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.border_width}
                                    onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.border_width = e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.border_width = e.target.value;   
                                    this.forceUpdate();
                                    }}
                                    />
@@ -1240,24 +1259,24 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                        value={this._get_element_by_index(row_id,element_id).style.border_radius}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.border_radius =val;   
+                                             this._get_element_by_index(row_id,element_id).style.border_radius =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.border_radius}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.border_radius =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.border_radius =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
                                    <div className='ele_pop_bdy_txt'>Text alignment</div>        
-                                   <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={_ELEMENT_CORE_ARRAY[element_id].style.text_align} className="mb-2"
+                                   <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={this._get_element_by_index(row_id,element_id).style.text_align} className="mb-2"
                                    onChange={(val)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.text_align =  val;
+                                        this._get_element_by_index(row_id,element_id).style.text_align =  val;
                                         this.forceUpdate();
                                    }}
                                    >
@@ -1271,10 +1290,10 @@ export default class LandAct extends React.Component{
                                         type="checkbox"
                                         variant="light"
                                         className='txt_algn_rad_ele_pop_butt'
-                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.undeline}
+                                        checked={this._get_element_by_index(row_id,element_id).style.undeline}
                                         value="1"
                                         onChange={(e) => {
-                                             _ELEMENT_CORE_ARRAY[element_id].style.undeline = e.currentTarget.checked;
+                                             this._get_element_by_index(row_id,element_id).style.undeline = e.currentTarget.checked;
                                              this.forceUpdate();
                                         }}
                                    >
@@ -1284,10 +1303,10 @@ export default class LandAct extends React.Component{
                                         type="checkbox"
                                         variant="light"
                                         className='txt_algn_rad_ele_pop_butt'
-                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.italic}
+                                        checked={this._get_element_by_index(row_id,element_id).style.italic}
                                         value="1"
                                         onChange={(e) => {
-                                             _ELEMENT_CORE_ARRAY[element_id].style.italic = e.currentTarget.checked;
+                                             this._get_element_by_index(row_id,element_id).style.italic = e.currentTarget.checked;
                                              this.forceUpdate();
                                         }}
                                    >
@@ -1297,10 +1316,10 @@ export default class LandAct extends React.Component{
                                         type="checkbox"
                                         variant="light"
                                         className='txt_algn_rad_ele_pop_butt'
-                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.bordered}
+                                        checked={this._get_element_by_index(row_id,element_id).style.bordered}
                                         value="1"
                                         onChange={(e) => {
-                                             _ELEMENT_CORE_ARRAY[element_id].style.bordered = e.currentTarget.checked;
+                                             this._get_element_by_index(row_id,element_id).style.bordered = e.currentTarget.checked;
                                              this.forceUpdate();
                                         }}
                                    >
@@ -1318,9 +1337,9 @@ export default class LandAct extends React.Component{
                                    rootClose={true}
                                    overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
                                    <ChromePicker
-                                        color={_ELEMENT_CORE_ARRAY[element_id].style.back_color}
+                                        color={this._get_element_by_index(row_id,element_id).style.back_color}
                                         onChange={(col)=>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.back_color = col.hex
+                                             this._get_element_by_index(row_id,element_id).style.back_color = col.hex
                                              this.forceUpdate()
                                         }}
                                         onChangeComplete={()=>{this.forceUpdate()}}
@@ -1329,8 +1348,8 @@ export default class LandAct extends React.Component{
                                    </Popover>}
                                    >
                                    <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_ELEMENT_CORE_ARRAY[element_id].style.back_color!==null?_ELEMENT_CORE_ARRAY[element_id].style.back_color:'#fff'}}></div>
-                                        {_ELEMENT_CORE_ARRAY[element_id].style.back_color===undefined?'none':_ELEMENT_CORE_ARRAY[element_id].style.back_color}
+                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.back_color!==null?this._get_element_by_index(row_id,element_id).style.back_color:'#fff'}}></div>
+                                        {this._get_element_by_index(row_id,element_id).style.back_color===undefined?'none':this._get_element_by_index(row_id,element_id).style.back_color}
                                    </Button>
                                    </OverlayTrigger>
 
@@ -1341,9 +1360,9 @@ export default class LandAct extends React.Component{
                                    rootClose={true}
                                    overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
                                    <ChromePicker
-                                        color={_ELEMENT_CORE_ARRAY[element_id].style.text_color}
+                                        color={this._get_element_by_index(row_id,element_id).style.text_color}
                                         onChange={(col)=>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.text_color = col.hex
+                                             this._get_element_by_index(row_id,element_id).style.text_color = col.hex
                                              this.forceUpdate()
                                         }}
                                         onChangeComplete={()=>{this.forceUpdate()}}
@@ -1352,8 +1371,8 @@ export default class LandAct extends React.Component{
                                    </Popover>}
                                    >
                                    <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_ELEMENT_CORE_ARRAY[element_id].style.text_color!==null?_ELEMENT_CORE_ARRAY[element_id].style.text_color:'#fff'}}></div>
-                                        {_ELEMENT_CORE_ARRAY[element_id].style.text_color}
+                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.text_color!==null?this._get_element_by_index(row_id,element_id).style.text_color:'#fff'}}></div>
+                                        {this._get_element_by_index(row_id,element_id).style.text_color}
                                    </Button>
                                    </OverlayTrigger>
                                   
@@ -1364,9 +1383,9 @@ export default class LandAct extends React.Component{
                                    rootClose={true}
                                    overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
                                    <ChromePicker
-                                        color={_ELEMENT_CORE_ARRAY[element_id].style.border_color}
+                                        color={this._get_element_by_index(row_id,element_id).style.border_color}
                                         onChange={(col)=>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.border_color = col.hex
+                                             this._get_element_by_index(row_id,element_id).style.border_color = col.hex
                                              this.forceUpdate()
                                         }}
                                         onChangeComplete={()=>{this.forceUpdate()}}
@@ -1375,8 +1394,8 @@ export default class LandAct extends React.Component{
                                    </Popover>}
                                    >
                                    <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_ELEMENT_CORE_ARRAY[element_id].style.border_color!==null?_ELEMENT_CORE_ARRAY[element_id].style.border_color:'#fff'}}></div>
-                                        {_ELEMENT_CORE_ARRAY[element_id].style.border_color}
+                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.border_color!==null?this._get_element_by_index(row_id,element_id).style.border_color:'#fff'}}></div>
+                                        {this._get_element_by_index(row_id,element_id).style.border_color}
                                    </Button>
                                    </OverlayTrigger>                                   
                          </Tab>
@@ -1389,16 +1408,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                        value={this._get_element_by_index(row_id,element_id).style.margin_top}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_top =val;   
+                                             this._get_element_by_index(row_id,element_id).style.margin_top =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_top}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_top =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.margin_top =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1409,16 +1428,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                        value={this._get_element_by_index(row_id,element_id).style.margin_bottom}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =val;   
+                                             this._get_element_by_index(row_id,element_id).style.margin_bottom =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_bottom}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.margin_bottom =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1429,16 +1448,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_left}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_left =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_left =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_left}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_left =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_left =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1449,16 +1468,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_right}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_right =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_right =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_right}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_right =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_right =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1469,16 +1488,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_top}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_top =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_top =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_top}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_top =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_top =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1489,16 +1508,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_bottom}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_bottom =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_bottom}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_bottom =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1512,16 +1531,16 @@ export default class LandAct extends React.Component{
                     return(<div>Fault Menu</div>)
                }
      }
-     _render_text_menu(element_id){
-          if(_ELEMENT_CORE_ARRAY[element_id]!==null&& _ELEMENT_CORE_ARRAY[element_id]!==undefined){
+     _render_text_menu(element_id,row_id){
+          if(this._get_element_by_index(row_id,element_id)!==false){ 
                return(
                <div className='ele_pop_main_bdy'>
                          <div className='pop_txt_head_main_cont'>
                                    <div className='pop_txt_head_txt'>Text</div>
                                         <div className='pop_txt_head_rght_cont'>
                                         <div className='pop_txt_head_rght_cont_swt'>
-                                        <input type="checkbox" checked={_ELEMENT_CORE_ARRAY[element_id].enabled} id="switch" onChange={(e)=>{    
-                                             _ELEMENT_CORE_ARRAY[element_id].enabled = !(_ELEMENT_CORE_ARRAY[element_id].enabled)
+                                        <input type="checkbox" checked={this._get_element_by_index(row_id,element_id).enabled} id="switch" onChange={(e)=>{    
+                                             this._get_element_by_index(row_id,element_id).enabled = !(this._get_element_by_index(row_id,element_id).enabled)
                                              this.forceUpdate();
                                         }} />
                                         <label for="switch" className='ele_pop_elem_lab'>Toggle</label>
@@ -1529,7 +1548,7 @@ export default class LandAct extends React.Component{
                                         <div className='pop_txt_head_rght_cont_del_swt'>
                                                   <button className='pop_txt_head_rght_cont_del_swt_butt'
                                                    onClick={()=>{
-                                                       _ELEMENT_CORE_ARRAY[element_id].deleted = true;
+                                                       this._get_element_by_index(row_id,element_id).deleted = true;
                                                        this._add_notification("Text element deleted","danger",1000);
                                                        this._set_selec_element_id(-1)
                                                        //$('.popover_txt_class').hide();
@@ -1557,13 +1576,13 @@ export default class LandAct extends React.Component{
                                    wrap="hard"
                                placeholder='Text Value' 
                                className='ele_txt_pop_cont' 
-                              value={_ELEMENT_CORE_ARRAY[element_id].data!==undefined?_ELEMENT_CORE_ARRAY[element_id].data:"undefined"}
+                              value={this._get_element_by_index(row_id,element_id).data!==undefined?this._get_element_by_index(row_id,element_id).data:"undefined"}
                               onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].data  = e.target.value;
+                                   this._get_element_by_index(row_id,element_id).data  = e.target.value;
                                    this.forceUpdate();
                               }} />
-                                     <DropdownButton variant={'light'} id="font_choice_drop_menu" title={_ELEMENT_CORE_ARRAY[element_id].style.font_family}>
-                                        {this._draw_font_family(element_id)}
+                                     <DropdownButton variant={'light'} id="font_choice_drop_menu" title={this._get_element_by_index(row_id,element_id).style.font_family}>
+                                        {this._draw_font_family(element_id,row_id)}
                                      </DropdownButton>
 
                            
@@ -1574,16 +1593,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.font_size}
+                                        value={this._get_element_by_index(row_id,element_id).style.font_size}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.font_size =val;   
+                                             this._get_element_by_index(row_id,element_id).style.font_size =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.font_size}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.font_size}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.font_size =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.font_size =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1595,16 +1614,16 @@ export default class LandAct extends React.Component{
                                    orientation="horizontal"
                                    max='900' 
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.font_weight}
+                                   value={this._get_element_by_index(row_id,element_id).style.font_weight}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.font_weight =val;   
+                                        this._get_element_by_index(row_id,element_id).style.font_weight =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={_ELEMENT_CORE_ARRAY[element_id].style.font_weight}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.font_weight}
                                    onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.font_weight = e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.font_weight = e.target.value;   
                                    this.forceUpdate();
                                    }}
                                    />
@@ -1615,16 +1634,16 @@ export default class LandAct extends React.Component{
                                    <Slider
                                    orientation="horizontal"
                                    tooltip={false}
-                                   value={_ELEMENT_CORE_ARRAY[element_id].style.border_width}
+                                   value={this._get_element_by_index(row_id,element_id).style.border_width}
                                    onChange={(val) =>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.border_width =val;   
+                                        this._get_element_by_index(row_id,element_id).style.border_width =val;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={_ELEMENT_CORE_ARRAY[element_id].style.border_width}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.border_width}
                                    onChange={(e)=>{
-                                   _ELEMENT_CORE_ARRAY[element_id].style.border_width = e.target.value;   
+                                   this._get_element_by_index(row_id,element_id).style.border_width = e.target.value;   
                                    this.forceUpdate();
                                    }}
                                    />
@@ -1636,24 +1655,24 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                        value={this._get_element_by_index(row_id,element_id).style.border_radius}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.border_radius =val;   
+                                             this._get_element_by_index(row_id,element_id).style.border_radius =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.border_radius}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.border_radius}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.border_radius =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.border_radius =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
                                    </div>
                                    <div className='ele_pop_bdy_txt'>Text alignment</div>        
-                                   <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={_ELEMENT_CORE_ARRAY[element_id].style.text_align} className="mb-2"
+                                   <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={this._get_element_by_index(row_id,element_id).style.text_align} className="mb-2"
                                    onChange={(val)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.text_align =  val;
+                                        this._get_element_by_index(row_id,element_id).style.text_align =  val;
                                         this.forceUpdate();
                                    }}
                                    >
@@ -1667,10 +1686,10 @@ export default class LandAct extends React.Component{
                                         type="checkbox"
                                         variant="light"
                                         className='txt_algn_rad_ele_pop_butt'
-                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.undeline}
+                                        checked={this._get_element_by_index(row_id,element_id).style.undeline}
                                         value="1"
                                         onChange={(e) => {
-                                             _ELEMENT_CORE_ARRAY[element_id].style.undeline = e.currentTarget.checked;
+                                             this._get_element_by_index(row_id,element_id).style.undeline = e.currentTarget.checked;
                                              this.forceUpdate();
                                         }}
                                    >
@@ -1680,10 +1699,10 @@ export default class LandAct extends React.Component{
                                         type="checkbox"
                                         variant="light"
                                         className='txt_algn_rad_ele_pop_butt'
-                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.italic}
+                                        checked={this._get_element_by_index(row_id,element_id).style.italic}
                                         value="1"
                                         onChange={(e) => {
-                                             _ELEMENT_CORE_ARRAY[element_id].style.italic = e.currentTarget.checked;
+                                             this._get_element_by_index(row_id,element_id).style.italic = e.currentTarget.checked;
                                              this.forceUpdate();
                                         }}
                                    >
@@ -1693,10 +1712,10 @@ export default class LandAct extends React.Component{
                                         type="checkbox"
                                         variant="light"
                                         className='txt_algn_rad_ele_pop_butt'
-                                        checked={_ELEMENT_CORE_ARRAY[element_id].style.bordered}
+                                        checked={this._get_element_by_index(row_id,element_id).style.bordered}
                                         value="1"
                                         onChange={(e) => {
-                                             _ELEMENT_CORE_ARRAY[element_id].style.bordered = e.currentTarget.checked;
+                                             this._get_element_by_index(row_id,element_id).style.bordered = e.currentTarget.checked;
                                              this.forceUpdate();
                                         }}
                                    >
@@ -1714,9 +1733,9 @@ export default class LandAct extends React.Component{
                                    rootClose={true}
                                    overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
                                    <ChromePicker
-                                        color={_ELEMENT_CORE_ARRAY[element_id].style.back_color}
+                                        color={this._get_element_by_index(row_id,element_id).style.back_color}
                                         onChange={(col)=>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.back_color = col.hex
+                                             this._get_element_by_index(row_id,element_id).style.back_color = col.hex
                                              this.forceUpdate()
                                         }}
                                         onChangeComplete={()=>{this.forceUpdate()}}
@@ -1725,8 +1744,8 @@ export default class LandAct extends React.Component{
                                    </Popover>}
                                    >
                                    <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_ELEMENT_CORE_ARRAY[element_id].style.back_color!==null?_ELEMENT_CORE_ARRAY[element_id].style.back_color:'#fff'}}></div>
-                                        {_ELEMENT_CORE_ARRAY[element_id].style.back_color===undefined?'none':_ELEMENT_CORE_ARRAY[element_id].style.back_color}
+                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.back_color!==null?this._get_element_by_index(row_id,element_id).style.back_color:'#fff'}}></div>
+                                        {this._get_element_by_index(row_id,element_id).style.back_color===undefined?'none':this._get_element_by_index(row_id,element_id).style.back_color}
                                    </Button>
                                    </OverlayTrigger>
 
@@ -1737,9 +1756,9 @@ export default class LandAct extends React.Component{
                                    rootClose={true}
                                    overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
                                    <ChromePicker
-                                        color={_ELEMENT_CORE_ARRAY[element_id].style.text_color}
+                                        color={this._get_element_by_index(row_id,element_id).style.text_color}
                                         onChange={(col)=>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.text_color = col.hex
+                                             this._get_element_by_index(row_id,element_id).style.text_color = col.hex
                                              this.forceUpdate()
                                         }}
                                         onChangeComplete={()=>{this.forceUpdate()}}
@@ -1748,8 +1767,8 @@ export default class LandAct extends React.Component{
                                    </Popover>}
                                    >
                                    <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_ELEMENT_CORE_ARRAY[element_id].style.text_color!==null?_ELEMENT_CORE_ARRAY[element_id].style.text_color:'#fff'}}></div>
-                                        {_ELEMENT_CORE_ARRAY[element_id].style.text_color}
+                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.text_color!==null?this._get_element_by_index(row_id,element_id).style.text_color:'#fff'}}></div>
+                                        {this._get_element_by_index(row_id,element_id).style.text_color}
                                    </Button>
                                    </OverlayTrigger>
                                   
@@ -1760,9 +1779,9 @@ export default class LandAct extends React.Component{
                                    rootClose={true}
                                    overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
                                    <ChromePicker
-                                        color={_ELEMENT_CORE_ARRAY[element_id].style.border_color}
+                                        color={this._get_element_by_index(row_id,element_id).style.border_color}
                                         onChange={(col)=>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.border_color = col.hex
+                                             this._get_element_by_index(row_id,element_id).style.border_color = col.hex
                                              this.forceUpdate()
                                         }}
                                         onChangeComplete={()=>{this.forceUpdate()}}
@@ -1771,8 +1790,8 @@ export default class LandAct extends React.Component{
                                    </Popover>}
                                    >
                                    <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_ELEMENT_CORE_ARRAY[element_id].style.border_color!==null?_ELEMENT_CORE_ARRAY[element_id].style.border_color:'#fff'}}></div>
-                                        {_ELEMENT_CORE_ARRAY[element_id].style.border_color}
+                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.border_color!==null?this._get_element_by_index(row_id,element_id).style.border_color:'#fff'}}></div>
+                                        {this._get_element_by_index(row_id,element_id).style.border_color}
                                    </Button>
                                    </OverlayTrigger>                                   
                          </Tab>
@@ -1785,16 +1804,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                        value={this._get_element_by_index(row_id,element_id).style.margin_top}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_top =val;   
+                                             this._get_element_by_index(row_id,element_id).style.margin_top =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_top}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_top}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_top =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.margin_top =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1805,16 +1824,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                        value={this._get_element_by_index(row_id,element_id).style.margin_bottom}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =val;   
+                                             this._get_element_by_index(row_id,element_id).style.margin_bottom =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_bottom}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.margin_bottom =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.margin_bottom =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1825,16 +1844,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_left}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_left =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_left =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_left}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_left}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_left =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_left =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1845,16 +1864,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_right}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_right =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_right =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_right}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_right}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_right =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_right =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1865,16 +1884,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_top}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_top =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_top =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_top}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_top}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_top =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_top =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1885,16 +1904,16 @@ export default class LandAct extends React.Component{
                                         <Slider
                                         orientation="horizontal"
                                         tooltip={false}
-                                        value={_ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                        value={this._get_element_by_index(row_id,element_id).style.padding_bottom}
                                         onChange={(val) =>{
-                                             _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =val;   
+                                             this._get_element_by_index(row_id,element_id).style.padding_bottom =val;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom}
+                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.padding_bottom}
                                    onChange={(e)=>{
-                                        _ELEMENT_CORE_ARRAY[element_id].style.padding_bottom =e.target.value;   
+                                        this._get_element_by_index(row_id,element_id).style.padding_bottom =e.target.value;   
                                         this.forceUpdate();
                                    }}
                                    />
@@ -1910,22 +1929,22 @@ export default class LandAct extends React.Component{
      }
      _render_element_menu(){
           
-          if(this.state._select_element_id!==null||this.state._select_element_id!==-1){
-               switch(_ELEMENT_CORE_ARRAY[this.state._select_element_id].element_type_id){
+          if(this.state._select_element_id!==null||this.state._select_element_id!==-1||this.state._select_row_id!==null||this.state._select_row_id!==-1){
+               switch(this._get_element_by_index(this.state._select_row_id,this.state._select_element_id).element_type_id){
                     case 0:{
-                         return(this._render_text_menu(this.state._select_element_id))
+                         return(this._render_text_menu(this.state._select_element_id,this.state._select_row_id))
                          break;
                     }
                     case 1:{
-                         return(this._render_link_menu(this.state._select_element_id))
+                         return(this._render_link_menu(this.state._select_element_id,this.state._select_row_id))
                          break;
                     }
                     case 2:{
-                         return(this._render_image_menu(this.state._select_element_id))
+                         return(this._render_image_menu(this.state._select_element_id,this.state._select_row_id))
                          break;
                     }
                     case 4:{
-                         return(this._render_embeded_menu(this.state._select_element_id))
+                         return(this._render_embeded_menu(this.state._select_element_id,this.state._select_row_id))
                          break;
                     }
                     default:{
@@ -1936,109 +1955,196 @@ export default class LandAct extends React.Component{
           }
           
      }
-
+     
+     _get_speci_element_class(element_type_id,row_id,indx_id){
+          switch(element_type_id){
+               case 0:{return(new _Element_Text(row_id,_ELEMENT_ROWS_CORE_ARRAY[row_id]!==undefined?_ELEMENT_ROWS_CORE_ARRAY[row_id].length:0))}
+               case 1:{return(new _Element_Link(row_id,_ELEMENT_ROWS_CORE_ARRAY[row_id]!==undefined?_ELEMENT_ROWS_CORE_ARRAY[row_id].length:0))}
+               case 2:{return(new _Element_Image(row_id,_ELEMENT_ROWS_CORE_ARRAY[row_id]!==undefined?_ELEMENT_ROWS_CORE_ARRAY[row_id].length:0))}
+               case 4:{return(new _Element_Video_Youtube(row_id,_ELEMENT_ROWS_CORE_ARRAY[row_id]!==undefined?_ELEMENT_ROWS_CORE_ARRAY[row_id].length:0))}
+               default:{break}     
+          }
+     }
      _ELEMENT_ADDER_TO_ARRAY(element_type_id)
      {
           let insert_id = null;
-          let gotElement = this._get_speci_element_class(element_type_id);
                     if(_SELECTED_ELEMENT_ID===undefined||_SELECTED_ELEMENT_ID===null){
-                         _ELEMENT_CORE_ARRAY.push(gotElement);
-                         insert_id = (_ELEMENT_CORE_ARRAY.length-1); 
+                         let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
+                         _ELEMENT_ROWS_CORE_ARRAY.push(new Array(gotElement));                         
+                         //insert_id = [(_ELEMENT_CORE_ARRAY.length-1)]; 
                     }     
                     else{
                          switch(_INSERT_BOOL){
                               case 0:{
-                                   _ELEMENT_CORE_ARRAY.splice(_SELECTED_ELEMENT_ID,0,gotElement);
-                                   insert_id = _SELECTED_ELEMENT_ID;
+                                   let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
+                                   _ELEMENT_ROWS_CORE_ARRAY.splice(_SELECTED_ELEMENT_ROW_ID,0,new Array(gotElement));           
+                                   //insert_id = _SELECTED_ELEMENT_ID;
                                    break;
                               }
                               case 1:{
-                                   _ELEMENT_CORE_ARRAY.splice(_SELECTED_ELEMENT_ID+1,0,gotElement);
-                                   insert_id = _SELECTED_ELEMENT_ID+1;
+                                   let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
+                                   _ELEMENT_ROWS_CORE_ARRAY.splice(_SELECTED_ELEMENT_ROW_ID+1,0,new Array(gotElement));           
+                                   //insert_id = _SELECTED_ELEMENT_ID+1;
+                                   break;
+                              }
+                              case 2:{
+                                   let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
+                                   _ELEMENT_ROWS_CORE_ARRAY[_SELECTED_ELEMENT_ROW_ID].splice(_SELECTED_ELEMENT_ID,0,gotElement);           
+                                   break;
+                              }
+                              case 3:{
+                                   let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
+                                   _ELEMENT_ROWS_CORE_ARRAY[_SELECTED_ELEMENT_ROW_ID].push(gotElement)
+                                   //insert_id = _SELECTED_ELEMENT_ID+1;
                                    break;
                               }
                               default:{
-                                   _ELEMENT_CORE_ARRAY.splice(_SELECTED_ELEMENT_ID+1,0,gotElement);
-                                   insert_id = _SELECTED_ELEMENT_ID+1;
+                                   //_ELEMENT_CORE_ARRAY.splice(_SELECTED_ELEMENT_ID+1,0,gotElement);
+                                   //insert_id = _SELECTED_ELEMENT_ID+1;
                                    break;
                               }
                          }
                     }    
-          console.log(`LAND: Element Added | TYPE `+element_type_id+` | SIZE `+_ELEMENT_CORE_ARRAY.length);
-          this._set_element_count(_ELEMENT_CORE_ARRAY.length);
+          console.log(`LAND: Element Added | TYPE `+element_type_id+` | SIZE `+_ELEMENT_ROWS_CORE_ARRAY.length);
+          this._set_element_count(_ELEMENT_ROWS_CORE_ARRAY.length);
           this._set_elem_mod(false);
           this._calc_element_index_ids();
-          if(insert_id!==null){
-               this._set_url_param_selec_id(insert_id);     
-          }else{
-               this._set_url_param_selec_id(-1);     
-          }
+          // if(insert_id!==null){
+          //      this._set_url_param_selec_id(insert_id);     
+          // }else{
+          //      this._set_url_param_selec_id(-1,-1);     
+          // }
           this.forceUpdate();
      }
-
      _calc_element_index_ids(){
-          for(let j = 0 ; j < _ELEMENT_CORE_ARRAY.length ; j++){
-               _ELEMENT_CORE_ARRAY[j].element_id = j
+          for(let j = 0 ; j < _ELEMENT_ROWS_CORE_ARRAY.length ; j++){
+               for(let l = 0 ; l < _ELEMENT_ROWS_CORE_ARRAY[j].length ; l++){
+                    _ELEMENT_ROWS_CORE_ARRAY[j][l].row_id = j
+                    _ELEMENT_ROWS_CORE_ARRAY[j][l].element_id = l;
+               }
           }
+          console.log("RECALCULATAED ARRAY");
+          console.log(_ELEMENT_ROWS_CORE_ARRAY);
+          
      }
 
-     _get_speci_element_class(element_type_id){
-          switch(element_type_id){
-               case 0:{return(new _Element_Text())}
-               case 1:{return(new _Element_Link())}
-               case 2:{return(new _Element_Image())}
-               case 4:{return(new _Element_Video_Youtube())}
-               default:{break}     
-          }
-     }
+    
 
     _embeded_element_render_classback(element_indx,str){
          _ELEMENT_CORE_ARRAY[element_indx].element_render_class_name = str; 
     }
 
-    _set_url_param_selec_id(element_index_id){
-     Router.push({query:{ select_id:element_index_id }},null,{scroll:false,shallow:true});
-     this._set_selec_element_id(element_index_id);
+    _set_url_param_selec_id(element_index_id,element_row_id){
+     Router.push({query:{ row_id:element_row_id,select_id:element_index_id }},null,{scroll:false,shallow:true});
+     this._set_selec_element_id(element_index_id,element_row_id);
      this.forceUpdate();
     }
 
 
-    renderer_add_butt_callback(elem_id,direc_bool){
+    renderer_add_butt_callback(elem_id,elm_row_id,direc_bool){
      if(elem_id!==null && direc_bool!==null){
           _SELECTED_ELEMENT_ID = elem_id;
+          _SELECTED_ELEMENT_ROW_ID = elm_row_id;
           _INSERT_BOOL = direc_bool;
           this._set_elem_mod(true)
      }
 }
 
-     _render_component(){
-          RENDER_ELEMENT_ARRAY = [];
-       ///RENDER_ELEMENT_ARRAY.push(new elementRender()._render_profile_element());
-          if(_ELEMENT_CORE_ARRAY!==null){
-          _ELEMENT_CORE_ARRAY.map(
-               (element,index)=>{
+
+
+_render_component(){
+     RENDER_ELEMENT_ARRAY = [];
+     if(_ELEMENT_CORE_ARRAY!==null){
+     _ELEMENT_ROWS_CORE_ARRAY.map(
+          (row,i)=>{
+               RENDER_ELEMENT_ARRAY.push(
+                    <div className={this.state._select_row_id===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}>
+                         <div className='element_row_adders_main_cont'>
+                                   {this.state._select_row_id===i?
+                                   <div >
+                                   <button className='element_row_adders_add_above add_above'
+                                   onClick={()=>{
+                                        this.renderer_add_butt_callback(0,i,0)
+                                   }}>
+                                   <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Up</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 328l144-144 144 144'/></svg>
+                                   </button>
+                                   <button className='element_row_adders_add_above add_below'
+                                   onClick={()=>{
+                                        this.renderer_add_butt_callback(0,i,1)
+                                   }}>
+                                        <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                   </button>
+                                   </div>
+                                   :undefined}
+                         </div>
+                         
+                                   
+                         
+
+
+
+                         { row.map((element,j)=>{
                          if(element.deleted===false){ 
-                              RENDER_ELEMENT_ARRAY.push(
-                                   new elementRender(element,
+                                   return(
+                                        new elementRender(element,
+                                        Router.query.row_id,
                                         Router.query.select_id,)
-                                        ._render_element_overlay(this._set_url_param_selec_id,
+                                        ._render_element_overlay(
+                                                                 this._set_url_param_selec_id,
                                                                  this.renderer_add_butt_callback,
                                                                  this._embeded_element_render_classback));
-                         }
-               }
-          );
-          }
-          if(_ELEMENT_CORE_ARRAY.length==0){
-               RENDER_ELEMENT_ARRAY.push(
-                    <div className='_insrt_new_ele_inf_cont'>
-                         <svg className='_insrt_new_ele_inf_cont_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
-                         Add new elements , Go crazy 😄
+                                             }
+
+                    })}          
                     </div>
                )
+              
           }
-          RENDER_ELEMENT_ARRAY.push(new elementRender()._render_foot_element());
-          return RENDER_ELEMENT_ARRAY;
+     );
      }
+
+
+     // if(_ELEMENT_CORE_ARRAY.length==0){
+     //      RENDER_ELEMENT_ARRAY.push(
+     //           <div className='_insrt_new_ele_inf_cont'>
+     //                <svg className='_insrt_new_ele_inf_cont_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
+     //                Add new elements , Go crazy 😄
+     //           </div>
+     //      )
+     // }
+     RENDER_ELEMENT_ARRAY.push(new elementRender()._render_foot_element());
+     return RENDER_ELEMENT_ARRAY;
+}
+
+
+     // _render_component(){
+     //      RENDER_ELEMENT_ARRAY = [];
+     //   ///RENDER_ELEMENT_ARRAY.push(new elementRender()._render_profile_element());
+     //      if(_ELEMENT_CORE_ARRAY!==null){
+     //      _ELEMENT_CORE_ARRAY.map(
+     //           (element,index)=>{
+     //                     if(element.deleted===false){ 
+     //                          RENDER_ELEMENT_ARRAY.push(
+     //                               new elementRender(element,
+     //                                    Router.query.select_id,)
+     //                                    ._render_element_overlay(this._set_url_param_selec_id,
+     //                                                             this.renderer_add_butt_callback,
+     //                                                             this._embeded_element_render_classback));
+     //                     }
+     //           }
+     //      );
+     //      }
+     //      if(_ELEMENT_CORE_ARRAY.length==0){
+     //           RENDER_ELEMENT_ARRAY.push(
+     //                <div className='_insrt_new_ele_inf_cont'>
+     //                     <svg className='_insrt_new_ele_inf_cont_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
+     //                     Add new elements , Go crazy 😄
+     //                </div>
+     //           )
+     //      }
+     //      RENDER_ELEMENT_ARRAY.push(new elementRender()._render_foot_element());
+     //      return RENDER_ELEMENT_ARRAY;
+     // }
 
      _get_page_type_render(element){
           switch(element.element_type_id){
@@ -2174,49 +2280,60 @@ export default class LandAct extends React.Component{
                     <div className='land_act_main_bdy_left_main'>
                                         <div>
                                         <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
-                                             <div>
-                                                  <OverlayTrigger trigger="click" placement="right" overlay={ 
-                                                  <Popover id="popover-basic"  className='popover_back_class' backdropClassName="backdrop">
-                                                  <div className='popover_back_class_main_cont'>
-                                                       <div className='popover_back_class_main_cont_tit'>Background</div>
-                                                  <Dropdown>
-                                                            <Dropdown.Toggle variant="light" id="popover_back_class_selec_butt">
-                                                            {this._get_back_type() }
-                                                            </Dropdown.Toggle>
-                                                            <Dropdown.Menu className='popover_back_class_selec_menu'>
-                                                            <Dropdown.Item as="button" onClick={()=>{
-                                                                 _BACK_DATA.back_type = 0;
-                                                                 this.forceUpdate();
-                                                                 }}>Solid</Dropdown.Item>
-                                                            <Dropdown.Item as="button"
-                                                                 onClick={()=>{
-                                                                 _BACK_DATA.back_type = 1;
-                                                                 this.forceUpdate();
-                                                                 }}
-                                                            >Linear Gradient</Dropdown.Item>
-                                                            <Dropdown.Item as="button"
-                                                                 onClick={()=>{
-                                                                 _BACK_DATA.back_type = 2;
-                                                                 this.forceUpdate();
-                                                                 }}
-                                                            >Image</Dropdown.Item>
-                                                            </Dropdown.Menu>
-                                                            </Dropdown>
-                                                            <div className='popover_back_class_main_pick_cont'>
-                                                                 {this._get_back_picker()}
+                                             
+                                                  <div className='land_left_bdy_butt_main_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont'>
+                                                                 <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                                 Page background
+                                                       </div>
+                                                            <OverlayTrigger trigger="click" placement="right" overlay={ 
+                                                            <Popover id="popover-basic"  className='popover_back_class' backdropClassName="backdrop">
+                                                            <div className='popover_back_class_main_cont'>
+                                                                 <div className='popover_back_class_main_cont_tit'>Background</div>
+                                                            <Dropdown>
+                                                                      <Dropdown.Toggle variant="light" id="popover_back_class_selec_butt">
+                                                                      {this._get_back_type() }
+                                                                      </Dropdown.Toggle>
+                                                                      <Dropdown.Menu className='popover_back_class_selec_menu'>
+                                                                      <Dropdown.Item as="button" onClick={()=>{
+                                                                           _BACK_DATA.back_type = 0;
+                                                                           this.forceUpdate();
+                                                                           }}>Solid</Dropdown.Item>
+                                                                      <Dropdown.Item as="button"
+                                                                           onClick={()=>{
+                                                                           _BACK_DATA.back_type = 1;
+                                                                           this.forceUpdate();
+                                                                           }}
+                                                                      >Linear Gradient</Dropdown.Item>
+                                                                      <Dropdown.Item as="button"
+                                                                           onClick={()=>{
+                                                                           _BACK_DATA.back_type = 2;
+                                                                           this.forceUpdate();
+                                                                           }}
+                                                                      >Image</Dropdown.Item>
+                                                                      </Dropdown.Menu>
+                                                                      </Dropdown>
+                                                                      <div className='popover_back_class_main_pick_cont'>
+                                                                           {this._get_back_picker()}
+                                                                      </div>
                                                             </div>
-                                                  </div>
-                                             </Popover>} rootClose={true}>
-                                                       <button className='land_act_back_cust_butt'>
-                                                       <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
-                                                       </button>
-                                                  </OverlayTrigger>
+                                                       </Popover>} rootClose={true}>
+                                                                 <button className='land_act_back_cust_butt'>
+                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
+                                                                 </button>
+                                                            </OverlayTrigger>
+                                                       </div>
+                                        
+                                        <div className='land_left_bdy_butt_main_cont'>
+                                             <div className='land_left_bdy_butt_main_tit_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                       Page Settings
                                              </div>
-                                        <OverlayTrigger placement="right"  rootClose={true} delay={{ show: 200, hide:100 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Page settings</Tooltip>)}>
-                                        <button className='land_act_back_cust_butt'>
-                                             <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                        </button>
-                                        </OverlayTrigger>
+                                             <button className='land_act_back_cust_butt'>
+                                                  <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                             </button>
+                                        </div>
+
                                         <OverlayTrigger placement="right"  rootClose={true} delay={{ show: 200, hide:100 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Information</Tooltip>)}>
                                         <button className='land_act_back_cust_butt'>
                                              <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
@@ -2225,7 +2342,7 @@ export default class LandAct extends React.Component{
                                         </div>
                     </div>
                     
-
+                    
                     <div className='land_act_creat_main_cont'
                     style={this._set_curr_back()}
                     >
@@ -2288,7 +2405,7 @@ export default class LandAct extends React.Component{
                                            }}
                                         
                                         defaultSize={{
-                                             width: 300,
+                                             width: this.state._edit_menu_width,
                                              height:'100%'
                                         }}
                                         >
