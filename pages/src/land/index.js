@@ -156,7 +156,7 @@ class backgrounClass{
           this.back_type = 0;
           this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
-          this.solid_color = '#F9FFF2';
+          this.solid_color = '#fff';
           this.default_value = {
                backgroundColor:'#f1f1f1',
                backgroundImage:'linear-gradient(160deg,#fff,#FDD075)',
@@ -238,7 +238,7 @@ export default class LandAct extends React.Component{
                _select_row_id:-1,
                _add_elem_mod_show:false,
                _txt_pop_shw:false,
-               _edit_menu_width:260,
+               _edit_menu_width:290,
           }
          
           this._set_load_bool = this._set_load_bool.bind(this);
@@ -1717,6 +1717,7 @@ export default class LandAct extends React.Component{
                               <Accordion className='ele_men_acrd_main_cont'>
                                    <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
                                         <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_left_ico' xmlns="http://www.w3.org/2000/svg" baseProfile="tiny" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M0 0h24v24H0V0z" fill="#000"/><path d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"/></svg>
                                         <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
                                              Font
                                         </div>
@@ -1816,27 +1817,47 @@ export default class LandAct extends React.Component{
 
                                    <div className='ele_pop_bdy_txt'>Box shadow</div>
                                    <div className='ele_pop_box_shad_main_cont'>
+
+                                        <div className='ele_pop_box_shad_main_cont_row'>
+                                        <div className='ele_pop_box_shad_main_txt_main_cont'>
+                                        <div className='ele_pop_box_shad_main_txt_main_cont_lab'>X</div>
                                         <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_x}
                                         onChange={(e)=>{
                                              this._get_element_by_index(row_id,element_id).style.box_shadow_x = e.target.value
                                              this.forceUpdate();
                                         }}
                                         ></input>
+                                        </div>
+                                        <div className='ele_pop_box_shad_main_txt_main_cont'>
+                                        <div className='ele_pop_box_shad_main_txt_main_cont_lab'>Y</div>
                                         <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_y}
                                         onChange={(e)=>{
                                              this._get_element_by_index(row_id,element_id).style.box_shadow_y = e.target.value
                                              this.forceUpdate();
                                         }}></input>
+                                        </div>
+                                        </div>
+
+                                        <div className='ele_pop_box_shad_main_cont_row'>
+                                        <div className='ele_pop_box_shad_main_txt_main_cont'>
+                                        <div className='ele_pop_box_shad_main_txt_main_cont_lab'>Blur</div>
                                         <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_blur}
                                         onChange={(e)=>{
                                              this._get_element_by_index(row_id,element_id).style.box_shadow_blur = e.target.value
                                              this.forceUpdate();
                                         }}></input>
+                                        </div>
+
+                                        <div className='ele_pop_box_shad_main_txt_main_cont'>
+                                        <div className='ele_pop_box_shad_main_txt_main_cont_lab'>Spread</div>
                                         <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_spread}
                                         onChange={(e)=>{
                                              this._get_element_by_index(row_id,element_id).style.box_shadow_spread = e.target.value
                                              this.forceUpdate();
                                         }}></input>
+                                        </div>
+                                        </div>
+                                        <div className='ele_pop_bdy_txt'>Shadow Color</div>
                                         <OverlayTrigger trigger="click" placement="left" rootClose={true} overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
                                              <ChromePicker
                                                   color={this._get_element_by_index(row_id,element_id).style.box_shadow_color}
@@ -1849,8 +1870,9 @@ export default class LandAct extends React.Component{
                                    </ChromePicker>
                                    </Popover>}
                                    >
-                                   <Button variant={'light'} className='ele_pop_box_shad_main_col_butt'>
-                                        <div className='ele_pop_box_shad_main_col_butt_col' style={{backgroundColor: this._get_element_by_index(row_id,element_id).style.box_shadow_color!==null? this._get_element_by_index(row_id,element_id).style.box_shadow_color:'#fff'}}></div>
+                                   <Button variant={'light'} className='ele_pop_bdy_col_butt'>
+                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor: this._get_element_by_index(row_id,element_id).style.box_shadow_color!==null? this._get_element_by_index(row_id,element_id).style.box_shadow_color:'#fff'}}></div>
+                                        {this._get_element_by_index(row_id,element_id).style.box_shadow_color===undefined?'none':this._get_element_by_index(row_id,element_id).style.box_shadow_color}
                                    </Button>
                                    </OverlayTrigger>
                                    </div>
@@ -2345,7 +2367,7 @@ export default class LandAct extends React.Component{
                }
           }
           console.log("RECALCULATAED ARRAY");
-          console.log(_ELEMENT_ROWS_CORE_ARRAY);
+          console.log(JSON.stringify(_ELEMENT_ROWS_CORE_ARRAY).toString());
           
      }
     _embeded_element_render_classback(element_indx,str){
@@ -2518,7 +2540,18 @@ _render_component(){
                <LoaderHelper/>     
                {this._render_notif()}
           </div>:
-          <div className='lander_base_main_cont'>
+          <div className='lander_base_main_cont' tabIndex={0} onKeyDown={(e)=>{
+               switch(e.key){
+                    case 'Escape':{
+                         this._set_url_param_selec_id(-1,-1);
+                         break;
+                    }    
+                    default:{
+                         break;
+                    }
+               }
+          }}
+          >
                <title>{process.env.APP_NAME}</title>
                
                <div className='land_act_head_main_cont'>

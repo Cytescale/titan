@@ -675,6 +675,7 @@ cursor: pointer;
      margin-left: 7px;
      background-color: #f5f5f5;
      border-radius: 4px;
+     font-size: 12px;
      border: 1px solid #e0e0e0;
      border-top-right-radius: 0px;
      border-bottom-right-radius: 0px
@@ -779,7 +780,7 @@ margin-bottom: 7px;
         height: 22px;
         position: absolute;
         left:0;
-       
+          border: 1px solid #e0e0e0;
         margin-left: 12px;
         border-radius: 4px;
    }
@@ -863,28 +864,33 @@ margin-bottom: 7px;
   }
 
   .ele_pop_box_shad_main_cont{
-       display: inline-flex;
+   
        width: 100%;
        align-items: center;
   }
   .ele_pop_box_shad_main_txt{
-       width: 32px;
+       width: 100%;
        height: 32px;
+       font-size: 14px;
+       padding-left: 5px;
        color: #525252;
      border-radius: 0px;
-     border: 1px solid #e0e0e0;
+     border-style: none;
   }
 
   ._ele_acrd_header_main{
      width: 100%;
         background-color: #fff;
         border-style: none;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 400;
-          padding-top: 7px;
-          padding-bottom: 7px;
+          padding-top: 10px;
+          padding-bottom: 10px;
           text-align: left;
           padding-left: 12px;
+   }
+   ._ele_acrd_header_main:hover{
+        background-color: rgba(133,203,255,0.1);
    }
    ._ele_acrd_header_main_cont{
      position: relative;   
@@ -898,6 +904,9 @@ margin-bottom: 7px;
        padding: 0px;
        border-radius: 4px;
        margin-left: 6px;
+  }
+  .ele_pop_box_shad_main_col_butt_col{
+       border: 1px solid #0E98FF;
   }
   .ele_pop_box_shad_main_col_butt_col{
        width: 100%;
@@ -920,6 +929,7 @@ margin-bottom: 7px;
      position: absolute;
      right: 0;
      top: 0;
+     margin-right: 26px;
      height: 100%;
      display: flex;
      align-items: center;
@@ -931,8 +941,44 @@ margin-bottom: 7px;
      border-radius: 4px;
 
   }
+._ele_acrd_header_main_cont_left_ico{
+     width: 17px;
+     height: 17px;
+     color: #000;
+     margin-right: 5px;
+}
+
   ._ele_acrd_header_main_cont_ico{
        width: 12px;
        height: 12px;
        margin-right: 7px;
+       position: absolute;
+       right: 0;
+       margin-top: 5px;
+  }
+  .ele_pop_box_shad_main_txt_main_cont{
+       display: inline-flex;
+       
+       border: 1px solid #e0e0e0;
+       border-radius: 4px;
+       overflow: hidden;
+       margin-left: 6px;
+       width: 120px;
+  }
+  .ele_pop_box_shad_main_txt_main_cont_lab{
+     display: flex;
+     min-width: 70px;
+     justify-content: center;
+     align-items: center;
+     padding-left:6px;
+     padding-right: 10px;
+     font-family: inter;
+     font-size: 10px;
+
+  }
+  .ele_pop_box_shad_main_cont_row{
+       display: inline-flex;
+       width: 100%;
+       margin-top: 5px;
+       margin-bottom: 6px;
   }
