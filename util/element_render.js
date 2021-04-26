@@ -291,6 +291,9 @@ export default class elementRender{
                                                             fontSize:this.element.style.font_size+"px",
                                                             fontWeight:this.element.style.font_weight,
                                                             color:this.element.style.text_color,
+                                                            display:this.element.style.vertical_center==true?'flex':'block',
+                                                            alignItems:this.element.style.vertical_center==true?'center':'stretch',
+                                                            boxShadow:this.element.style.box_shadow_enable===true?`${this.element.style.box_shadow_x}px  ${this.element.style.box_shadow_y}px  ${this.element.style.box_shadow_blur}px  ${this.element.style.box_shadow_spread}px ${this.element.style.box_shadow_color}`:'0px 0px 0px 0px #fff',                                                            
                                                             backgroundColor:this.element.style.back_color,
                                                             borderRadius:this.element.style.border_radius+"px",
                                                             whiteSpace:'pre',
@@ -298,7 +301,6 @@ export default class elementRender{
                                                   }
                                                   className='_page_element_text_class'
                                                   >
-
                                                        {this.element.data}
 
                                                   </div>

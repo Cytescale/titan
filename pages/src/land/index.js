@@ -2,7 +2,7 @@ import React, { useState,useEffect,Suspense } from 'react';
 import { renderToString } from 'react-dom/server';
 import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
-import {Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
+import {Accordion,Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
 import Slider from 'react-rangeslider'
 import $ from 'jquery';
@@ -121,7 +121,7 @@ var STLYE_ELEMENT_TEXT ={
      bordered:false,
      font_family:'Poppins',
      border_color:'#000',
-     back_color:'#eeedf3',
+     back_color:'#f1f1f1',
      text_color:'#000',
      font_size:17,
      font_weight:500,
@@ -131,6 +131,13 @@ var STLYE_ELEMENT_TEXT ={
      text_align:'start',
      image_width:'100',
      image_height:'100',
+     vertical_center:false,   
+     box_shadow_enable:false,
+     box_shadow_x:0,
+     box_shadow_y:0,
+     box_shadow_blur:0,
+     box_shadow_spread:0,
+     box_shadow_color:'#fff',
 }
 
 const back_preset_gradient = [
@@ -1694,163 +1701,159 @@ export default class LandAct extends React.Component{
 
                          </div>
                          <div className='ele_pop_bdy'>
-                         <Tabs defaultActiveKey="text" id="uncontrolled-tab-example" className='ele_menu_nav_men'>
-                         <Tab eventKey="text" className='tab_class' title="Text">
                          <div>
+                         <div className='ele_menu_bdy_main_cont'>
                               <div className='ele_pop_bdy_txt'>Value</div>
-                              <textarea  
-                                   wrap="hard"
-                               placeholder='Text Value' 
-                               className='ele_txt_pop_cont' 
-                              value={this._get_element_by_index(row_id,element_id).data!==undefined?this._get_element_by_index(row_id,element_id).data:"undefined"}
-                              onChange={(e)=>{
-                                   this._get_element_by_index(row_id,element_id).data  = e.target.value;
-                                   this.forceUpdate();
-                              }} />
-                                     <DropdownButton variant={'light'} id="font_choice_drop_menu" title={this._get_element_by_index(row_id,element_id).style.font_family}>
-                                        {this._draw_font_family(element_id,row_id)}
-                                     </DropdownButton>
-
-                           
-
-                                     <div className='ele_pop_bdy_txt'>Font Size</div>    
-                                        <div className='ele_pop_bdy_slid_cont'>
-                                        <div className='ele_pop_bdy_slid_hold'>
-                                        <Slider
-                                        orientation="horizontal"
-                                        tooltip={false}
-                                        value={this._get_element_by_index(row_id,element_id).style.font_size}
-                                        onChange={(val) =>{
-                                             this._get_element_by_index(row_id,element_id).style.font_size =val;   
-                                             this.forceUpdate();
-                                        }}
-                                        />
+                                   <textarea  
+                                        wrap="hard"
+                                   placeholder='Text Value' 
+                                   className='ele_txt_pop_cont' 
+                                   value={this._get_element_by_index(row_id,element_id).data!==undefined?this._get_element_by_index(row_id,element_id).data:"undefined"}
+                                   onChange={(e)=>{
+                                        this._get_element_by_index(row_id,element_id).data  = e.target.value;
+                                        this.forceUpdate();
+                                   }} />
+                              </div>
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                   <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                        <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                             Font
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.font_size}
-                                   onChange={(e)=>{
-                                        this._get_element_by_index(row_id,element_id).style.font_size =e.target.value;   
-                                        this.forceUpdate();
-                                   }}
-                                   />
-                                   </div>
-                                   <div className='ele_pop_bdy_txt'>Font weight</div>    
-                                   <div className='ele_pop_bdy_slid_cont'>
-                                   <div className='ele_pop_bdy_slid_hold'>
-                                   <Slider
-                                   orientation="horizontal"
-                                   max='900' 
-                                   tooltip={false}
-                                   value={this._get_element_by_index(row_id,element_id).style.font_weight}
-                                   onChange={(val) =>{
-                                        this._get_element_by_index(row_id,element_id).style.font_weight =val;   
-                                        this.forceUpdate();
-                                   }}
-                                   />
-                                   </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.font_weight}
-                                   onChange={(e)=>{
-                                        this._get_element_by_index(row_id,element_id).style.font_weight = e.target.value;   
-                                   this.forceUpdate();
-                                   }}
-                                   />
-                                   </div>
-                                   <div className='ele_pop_bdy_txt'>Border width</div>    
-                                   <div className='ele_pop_bdy_slid_cont'>
-                                   <div className='ele_pop_bdy_slid_hold'>
-                                   <Slider
-                                   orientation="horizontal"
-                                   tooltip={false}
-                                   value={this._get_element_by_index(row_id,element_id).style.border_width}
-                                   onChange={(val) =>{
-                                        this._get_element_by_index(row_id,element_id).style.border_width =val;   
-                                        this.forceUpdate();
-                                   }}
-                                   />
-                                   </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.border_width}
-                                   onChange={(e)=>{
-                                   this._get_element_by_index(row_id,element_id).style.border_width = e.target.value;   
-                                   this.forceUpdate();
-                                   }}
-                                   />
-                                   </div>
+                                   </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                   <div className='ele_menu_bdy_main_cont'>
+                                             <DropdownButton variant={'light'} id="font_choice_drop_menu" title={this._get_element_by_index(row_id,element_id).style.font_family}>
+                                                  {this._draw_font_family(element_id,row_id)}
+                                             </DropdownButton>
+
+                                             <div className='ele_pop_bdy_txt'>Font Size</div>    
+                                                  <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  value={this._get_element_by_index(row_id,element_id).style.font_size}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.font_size =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.font_size}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.font_size =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
                                    
-                                   <div className='ele_pop_bdy_txt'>Border raidus</div>    
-                                   <div className='ele_pop_bdy_slid_cont'>
-                                        <div className='ele_pop_bdy_slid_hold'>
-                                        <Slider
-                                        orientation="horizontal"
-                                        tooltip={false}
-                                        value={this._get_element_by_index(row_id,element_id).style.border_radius}
-                                        onChange={(val) =>{
-                                             this._get_element_by_index(row_id,element_id).style.border_radius =val;   
-                                             this.forceUpdate();
-                                        }}
-                                        />
+                                             <div className='ele_pop_bdy_txt'>Font weight</div>    
+                                                  <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  max='900' 
+                                                  tooltip={false}
+                                                  value={this._get_element_by_index(row_id,element_id).style.font_weight}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.font_weight =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                                  <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.font_weight}
+                                                  onChange={(e)=>{
+                                                       this._get_element_by_index(row_id,element_id).style.font_weight = e.target.value;   
+                                                  this.forceUpdate();
+                                                  }}
+                                                  />
+                                             </div>
+                                                  <div className='ele_pop_bdy_txt'>Text Color</div>
+                                                       <OverlayTrigger
+                                                       trigger="click"
+                                                       placement="left"
+                                                       rootClose={true}
+                                                       overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
+                                                       <ChromePicker
+                                                            color={this._get_element_by_index(row_id,element_id).style.text_color}
+                                                            onChange={(col)=>{
+                                                                 this._get_element_by_index(row_id,element_id).style.text_color = `rgba(${col.rgb.r},${col.rgb.g},${col.rgb.b},${col.rgb.a})`;
+                                                                 
+                                                                 this.forceUpdate()
+                                                            }}
+                                                            onChangeComplete={()=>{this.forceUpdate()}}
+                                                       >
+                                                       </ChromePicker>
+                                                       </Popover>}
+                                                       >
+                                                       <Button variant={'light'} className='ele_pop_bdy_col_butt'>
+                                                            <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.text_color!==null?this._get_element_by_index(row_id,element_id).style.text_color:'#fff'}}></div>
+                                                            {this._get_element_by_index(row_id,element_id).style.text_color}
+                                                       </Button>
+                                                       </OverlayTrigger>
+                                   
+                                   </div>
+                              </Accordion.Collapse>
+                              </Accordion>
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                   <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                        <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                        Background 
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.border_radius}
-                                   onChange={(e)=>{
-                                        this._get_element_by_index(row_id,element_id).style.border_radius =e.target.value;   
-                                        this.forceUpdate();
-                                   }}
-                                   />
+                                   </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                   <div className='ele_menu_bdy_main_cont'>
+                                   <div className='ele_pop_bdy_opt_main_cont'>
+                                   <div className='ele_pop_bdy_txt'>Box shadow</div>        
+                                   <input className='ele_pop_bdy_chck_cont' checked={this._get_element_by_index(row_id,element_id).style.box_shadow_enable} type='checkbox' onClick={
+                                        (e)=>{this._get_element_by_index(row_id,element_id).style.box_shadow_enable=!this._get_element_by_index(row_id,element_id).style.box_shadow_enable
+                                             this.forceUpdate();
+                                        }
+                                   }></input>
                                    </div>
-                                   <div className='ele_pop_bdy_txt'>Text alignment</div>        
-                                   <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={this._get_element_by_index(row_id,element_id).style.text_align} className="mb-2"
-                                   onChange={(val)=>{
-                                        this._get_element_by_index(row_id,element_id).style.text_align =  val;
-                                        this.forceUpdate();
-                                   }}
-                                   >
-                                   <ToggleButton value={'start'} className='txt_algn_rad_ele_pop_butt'>Left</ToggleButton>
-                                   <ToggleButton value={'center'} className='txt_algn_rad_ele_pop_butt'>Center</ToggleButton>
-                                   <ToggleButton value={'end'} className='txt_algn_rad_ele_pop_butt'>Right </ToggleButton>
-                                   </ToggleButtonGroup>
 
-                                   <ButtonGroup toggle className="mb-2">
-                                   <ToggleButton
-                                        type="checkbox"
-                                        variant="light"
-                                        className='txt_algn_rad_ele_pop_butt'
-                                        checked={this._get_element_by_index(row_id,element_id).style.undeline}
-                                        value="1"
-                                        onChange={(e) => {
-                                             this._get_element_by_index(row_id,element_id).style.undeline = e.currentTarget.checked;
+                                   <div className='ele_pop_bdy_txt'>Box shadow</div>
+                                   <div className='ele_pop_box_shad_main_cont'>
+                                        <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_x}
+                                        onChange={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.box_shadow_x = e.target.value
                                              this.forceUpdate();
                                         }}
-                                   >
-                                        Underline
-                                   </ToggleButton>
-                                   <ToggleButton
-                                        type="checkbox"
-                                        variant="light"
-                                        className='txt_algn_rad_ele_pop_butt'
-                                        checked={this._get_element_by_index(row_id,element_id).style.italic}
-                                        value="1"
-                                        onChange={(e) => {
-                                             this._get_element_by_index(row_id,element_id).style.italic = e.currentTarget.checked;
+                                        ></input>
+                                        <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_y}
+                                        onChange={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.box_shadow_y = e.target.value
                                              this.forceUpdate();
-                                        }}
-                                   >
-                                        Italic
-                                   </ToggleButton>
-                                   <ToggleButton
-                                        type="checkbox"
-                                        variant="light"
-                                        className='txt_algn_rad_ele_pop_butt'
-                                        checked={this._get_element_by_index(row_id,element_id).style.bordered}
-                                        value="1"
-                                        onChange={(e) => {
-                                             this._get_element_by_index(row_id,element_id).style.bordered = e.currentTarget.checked;
+                                        }}></input>
+                                        <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_blur}
+                                        onChange={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.box_shadow_blur = e.target.value
                                              this.forceUpdate();
+                                        }}></input>
+                                        <input type='text' className='ele_pop_box_shad_main_txt' value={this._get_element_by_index(row_id,element_id).style.box_shadow_spread}
+                                        onChange={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.box_shadow_spread = e.target.value
+                                             this.forceUpdate();
+                                        }}></input>
+                                        <OverlayTrigger trigger="click" placement="left" rootClose={true} overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
+                                             <ChromePicker
+                                                  color={this._get_element_by_index(row_id,element_id).style.box_shadow_color}
+                                                  onChange={(col)=>{                                             
+                                                       this._get_element_by_index(row_id,element_id).style.box_shadow_color = `rgba(${col.rgb.r},${col.rgb.g},${col.rgb.b},${col.rgb.a})`;
+                                                       this.forceUpdate()
                                         }}
+                                        onChangeComplete={()=>{this.forceUpdate()}}
                                    >
-                                        Border
-                                   </ToggleButton>
-                                   </ButtonGroup>
+                                   </ChromePicker>
+                                   </Popover>}
+                                   >
+                                   <Button variant={'light'} className='ele_pop_box_shad_main_col_butt'>
+                                        <div className='ele_pop_box_shad_main_col_butt_col' style={{backgroundColor: this._get_element_by_index(row_id,element_id).style.box_shadow_color!==null? this._get_element_by_index(row_id,element_id).style.box_shadow_color:'#fff'}}></div>
+                                   </Button>
+                                   </OverlayTrigger>
                                    </div>
-                         </Tab>
-                         <Tab eventKey="col" title="Color" className='tab_class'>
 
                                    <div className='ele_pop_bdy_txt'>Background Color</div>
                                    <OverlayTrigger
@@ -1861,7 +1864,9 @@ export default class LandAct extends React.Component{
                                    <ChromePicker
                                         color={this._get_element_by_index(row_id,element_id).style.back_color}
                                         onChange={(col)=>{
-                                             this._get_element_by_index(row_id,element_id).style.back_color = col.hex
+                                             
+                                             this._get_element_by_index(row_id,element_id).style.back_color = `rgba(${col.rgb.r},${col.rgb.g},${col.rgb.b},${col.rgb.a})`;
+
                                              this.forceUpdate()
                                         }}
                                         onChangeComplete={()=>{this.forceUpdate()}}
@@ -1874,57 +1879,133 @@ export default class LandAct extends React.Component{
                                         {this._get_element_by_index(row_id,element_id).style.back_color===undefined?'none':this._get_element_by_index(row_id,element_id).style.back_color}
                                    </Button>
                                    </OverlayTrigger>
-
-                                   <div className='ele_pop_bdy_txt'>Text Color</div>
-                                   <OverlayTrigger
-                                   trigger="click"
-                                   placement="left"
-                                   rootClose={true}
-                                   overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
-                                   <ChromePicker
-                                        color={this._get_element_by_index(row_id,element_id).style.text_color}
-                                        onChange={(col)=>{
-                                             this._get_element_by_index(row_id,element_id).style.text_color = col.hex
-                                             this.forceUpdate()
-                                        }}
-                                        onChangeComplete={()=>{this.forceUpdate()}}
-                                   >
-                                   </ChromePicker>
-                                   </Popover>}
-                                   >
-                                   <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.text_color!==null?this._get_element_by_index(row_id,element_id).style.text_color:'#fff'}}></div>
-                                        {this._get_element_by_index(row_id,element_id).style.text_color}
-                                   </Button>
-                                   </OverlayTrigger>
-                                  
-                                   <div className='ele_pop_bdy_txt'>Border Color</div>
-                                   <OverlayTrigger
-                                   trigger="click"
-                                   placement="left"
-                                   rootClose={true}
-                                   overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
-                                   <ChromePicker
-                                        color={this._get_element_by_index(row_id,element_id).style.border_color}
-                                        onChange={(col)=>{
-                                             this._get_element_by_index(row_id,element_id).style.border_color = col.hex
-                                             this.forceUpdate()
-                                        }}
-                                        onChangeComplete={()=>{this.forceUpdate()}}
-                                   >
-                                   </ChromePicker>
-                                   </Popover>}
-                                   >
-                                   <Button variant={'light'} className='ele_pop_bdy_col_butt'>
-                                        <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.border_color!==null?this._get_element_by_index(row_id,element_id).style.border_color:'#fff'}}></div>
-                                        {this._get_element_by_index(row_id,element_id).style.border_color}
-                                   </Button>
-                                   </OverlayTrigger>                                   
-                         </Tab>
-                         <Tab eventKey="pos" title="Position" className='tab_class'>
-
-
+                                        
                                    
+                                   </div>
+                              </Accordion.Collapse>
+                              </Accordion>
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                   <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                        <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                        Border 
+                                        <div className='_ele_acrd_menu_chck_main_cont'><input type='checkbox' className='_ele_acrd_menu_chck' checked={this._get_element_by_index(row_id,element_id).style.bordered}
+                                        onClick={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.bordered = !this._get_element_by_index(row_id,element_id).style.bordered
+                                             this.forceUpdate();
+                                        }}
+                                        ></input></div></div>
+                                   </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                   <div className='ele_menu_bdy_main_cont'>
+                                             <div className='ele_pop_bdy_txt'>Border width</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={this._get_element_by_index(row_id,element_id).style.border_width}
+                                             onChange={(val) =>{
+                                                  this._get_element_by_index(row_id,element_id).style.border_width =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={this._get_element_by_index(row_id,element_id).style.border_width}
+                                             onChange={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.border_width = e.target.value;   
+                                             this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                             
+                                             <div className='ele_pop_bdy_txt'>Border raidus</div>    
+                                             <div className='ele_pop_bdy_slid_cont'>
+                                                  <div className='ele_pop_bdy_slid_hold'>
+                                                  <Slider
+                                                  orientation="horizontal"
+                                                  tooltip={false}
+                                                  value={this._get_element_by_index(row_id,element_id).style.border_radius}
+                                                  onChange={(val) =>{
+                                                       this._get_element_by_index(row_id,element_id).style.border_radius =val;   
+                                                       this.forceUpdate();
+                                                  }}
+                                                  />
+                                                  </div>
+                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.border_radius}
+                                             onChange={(e)=>{
+                                                  this._get_element_by_index(row_id,element_id).style.border_radius =e.target.value;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+
+                                             <div className='ele_pop_bdy_txt'>Border Color</div>
+                                                  <OverlayTrigger
+                                                  trigger="click"
+                                                  placement="left"
+                                                  rootClose={true}
+                                                  overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
+                                                  <ChromePicker
+                                                       color={this._get_element_by_index(row_id,element_id).style.border_color}
+                                                       onChange={(col)=>{
+                                                            this._get_element_by_index(row_id,element_id).style.border_color = `rgba(${col.rgb.r},${col.rgb.g},${col.rgb.b},${col.rgb.a})`;
+                                                            this.forceUpdate()
+                                                       }}
+                                                       onChangeComplete={()=>{this.forceUpdate()}}
+                                                  >
+                                                  </ChromePicker>
+                                                  </Popover>}
+                                                  >
+                                                  <Button variant={'light'} className='ele_pop_bdy_col_butt'>
+                                                       <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:this._get_element_by_index(row_id,element_id).style.border_color!==null?this._get_element_by_index(row_id,element_id).style.border_color:'#fff'}}></div>
+                                                       {this._get_element_by_index(row_id,element_id).style.border_color}
+                                                  </Button>
+                                                  </OverlayTrigger>     
+                                   
+                                   </div>
+                              </Accordion.Collapse>
+                              </Accordion>                                  
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                   <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                        <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                        Alignment 
+                                        </div>
+                                   </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                   <div className='ele_menu_bdy_main_cont'>
+                                        <div className='ele_pop_bdy_opt_main_cont'>
+                                        <div className='ele_pop_bdy_txt'>Vertically center</div>        
+                                        <input className='ele_pop_bdy_chck_cont' checked={this._get_element_by_index(row_id,element_id).style.vertical_center} type='checkbox' onClick={
+                                             (e)=>{this._get_element_by_index(row_id,element_id).style.vertical_center=!this._get_element_by_index(row_id,element_id).style.vertical_center
+                                                  this.forceUpdate();
+                                             }
+                                        }></input>
+                                        </div>
+
+                                        <ToggleButtonGroup name='txt_algn_rad_ele_pop' type="radio" defaultValue={this._get_element_by_index(row_id,element_id).style.text_align} className="mb-2"
+                                        onChange={(val)=>{
+                                             this._get_element_by_index(row_id,element_id).style.text_align =  val;
+                                             this.forceUpdate();
+                                        }}
+                                        >
+                                        <ToggleButton value={'start'} className='txt_algn_rad_ele_pop_butt'>Left</ToggleButton>
+                                        <ToggleButton value={'center'} className='txt_algn_rad_ele_pop_butt'>Center</ToggleButton>
+                                        <ToggleButton value={'end'} className='txt_algn_rad_ele_pop_butt'>Right </ToggleButton>
+                                        </ToggleButtonGroup>
+                                   </div>
+                              </Accordion.Collapse>
+                              </Accordion>
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                   <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                        <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                        Width and Height 
+                                        </div>
+                                   </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                   <div className='ele_menu_bdy_main_cont'>
                                    <div className='ele_pop_bdy_txt'>Width</div>    
                                              <div className='ele_pop_bdy_slid_cont'>
                                                   <div className='ele_pop_bdy_slid_hold'>
@@ -1968,91 +2049,115 @@ export default class LandAct extends React.Component{
                                              }}
                                              />
                                              </div>
-
-
-                                   <div className='ele_pop_bdy_txt'>Margin left</div>    
-                                             <div className='ele_pop_bdy_slid_cont'>
-                                                  <div className='ele_pop_bdy_slid_hold'>
-                                                  <Slider
-                                                  orientation="horizontal"
-                                                  tooltip={false}
-                                                  value={this._get_element_by_index(row_id,element_id).style.margin_left}
-                                                  onChange={(val) =>{
-                                                       this._get_element_by_index(row_id,element_id).style.margin_left =val;   
+                                   </div>
+                              </Accordion.Collapse>
+                              </Accordion>
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                   <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                        <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                             Margin
+                                        </div>
+                                   </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                   <div className='ele_menu_bdy_main_cont'>
+                                        <div className='ele_pop_bdy_txt'>Margin left</div>    
+                                                  <div className='ele_pop_bdy_slid_cont'>
+                                                       <div className='ele_pop_bdy_slid_hold'>
+                                                       <Slider
+                                                       orientation="horizontal"
+                                                       tooltip={false}
+                                                       value={this._get_element_by_index(row_id,element_id).style.margin_left}
+                                                       onChange={(val) =>{
+                                                            this._get_element_by_index(row_id,element_id).style.margin_left =val;   
+                                                            this.forceUpdate();
+                                                       }}
+                                                       />
+                                                       </div>
+                                                  <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_left}
+                                                  onChange={(e)=>{
+                                                       this._get_element_by_index(row_id,element_id).style.margin_left =e.target.value;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_left}
-                                             onChange={(e)=>{
-                                                  this._get_element_by_index(row_id,element_id).style.margin_left =e.target.value;   
-                                                  this.forceUpdate();
-                                             }}
-                                             />
-                                             </div>
 
-                                             <div className='ele_pop_bdy_txt'>Margin right</div>    
-                                             <div className='ele_pop_bdy_slid_cont'>
-                                                  <div className='ele_pop_bdy_slid_hold'>
-                                                  <Slider
-                                                  orientation="horizontal"
-                                                  tooltip={false}
-                                                  value={this._get_element_by_index(row_id,element_id).style.margin_right}
-                                                  onChange={(val) =>{
-                                                       this._get_element_by_index(row_id,element_id).style.margin_right =val;   
+                                                  <div className='ele_pop_bdy_txt'>Margin right</div>    
+                                                  <div className='ele_pop_bdy_slid_cont'>
+                                                       <div className='ele_pop_bdy_slid_hold'>
+                                                       <Slider
+                                                       orientation="horizontal"
+                                                       tooltip={false}
+                                                       value={this._get_element_by_index(row_id,element_id).style.margin_right}
+                                                       onChange={(val) =>{
+                                                            this._get_element_by_index(row_id,element_id).style.margin_right =val;   
+                                                            this.forceUpdate();
+                                                       }}
+                                                       />
+                                                       </div>
+                                                  <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_right}
+                                                  onChange={(e)=>{
+                                                       this._get_element_by_index(row_id,element_id).style.margin_right =e.target.value;   
                                                        this.forceUpdate();
                                                   }}
                                                   />
                                                   </div>
-                                             <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_right}
-                                             onChange={(e)=>{
-                                                  this._get_element_by_index(row_id,element_id).style.margin_right =e.target.value;   
+
+
+                                        <div className='ele_pop_bdy_txt'>Margin top</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={this._get_element_by_index(row_id,element_id).style.margin_top}
+                                             onChange={(val) =>{
+                                                  this._get_element_by_index(row_id,element_id).style.margin_top =val;   
                                                   this.forceUpdate();
                                              }}
                                              />
                                              </div>
-
-
-                                   <div className='ele_pop_bdy_txt'>Margin top</div>    
-                                   <div className='ele_pop_bdy_slid_cont'>
-                                        <div className='ele_pop_bdy_slid_hold'>
-                                        <Slider
-                                        orientation="horizontal"
-                                        tooltip={false}
-                                        value={this._get_element_by_index(row_id,element_id).style.margin_top}
-                                        onChange={(val) =>{
-                                             this._get_element_by_index(row_id,element_id).style.margin_top =val;   
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_top}
+                                        onChange={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.margin_top =e.target.value;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_top}
-                                   onChange={(e)=>{
-                                        this._get_element_by_index(row_id,element_id).style.margin_top =e.target.value;   
-                                        this.forceUpdate();
-                                   }}
-                                   />
-                                   </div>
-                                   <div className='ele_pop_bdy_txt'>Margin bottom</div>    
-                                   <div className='ele_pop_bdy_slid_cont'>
-                                        <div className='ele_pop_bdy_slid_hold'>
-                                        <Slider
-                                        orientation="horizontal"
-                                        tooltip={false}
-                                        value={this._get_element_by_index(row_id,element_id).style.margin_bottom}
-                                        onChange={(val) =>{
-                                             this._get_element_by_index(row_id,element_id).style.margin_bottom =val;   
+                                        <div className='ele_pop_bdy_txt'>Margin bottom</div>    
+                                        <div className='ele_pop_bdy_slid_cont'>
+                                             <div className='ele_pop_bdy_slid_hold'>
+                                             <Slider
+                                             orientation="horizontal"
+                                             tooltip={false}
+                                             value={this._get_element_by_index(row_id,element_id).style.margin_bottom}
+                                             onChange={(val) =>{
+                                                  this._get_element_by_index(row_id,element_id).style.margin_bottom =val;   
+                                                  this.forceUpdate();
+                                             }}
+                                             />
+                                             </div>
+                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_bottom}
+                                        onChange={(e)=>{
+                                             this._get_element_by_index(row_id,element_id).style.margin_bottom =e.target.value;   
                                              this.forceUpdate();
                                         }}
                                         />
                                         </div>
-                                   <input type='text' className='ele_bdy_pop_sld_txt_fld' value={  this._get_element_by_index(row_id,element_id).style.margin_bottom}
-                                   onChange={(e)=>{
-                                        this._get_element_by_index(row_id,element_id).style.margin_bottom =e.target.value;   
-                                        this.forceUpdate();
-                                   }}
-                                   />
                                    </div>
+                              </Accordion.Collapse>
+                              </Accordion>
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                   <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                        <div className='_ele_acrd_header_main_cont'>
+                                        <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                             Padding
+                                        </div>
+                                   </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                   <div className='ele_menu_bdy_main_cont'>
+                                        
+                                  
                                    <div className='ele_pop_bdy_txt'>Padding left</div>    
                                    <div className='ele_pop_bdy_slid_cont'>
                                         <div className='ele_pop_bdy_slid_hold'>
@@ -2133,9 +2238,10 @@ export default class LandAct extends React.Component{
                                    }}
                                    />
                                    </div>
-
-                         </Tab>
-                         </Tabs>
+                                   </div>
+                              </Accordion.Collapse>
+                              </Accordion>
+                                   </div>
                          </div>
                </div>);}
                else{
@@ -2181,6 +2287,7 @@ export default class LandAct extends React.Component{
      }
      _ELEMENT_ADDER_TO_ARRAY(element_type_id)
      {
+          ///this._set_url_param_selec_id(-1,-1);
           let insert_id = null;
                     if(_SELECTED_ELEMENT_ID===undefined||_SELECTED_ELEMENT_ID===null){
                          let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
@@ -2265,6 +2372,7 @@ _render_component(){
      if(_ELEMENT_CORE_ARRAY!==null){
      _ELEMENT_ROWS_CORE_ARRAY.map(
           (row,i)=>{
+               let hasAElement = false;
                if(row.length>0){
                     RENDER_ELEMENT_ARRAY.push(
                          <div className={this.state._select_row_id===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}>
@@ -2288,6 +2396,7 @@ _render_component(){
                               </div>
                               { row.map((element,j)=>{
                               if(element.deleted===false){ 
+                                        hasAElement = true;
                                         return(
                                              new elementRender(element,
                                              Router.query.row_id,
@@ -2301,6 +2410,9 @@ _render_component(){
                          })}          
                          </div>
                     )
+                    if(hasAElement===false){
+                         RENDER_ELEMENT_ARRAY.pop();
+                    }
                }
                else{
                     return null;

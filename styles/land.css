@@ -237,7 +237,7 @@ padding: 12px;
      padding-bottom: 64px;
      /* background-image: linear-gradient(#e0e0e0 .1em, transparent .1em), linear-gradient(90deg, #e0e0e0 .1em, transparent .1em); */
      /* background-size: 1em 1em; */
-     min-height: 100vh;
+     min-height: calc(100vh - 102px);
      display: flex;
      animation: appr_back 0.6s ease;
      z-index: 0;     
@@ -633,3 +633,28 @@ flex: 1;
      background-color: #e0e0e0;
 
 }    
+
+
+::-webkit-scrollbar {
+     width: 5px;
+   }
+   
+   /* Track */
+   ::-webkit-scrollbar-track {
+     background: #f1f1f1;
+   }
+   
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+     background: #BDBDBD;
+   }
+   
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+     background: #525225;
+   }
+   
+   
+   .ele_menu_bdy_main_cont{
+
+   }
