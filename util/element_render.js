@@ -4,6 +4,8 @@ import { Button,Dropdown,Modal,OverlayTrigger,Popover } from 'react-bootstrap';
 import Embed from 'react-embed';
 import Router from 'next/router'
 import { isElementAccessExpression } from 'typescript';
+import { Resizable } from "re-resizable";
+
 var tslib_1 = require("tslib");
 
 export default class elementRender{
@@ -43,35 +45,7 @@ export default class elementRender{
 
 
      }
-
-  
-     _get_element_name(){
-          switch(this.element.element_type_id){
-               case 0:{
-                    return 'Text';
-                    break;
-               }
-               case 1:{
-                    return 'Link';
-                    break;
-               }
-               case 2:{
-                    return 'Image';
-                    break;
-               }
-
-               case 4:{
-                    return 'Embeded';
-                    break;
-               }
-               default:{
-                    return 'Fault element'
-                    break;
-               }
-          }
-     }
-
-          _render_element_overlay(set_selec_callback,add_butt_callback,callback){
+          _render_element_overlay(set_selec_callback,add_butt_callback,resize_callback,callback){
           return(
                <div className='overlay_build_lines'
                >
@@ -81,16 +55,34 @@ export default class elementRender{
                style={{
                     opacity:this.element.enabled===true?1:0.5
                }}
-               >
+               >    
+                           <Resizable
+                                        
+                                        className='ele_main_resizer_main_cont'
+                                        maxWidth={900}
+                                        boundsByDirection={false}
+                                        minWidth={100}
+                                        size={{ width: this.element.style.element_width+'px', height: this.element.style.element_height+'px' }}
+                                        style={{
+                                             position:'relative',
+                                             top:0,
+                                             right:0,
+                                             height:'100%', 
+                                             marginTop:this.element.style.margin_top,
+                                             marginBottom:this.element.style.margin_bottom,
+                                             marginLeft:this.element.style.margin_left,
+                                             marginRight:this.element.style.margin_right,
+                                           }}
+                                        
+                                        defaultSize={{
+                                             width: this.element.style.element_width+'px',
+                                             height:this.element.style.element_height+'px'
+                                        }}
+                                        onResize={(e, direction, ref, d) => {
+                                             resize_callback(this.element.row_id,this.element.element_id,ref.style.height,ref.style.width);
+                                           }}
+                                        >
                          <div className='overlay_add_butt_cont'>
-                                   {/* <div className='overlay_element_label' style={{visibility:this.isSelected===true?'visible':'hidden'}}>{this._get_element_name()} <i class="cur_arrow so_down"></i></div> */}
-                                   {/* <button className="_page_element_overlay_add_top" style={{
-                                        opacity:this.isSelected==true?1:0,
-                                        visibility:this.isSelected===true?'visible':'hidden',
-
-                                   }} 
-                                   onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,0)}>+ Add Above</button> */}
-
                                    <button className="_page_element_overlay_add_left" style={{
                                         opacity:this.isSelected==true?1:0,
                                           visibility:this.isSelected===true?'visible':'hidden',
@@ -106,11 +98,6 @@ export default class elementRender{
                                    }} 
                                    onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,3)}>
                                    <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Forward</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M184 112l144 144-144 144'/></svg></button>
-                                   
-                                   {/* <button className="_page_element_overlay_add_bottom" style={{
-                                        opacity:this.isSelected==true?1:0,
-                                        visibility:this.isSelected===true?'visible':'hidden',
-                                   }}  onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,1)}>+ Add Below</button> */}
                          </div>
                          <div  className="_page_element_main_bdy" id={'_page_element_spci_'+this.element.element_id} 
                                              onMouseDown={()=>{
@@ -121,6 +108,7 @@ export default class elementRender{
                                              {this._get_type_element(callback)}
                                              <div className={this.isSelected==true?"_page_element_overlay":"_page_element_overlay_non"} ></div>
                          </div>
+                         </Resizable>
                </div>
                </div>
           )
@@ -131,8 +119,10 @@ export default class elementRender{
                          <div style={
                               {
                                    overflow:'hidden',
-                                   width:this.element.style.element_width+'px',
-                                   height:this.element.style.element_element_height+'px',
+                                  // width:this.element.style.element_width+'px',
+                                                            // height:this.element.style.element_height+'px',
+                                                            width:'100%',
+                                                            height:'100%',
                                    textAlign:this.element.style.text_align,
                                    borderStyle:this.element.style.bordered===true?'solid':'none',
                                    borderWidth:this.element.style.border_width,
@@ -184,8 +174,10 @@ export default class elementRender{
                style={
                     {
                          overflow:'hidden',
-                         width:this.element.style.element_width+'px',
-                         height:this.element.style.element_element_height+'px',
+                         // width:this.element.style.element_width+'px',
+                                                            // height:this.element.style.element_height+'px',
+                                                            width:'100%',
+                                                            height:'100%',
                          fontFamily:this.element.style.font_family,
                          textAlign:this.element.style.text_align,
                          borderStyle:this.element.style.bordered===true?'solid':'none',
@@ -224,8 +216,10 @@ export default class elementRender{
                style={
                     {
                          overflow:'hidden',
-                         width:this.element.style.element_width+'px',
-                         height:this.element.style.element_height+'px',
+                         // width:this.element.style.element_width+'px',
+                         // height:this.element.style.element_height+'px',
+                         width:'100%',
+                         height:'100%',
                          textAlign:this.element.style.text_align,
                          borderStyle:this.element.style.bordered===true?'solid':'none',
                          borderWidth:this.element.style.border_width,
@@ -270,8 +264,10 @@ export default class elementRender{
                                                   style={
                                                        {
                                                             overflow:'hidden',
-                                                            width:this.element.style.element_width+'px',
-                                                            height:this.element.style.element_height+'px',
+                                                             // width:this.element.style.element_width+'px',
+                                                            // height:this.element.style.element_height+'px',
+                                                            width:'100%',
+                                                            height:'100%',
                                                             textAlign:this.element.style.text_align,
                                                             borderStyle:this.element.style.bordered===true?'solid':'none',
                                                             borderWidth:this.element.style.border_width,
@@ -283,10 +279,10 @@ export default class elementRender{
                                                             paddingLeft:this.element.style.padding_left,
                                                             margin:this.element.style.margin+"px",
                                                             fontFamily:this.element.style.font_family,
-                                                            marginTop:this.element.style.margin_top,
-                                                            marginBottom:this.element.style.margin_bottom,
-                                                            marginLeft:this.element.style.margin_left,
-                                                            marginRight:this.element.style.margin_right,
+                                                            // marginTop:this.element.style.margin_top,
+                                                            // marginBottom:this.element.style.margin_bottom,
+                                                            // marginLeft:this.element.style.margin_left,
+                                                            // marginRight:this.element.style.margin_right,
                                                             textDecoration:this.element.style.underline===true?'underline':'none',
                                                             fontSize:this.element.style.font_size+"px",
                                                             fontWeight:this.element.style.font_weight,
