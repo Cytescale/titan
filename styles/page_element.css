@@ -39,8 +39,6 @@ position: relative;
      flex-wrap: wrap;    
      pointer-events: none;
      width: 100%;
-     margin: -12px;
-     padding: 12px;
 }
 
 .element_row_main_nonsec{
@@ -888,14 +886,15 @@ margin-bottom: 7px;
 
   ._ele_acrd_header_main{
      width: 100%;
+     color: #727272;
         background-color: #fff;
         border-style: none;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
           padding-top: 10px;
           padding-bottom: 10px;
           text-align: left;
-          padding-left: 12px;
+          padding-left: 16px;
    }
    ._ele_acrd_header_main:hover{
         background-color: rgba(133,203,255,0.1);
@@ -953,7 +952,7 @@ margin-bottom: 7px;
 ._ele_acrd_header_main_cont_left_ico{
      width: 17px;
      height: 17px;
-     color: #000;
+     color: #727272;
      margin-left: 1px;
      margin-right: 8px;
 }

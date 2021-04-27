@@ -241,7 +241,8 @@ export default class LandAct extends React.Component{
                _select_row_id:-1,
                _add_elem_mod_show:false,
                _txt_pop_shw:false,
-               _edit_menu_width:290,
+               _edit_menu_width:270,
+               _desktop_viewing_mode: true,
           }
          
           this._set_load_bool = this._set_load_bool.bind(this);
@@ -264,8 +265,13 @@ export default class LandAct extends React.Component{
           this._set_edit_menu_width = this._set_edit_menu_width.bind(this);
           this._render_menu_slider = this._render_menu_slider.bind(this);
           this._renderer_resize_callback = this._renderer_resize_callback.bind(this);
+          this._set_viewing_mode = this._set_viewing_mode.bind(this);
           this.noti_pool = [];     
 
+     }
+
+     _set_viewing_mode(val){
+          this.setState({_desktop_viewing_mode:val})
      }
 
      copytoClip(txt){
@@ -2350,7 +2356,11 @@ _render_component(){
                let hasAElement = false;
                if(row.length>0){
                     RENDER_ELEMENT_ARRAY.push(
-                         <div className={this.state._select_row_id===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}>
+                         <div  className={this.state._select_row_id===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}
+                              style={{
+                                   maxWidth:this.state._desktop_viewing_mode===true?'900px':'350px'
+                              }}
+                         >
                               <div className='element_row_adders_main_cont'>
                                         {this.state._select_row_id===i?
                                         <div >
@@ -2472,146 +2482,14 @@ _render_component(){
           }
      );
      }
-     componentDidMount(){  
-          this._init_land_user_check();   
-          
-     }
 
-     render(){               
-     return(
-          this.state.loading===true?
-          <div>
-               <LoaderHelper/>     
-               {this._render_notif()}
-          </div>:
-          <div className='lander_base_main_cont' tabIndex={0} onKeyDown={(e)=>{
-               switch(e.key){
-                    case 'Escape':{
-                         this._set_url_param_selec_id(-1,-1);
-                         break;
-                    }    
-                    default:{
-                         break;
-                    }
-               }
-          }}
-          >
-               <title>{process.env.APP_NAME}</title>
-               
-               <div className='land_act_head_main_cont'>
-                    {this._element_add_modal()}
-                    <div className='land_act_head_tit_cont'> <div className='land_act_head_tit_cont_logo'/>{process.env.APP_NAME} 
-                    </div>  
-                    <div className='land_act_head_cent_main_cont'>
-                              
-                              <div className='land_act_head_cent_link_cont'>
-                                   <a href='#' className='land_act_head_cent_link_selec'>
-                                        <svg className='land_act_head_cent_link_selec_ico' viewBox='0 0 512 512'><title>Brush</title><path d='M452.37 59.63h0a40.49 40.49 0 00-57.26 0L184 294.74c23.08 4.7 46.12 27.29 49.26 49.26l219.11-227.11a40.49 40.49 0 000-57.26zM138 336c-29.88 0-54 24.5-54 54.86 0 23.95-20.88 36.57-36 36.57C64.56 449.74 92.82 464 120 464c39.78 0 72-32.73 72-73.14 0-30.36-24.12-54.86-54-54.86z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                        Editor</a>
-                                   </div>
-                              <div className='land_act_head_cent_link_cont'>
-                                   <a href='#' className='land_act_head_cent_link'>
-                                   <svg  className='land_act_head_cent_link_ico' viewBox='0 0 512 512'><title>Analytics</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M344 280l88-88M232 216l64 64M80 320l104-104'/><circle cx='456' cy='168' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='320' cy='304' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='208' cy='192' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='56' cy='344' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                   Analytics</a></div>
-                              <div className='land_act_head_cent_link_cont'>
-                                   <a href='#' className='land_act_head_cent_link'>
-                                        <svg className='land_act_head_cent_link_ico' viewBox='0 0 512 512'><title>Play</title><path d='M112 111v290c0 17.44 17 28.52 31 20.16l247.9-148.37c12.12-7.25 12.12-26.33 0-33.58L143 90.84c-14-8.36-31 2.72-31 20.16z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
-                                        Preview</a></div>
-                    </div>
-                    <div className='land_act_head_rght_main_cont'>
-                              <div className='land_act_head_rght_feed_butt_cont'>
-                                  <Button variant={'primary'} className='land_act_head_rght_main_save_butt'>Save</Button>
-                              </div>
-                              <div className='land_act_head_rght_feed_butt_cont'>
-                                  <FeedbackComp/> 
-                              </div>
-                              <div className='land_act_head_rght_feed_butt_cont'>
-                              <Dropdown>
-                              <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                   <img src='http://simpleicon.com/wp-content/uploads/account.png' className='land_act_head_rght_acc_img'></img>                                   
-                              </Dropdown.Toggle>
-
-                              <Dropdown.Menu>
-                              <div className='land_act_head_nam_txt'>{this.state.dname}</div>
-                              <Dropdown.Item as="button" onClick={firebaseHelp._firebaseGoogleSignOutInit}>Sign Out</Dropdown.Item>
-                              </Dropdown.Menu>
-                              </Dropdown>
-                              </div>
-                    </div>
-               </div>     
-               
-               <div className='land_act_main_bdy_cont'>
-                 
-                    <div className='land_act_main_bdy_left_main'>
-                                        <div>
-                                        <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
-                                             
-                                                  <div className='land_left_bdy_butt_main_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont'>
-                                                                 <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                                 Page background
-                                                       </div>
-                                                            <OverlayTrigger trigger="click" placement="right" overlay={ 
-                                                            <Popover id="popover-basic"  className='popover_back_class' backdropClassName="backdrop">
-                                                            <div className='popover_back_class_main_cont'>
-                                                                 <div className='popover_back_class_main_cont_tit'>Background</div>
-                                                            <Dropdown>
-                                                                      <Dropdown.Toggle variant="light" id="popover_back_class_selec_butt">
-                                                                      {this._get_back_type() }
-                                                                      </Dropdown.Toggle>
-                                                                      <Dropdown.Menu className='popover_back_class_selec_menu'>
-                                                                      <Dropdown.Item as="button" onClick={()=>{
-                                                                           _BACK_DATA.back_type = 0;
-                                                                           this.forceUpdate();
-                                                                           }}>Solid</Dropdown.Item>
-                                                                      <Dropdown.Item as="button"
-                                                                           onClick={()=>{
-                                                                           _BACK_DATA.back_type = 1;
-                                                                           this.forceUpdate();
-                                                                           }}
-                                                                      >Linear Gradient</Dropdown.Item>
-                                                                      <Dropdown.Item as="button"
-                                                                           onClick={()=>{
-                                                                           _BACK_DATA.back_type = 2;
-                                                                           this.forceUpdate();
-                                                                           }}
-                                                                      >Image</Dropdown.Item>
-                                                                      </Dropdown.Menu>
-                                                                      </Dropdown>
-                                                                      <div className='popover_back_class_main_pick_cont'>
-                                                                           {this._get_back_picker()}
-                                                                      </div>
-                                                            </div>
-                                                       </Popover>} rootClose={true}>
-                                                                 <button className='land_act_back_cust_butt'>
-                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
-                                                                 </button>
-                                                            </OverlayTrigger>
-                                                       </div>
-                                        
-                                        <div className='land_left_bdy_butt_main_cont'>
-                                             <div className='land_left_bdy_butt_main_tit_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                       Page Settings
-                                             </div>
-                                             <button className='land_act_back_cust_butt'>
-                                                  <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                             </button>
-                                        </div>
-
-                                        <OverlayTrigger placement="right"  rootClose={true} delay={{ show: 200, hide:100 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Information</Tooltip>)}>
-                                        <button className='land_act_back_cust_butt'>
-                                             <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
-                                        </button>
-                                        </OverlayTrigger>   
-                                        </div>
-                    </div>
-                    
-                    
+     _select_render_window(){
+          if(this.state._desktop_viewing_mode===true){
+               return(   
                     <div className='land_act_creat_main_cont'
                     style={this._set_curr_back()}
                     >
-                             <div className='land_act_creat_main_cont_grd_back' onMouseDown={()=>this._set_url_param_selec_id(-1)}></div>
+                             <div className='land_act_creat_main_cont_grd_back' onMouseDown={()=>this._set_url_param_selec_id(-1-1)}></div>
                          <div className='land_act_creat_main_sub_cont'>
 
                               {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
@@ -2649,7 +2527,220 @@ _render_component(){
                                    {this._render_component()}
                          </div>
                          </div>
+                    </div>);
+          }
+          else if(this.state._desktop_viewing_mode===false){
+               return(
+                    <div className='land_act_creat_main_cont_mobile_main_cont'>
+                     <div className='land_act_creat_main_cont_mobile'
+                    style={this._set_curr_back()}
+                    >
+                                   <div className='land_act_creat_main_cont_grd_back' onMouseDown={()=>this._set_url_param_selec_id(-1)}></div>
+                                   <div className='land_act_creat_main_sub_cont'>
+
+                                        {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
+                                                  <div className='land_act_prv_add_bar_cont_mobile'>
+                                                  <div className='land_act_prv_add_bar_mobile'>
+                                                       <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
+                                                       <a className='land_act_prv_add_lnk' href={process.env.NEXT_PUBLIC_HOST+'api/view?q='+_VIEW_ID}>
+                                                       {process.env.NEXT_PUBLIC_HOST+'api/view?q='+_VIEW_ID}
+                                                       </a>
+                                                  </div>
+
+                                        </div>
+                                                  
+                                   <div className='land_act_creat_sub_cont_mobile '>         
+                                             {this._render_component()}
+                                   </div>
+                                   </div>
+                              </div>
                     </div>
+               )
+          }
+     }
+
+     componentDidMount(){  
+          this._init_land_user_check();   
+          
+     }
+
+     render(){               
+     return(
+          this.state.loading===true?
+          <div>
+               <LoaderHelper/>     
+               {this._render_notif()}
+          </div>:
+          <div className='lander_base_main_cont' tabIndex={0}  onKeyDown={(e)=>{
+               switch(e.key){
+                    case 'Escape':{
+                         this._set_url_param_selec_id(-1,-1);
+                         break;
+                    }    
+                    default:{
+                         break;
+                    }
+               }
+          }}
+          >
+               <title>{process.env.APP_NAME}</title>
+               
+               <div className='land_act_head_main_cont'>
+                    {this._element_add_modal()}
+                    <div className='land_act_head_tit_cont'> <div className='land_act_head_tit_cont_logo'/>{process.env.APP_NAME} 
+                    </div>  
+                    <div className='land_act_head_cent_main_cont'>
+                              
+                              <div className='land_act_head_cent_link_cont'>
+                                   <a href='#' className='land_act_head_cent_link_selec'>
+                                        <svg className='land_act_head_cent_link_selec_ico' viewBox='0 0 512 512'><title>Brush</title><path d='M452.37 59.63h0a40.49 40.49 0 00-57.26 0L184 294.74c23.08 4.7 46.12 27.29 49.26 49.26l219.11-227.11a40.49 40.49 0 000-57.26zM138 336c-29.88 0-54 24.5-54 54.86 0 23.95-20.88 36.57-36 36.57C64.56 449.74 92.82 464 120 464c39.78 0 72-32.73 72-73.14 0-30.36-24.12-54.86-54-54.86z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                        Editor</a>
+                                   </div>
+                              <div className='land_act_head_cent_link_cont'>
+                                   <a href='#' className='land_act_head_cent_link'>
+                                   <svg  className='land_act_head_cent_link_ico' viewBox='0 0 512 512'><title>Analytics</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M344 280l88-88M232 216l64 64M80 320l104-104'/><circle cx='456' cy='168' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='320' cy='304' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='208' cy='192' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='56' cy='344' r='24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                   Analytics</a></div>
+                              <div className='land_act_head_cent_link_cont'>
+                                   <a href='#' className='land_act_head_cent_link'>
+                                        <svg className='land_act_head_cent_link_ico' viewBox='0 0 512 512'><title>Play</title><path d='M112 111v290c0 17.44 17 28.52 31 20.16l247.9-148.37c12.12-7.25 12.12-26.33 0-33.58L143 90.84c-14-8.36-31 2.72-31 20.16z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
+                                        Preview</a></div>
+                    </div>
+                    <div className='land_act_head_rght_main_cont'>
+                              <div className='land_act_head_rght_feed_butt_cont'>
+                                  <FeedbackComp/> 
+                              </div>
+                              <div className='land_act_head_rght_feed_butt_cont'>
+                              <Dropdown>
+                              <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                                   <img src='http://simpleicon.com/wp-content/uploads/account.png' className='land_act_head_rght_acc_img'></img>                                   
+                              </Dropdown.Toggle>
+
+                              <Dropdown.Menu>
+                              <div className='land_act_head_nam_txt'>{this.state.dname}</div>
+                              <Dropdown.Item as="button" onClick={firebaseHelp._firebaseGoogleSignOutInit}>Sign Out</Dropdown.Item>
+                              </Dropdown.Menu>
+                              </Dropdown>
+                              </div>
+                    </div>
+               </div>     
+               
+               <div className='land_act_main_bdy_cont'>
+                 
+                    <div className='land_act_main_bdy_left_main'>
+                                        <div>
+                                        <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
+                                              <div className='land_left_bdy_butt_main_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont'>
+                                                                 <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                                 Save
+                                                       </div>
+                                                       <button className='land_act_back_cust_butt'>
+                                                            <svg className='land_act_back_cust_butt_ico_save' viewBox='0 0 512 512'><title>Save</title><path d='M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                       </button>
+                                                  </div>
+
+                                                  <div className='land_left_bdy_butt_main_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont'>
+                                                                 <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                                 Page background
+                                                       </div>
+                                                            <OverlayTrigger trigger="click" placement="right" overlay={ 
+                                                            <Popover id="popover-basic"  className='popover_back_class' backdropClassName="backdrop">
+                                                            <div className='popover_back_class_main_cont'>
+                                                                 <div className='popover_back_class_main_cont_tit'>Background</div>
+                                                            <Dropdown>
+                                                                      <Dropdown.Toggle variant="light" id="popover_back_class_selec_butt">
+                                                                      {this._get_back_type() }
+                                                                      </Dropdown.Toggle>
+                                                                      <Dropdown.Menu className='popover_back_class_selec_menu'>
+                                                                      <Dropdown.Item as="button" onClick={()=>{
+                                                                           _BACK_DATA.back_type = 0;
+                                                                           this.forceUpdate();
+                                                                           }}>Solid</Dropdown.Item>
+                                                                      <Dropdown.Item as="button"
+                                                                           onClick={()=>{
+                                                                           _BACK_DATA.back_type = 1;
+                                                                           this.forceUpdate();
+                                                                           }}
+                                                                      >Linear Gradient</Dropdown.Item>
+                                                                      <Dropdown.Item as="button"
+                                                                           onClick={()=>{
+                                                                           _BACK_DATA.back_type = 2;
+                                                                           this.forceUpdate();
+                                                                           }}
+                                                                      >Image</Dropdown.Item>
+                                                                      </Dropdown.Menu>
+                                                                      </Dropdown>
+                                                                      <div className='popover_back_class_main_pick_cont'>
+                                                                           {this._get_back_picker()}
+                                                                      </div>
+                                                            </div>
+                                                            </Popover>} rootClose={true}>
+                                                                 <button className='land_act_back_cust_butt'>
+                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
+                                                                 </button>
+                                                            </OverlayTrigger>
+                                                       </div>
+                                        
+                                        <div className='land_left_bdy_butt_main_cont'>
+                                             <div className='land_left_bdy_butt_main_tit_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                       Page Settings
+                                             </div>
+                                             <button className='land_act_back_cust_butt'>
+                                                  <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                             </button>
+                                        </div>
+                                        
+                                       
+                                        <div className='land_left_bdy_butt_main_cont'>
+                                             <div className='land_left_bdy_butt_main_tit_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                       Undo
+                                             </div>
+                                             <button className='land_act_back_cust_butt'>
+                                                   <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Redo</title><path d='M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
+                                             </button>
+                                        </div>
+
+                                        <div className='land_left_bdy_butt_main_cont'>
+                                             <div className='land_left_bdy_butt_main_tit_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                       Redo
+                                             </div>
+                                             <button className='land_act_back_cust_butt'>
+                                                       <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Undo</title><path d='M240 424v-96c116.4 0 159.39 33.76 208 96 0-119.23-39.57-240-208-240V88L64 256z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
+                                             </button>
+                                        </div>
+
+
+                                        <div className='land_left_bdy_butt_main_cont'>
+                                             <div className='land_left_bdy_butt_main_tit_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                       {  this.state._desktop_viewing_mode===true?'Desktop Mode':'Phone Mode'}
+                                             </div>
+                                             <button className='land_act_back_cust_butt' onClick={()=>{
+                                                  this._set_viewing_mode(!this.state._desktop_viewing_mode);
+                                             }}>
+                                                       {
+                                                       this.state._desktop_viewing_mode===true?
+                                                  <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Desktop</title><rect x='32' y='64' width='448' height='320' rx='32' ry='32' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M304 448l-8-64h-80l-8 64h96z'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M368 448H144'/><path d='M32 304v48a32.09 32.09 0 0032 32h384a32.09 32.09 0 0032-32v-48zm224 64a16 16 0 1116-16 16 16 0 01-16 16z'/></svg>
+                                                  :<svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Phone Portrait</title><rect x='128' y='16' width='256' height='480' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M176 16h24a8 8 0 018 8h0a16 16 0 0016 16h64a16 16 0 0016-16h0a8 8 0 018-8h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                       }
+                                             </button>
+                                        </div>
+
+
+                                        <OverlayTrigger placement="right"  rootClose={true} delay={{ show: 200, hide:100 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Information</Tooltip>)}>
+                                        <button className='land_act_back_cust_butt'>
+                                             <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
+                                        </button>
+                                        </OverlayTrigger>   
+                                        </div>
+                    </div>
+                    
+                    {this._select_render_window()}
+
                     {this.state._select_element_id>=0 && ((typeof this.state._select_element_id) == 'number') ?
                     <Resizable
                                         maxWidth={400}

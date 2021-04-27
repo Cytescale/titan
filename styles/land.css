@@ -56,8 +56,8 @@ padding: 12px;
      z-index: 100;
      display: inline-flex;
      background: #fff ;
-     border-bottom: 1px solid #e0e0e0;
-     
+     /* border-bottom: 1px solid #e0e0e0; */
+     box-shadow: 0px 6px 8px rgba(0,0,0,0.08);
 }
 .land_act_head_tit_cont_logo{
      width: 25px;
@@ -228,7 +228,7 @@ padding: 12px;
      width: 100%;
      margin-right: 32px;
      margin-left: 95px;
-     box-shadow: 0px 0px 9px rgba(0,0,0,0.1);
+     box-shadow: 0px 0px 12px 5px rgba(0,0,0,0.05);
      
      border-radius: 12px;
      overflow: hidden;
@@ -250,6 +250,39 @@ padding: 12px;
     
      
 }
+
+.land_act_creat_main_cont_mobile_main_cont{
+     width: 100%;
+     height: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     position: relative;
+}
+.land_act_creat_main_cont_mobile{
+     width: 350px;
+     max-width: 350px;
+     max-height: calc(100vh - 102px);
+     height: calc(100vh - 102px);
+     margin-right: 32px;
+     margin-left: 95px;
+     box-shadow: 0px 0px 12px rgba(0,0,0,0.2);
+     border-radius: 12px;
+     overflow: hidden;
+     overflow-y: scroll;
+     display: flex;
+     left: 0;
+     margin-top: 74px;
+     padding-top: 82px;
+     margin-bottom: 42px;
+     padding-bottom: 64px;
+     justify-content: center;
+     align-items: center;
+     animation: appr_back 0.6s ease;
+     z-index: 0;     
+     position: relative;
+}
+
 .land_act_creat_main_cont_grd_back{
      position: absolute;
      top: 0;
@@ -275,7 +308,10 @@ padding: 12px;
      width: 900px;
      opacity: 1;
      /* box-shadow: 0px 7px 10px #e0e0e0; */
-     border-radius: 8px;
+}
+.land_act_creat_sub_cont_mobile{
+     width: 100%;
+     opacity: 1;
 }
 
 
@@ -286,14 +322,10 @@ padding: 12px;
      height: 100%;
      overflow-x: hidden;
 }
-.land_act_main_bdy_left_main{
+/* .land_act_main_bdy_left_main{
      width: 85px;
      height: 100%;
      padding-top: 92px;     
-     /* border-right: 1px solid #e0e0e0; */
-     /* box-shadow: 0px 7px 10px rgba(0,0,0,0.07); */
-     
-
      position: fixed;
      display: flex;
      justify-content: center;
@@ -301,8 +333,48 @@ padding: 12px;
      top: 0;
      bottom: 0;
      left: 0;
+} 
+*/
+.land_act_main_bdy_left_main{
+     width: auto;
+     height: 100%;
+     padding-top: 76px;     
+     position: fixed;
+     display: flex;
+     background-color: #fff;
+     border-right: 1px solid #e0e0e0;
+     justify-content: center;
+     z-index: 90;
+     top: 0;
+     bottom: 0;
+     left: 0;
 }
-.land_act_main_bdy_left_add_butt{
+.land_act_back_cust_butt:hover{
+     background-color: #f1f1f1;    
+}
+.land_act_back_cust_butt{
+     background-color: #fff;
+     border-style: none;
+     width: 60px;
+     height: 60px;
+     display: flex;
+     
+     justify-content: center;
+     align-items: center;
+     }
+     .land_act_main_bdy_left_add_butt{
+          background-color: #6fcf97;
+          border-style: none;
+          width: 60px;
+          height: 60px;
+          color: #fff;
+          margin-bottom: 8px;
+          display: flex;
+          font-size: 32px;
+          justify-content: center;
+          align-items: center;
+     }
+/* .land_act_main_bdy_left_add_butt{
      background-color: #6fcf97;
      border-style: none;
      border-radius: 100px;
@@ -315,8 +387,8 @@ padding: 12px;
      justify-content: center;
      align-items: center;
      box-shadow: 0px 3px 7px rgba(0,0,0,0.2);
-}
-.land_act_back_cust_butt{
+} */
+/* .land_act_back_cust_butt{
      background-color: #fff;
      border-style: none;
      border-radius: 100px;
@@ -327,7 +399,7 @@ padding: 12px;
      justify-content: center;
      align-items: center;
      box-shadow: 0px 3px 7px rgba(0,0,0,0.2);
-     }
+     } */
 
      .land_left_bdy_butt_main_cont{
           position: relative;
@@ -393,13 +465,27 @@ height: 100%;
      display: inline-flex;
      left: 0;
      top: 0;
-
      z-index: 99999;
      padding-right: 22px;
      padding-bottom: 10px;
      padding-top: 10px;
      margin-bottom: 22px;
 }    
+.land_act_prv_add_bar_cont_mobile{
+       height: auto;
+     width: 100%;
+     position: absolute;
+     background-color: #fff;
+     border-bottom: 1px solid #e0e0e0;
+     /* box-shadow: 0px 7px 10px rgba(0,0,0,0.07); */
+     overflow: hidden;
+     display: inline-flex;
+     left: 0;
+     top: 0;
+     z-index: 99999;
+     padding-bottom: 12px;
+     padding-top: 12px;
+}
 .land_act_prv_add_ico{
      width: 18px;
      height: 18px;
@@ -410,19 +496,36 @@ height: 100%;
 .land_act_prv_add_bar{
      width: auto;
      flex:1;
-     
-     font-size: 14px;
+     font-size: 13px;
      display: flex;
+     
      font-family: inter;
      font-weight: 400;
      align-items: center;
      background-color: #f7f7f7;
      height: 100%;
      border-radius: 22px;
-     vertical-align: middle;
+     
      padding-left: 22px;
      margin-right: 12px;
 
+}
+.land_act_prv_add_bar_mobile{
+     width: 100%;
+     flex:1;
+     font-size: 12px;
+     font-family: inter;
+     font-weight: 400;
+     align-items: center;
+     background-color: #f7f7f7;
+     height: 32px;
+     border-radius: 22px;
+     display: flex;
+     align-items: center;
+     padding-left: 12px;
+     padding-right: 12px;
+     margin-left: 12px;
+     margin-right: 12px;
 }
 .land_act_prv_add_bar_cir_cont{
      height: 100%;
@@ -482,6 +585,12 @@ height: 100%;
 
 .land_act_back_cust_butt_ico{
 width: 22px;
+color: #424242;
+height: 22px;
+z-index: 30;
+}
+.land_act_back_cust_butt_ico_save{
+     width: 22px;
 color: #424242;
 height: 22px;
 z-index: 30;
