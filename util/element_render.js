@@ -60,6 +60,16 @@ export default class elementRender{
                                         
                                         className='ele_main_resizer_main_cont'
                                         maxWidth={900}
+                                        enable={{
+                                              top:this.isSelected==true?true:false, 
+                                              right:this.isSelected==true?true:false,
+                                              bottom:this.isSelected==true?true:false, 
+                                              left:this.isSelected==true?true:false, 
+                                              topRight:this.isSelected==true?true:false, 
+                                              bottomRight:this.isSelected==true?true:false, 
+                                              bottomLeft:this.isSelected==true?true:false, 
+                                              topLeft:this.isSelected==true?true:false }
+                                        }
                                         boundsByDirection={false}
                                         minWidth={100}
                                         size={{ width: this.element.style.element_width+'px', height: this.element.style.element_height+'px' }}
@@ -83,30 +93,21 @@ export default class elementRender{
                                            }}
                                         >
                          <div className='overlay_add_butt_cont'>
-                                   <button className="_page_element_overlay_add_left" style={{
-                                        opacity:this.isSelected==true?1:0,
-                                          visibility:this.isSelected===true?'visible':'hidden',
-                                        }} 
-                                   onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,2)}>
-                                   <svg className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Back</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M328 112L184 256l144 144'/></svg></button>
-                                                                      
-
-                                   <button className="_page_element_overlay_add_right" style={{
-                                        opacity:this.isSelected==true?1:0,
-                                        visibility:this.isSelected===true?'visible':'hidden',
-
-                                   }} 
-                                   onClick={()=>add_butt_callback(this.element.element_id,this.element.row_id,3)}>
-                                   <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Forward</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M184 112l144 144-144 144'/></svg></button>
                          </div>
                          <div  className="_page_element_main_bdy" id={'_page_element_spci_'+this.element.element_id} 
-                                             onMouseDown={()=>{
+                                             onMouseDown={(e)=>{
+                                                  if(e.nativeEvent.which==1){
                                                   if(this.isSelected===true){set_selec_callback(-1,-1)
-                                                  }else{set_selec_callback(this.element.element_id,this.element.row_id);}
+                                                  }else{set_selec_callback(this.element.element_id,this.element.row_id);}}
                                              }}
                                              >
                                              {this._get_type_element(callback)}
-                                             <div className={this.isSelected==true?"_page_element_overlay":"_page_element_overlay_non"} ></div>
+                                             <div className={this.isSelected==true?"_page_element_overlay":"_page_element_overlay_non"} >
+                                                  <div className={` ${this.isSelected==true?'_page_element_overlay_rect':'_page_element_overlay_rect_non'} _overlay_page_top_left`}></div>
+                                                  <div className={` ${this.isSelected==true?'_page_element_overlay_rect':'_page_element_overlay_rect_non'} _page_element_overlay_rect _overlay_page_top_right`}></div>
+                                                  <div className={`${this.isSelected==true?'_page_element_overlay_rect':'_page_element_overlay_rect_non'} _page_element_overlay_rect _overlay_page_bottom_left`}></div>
+                                                  <div className={`${this.isSelected==true?'_page_element_overlay_rect':'_page_element_overlay_rect_non'} _page_element_overlay_rect _overlay_page_bottom_right`}></div>
+                                             </div>
                          </div>
                          </Resizable>
                </div>

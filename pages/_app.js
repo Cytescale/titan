@@ -1,10 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-rangeslider/lib/index.css'
+import 'react-contexify/dist/ReactContexify.css';
 import '../styles/noti.css';
 import '../styles/globals.css'
 import '../styles/login.css';
 import '../styles/land.css';
 import '../styles/page_element.css';
+
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 

@@ -337,7 +337,7 @@ padding: 12px;
 .land_act_main_bdy_left_main{
      width: auto;
      height: 100%;
-     padding-top: 76px;     
+     padding-top: 52px;     
      position: fixed;
      display: flex;
      background-color: #fff;
@@ -768,4 +768,26 @@ flex: 1;
    
    .ele_menu_bdy_main_cont{
 
+   }
+
+   .element_menu_main_cont{
+          z-index: 99999;
+        box-shadow: 0px 3px 7px #e0e0e0;
+        border: 1px solid #e0e0e0;
+   }
+   .element_menu_item_main_cont {
+        font-size: 13px;
+     
+   }
+   .element_menu_item_main_cont:hover{
+        background-color: #0E98FF;
+        
+   }
+   
+   .menu_item_danger{
+
+        color: #EE6A5E;
+   }
+   .element_menu_sep_main_cont{
+    border-color: red;
    }

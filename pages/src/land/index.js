@@ -14,6 +14,15 @@ import Cookies from 'universal-cookie';
 import { TwitterPicker,ChromePicker, SwatchesPicker} from 'react-color'
 import _URLS from '../../../util/website_urls';
 import Router from 'next/router'
+import {
+     Menu,
+     Item,
+     Separator,
+     Submenu,
+     contextMenu ,
+     animation,
+     useContextMenu
+   } from "react-contexify";
 
 import { Resizable } from "re-resizable";
 
@@ -40,6 +49,9 @@ var _SELECTED_ELEMENT_ROW_ID = undefined;
 var _INSERT_BOOL = 1;
 var _SLIDER_SELECT_BOOl = false;
 var _SLIDER_EDIT_BOOl = false;
+var _RIGHT_CLICK_ELEMENT_COLMID = -1;
+var _RIGHT_CLICK_ELEMENT_ROWID= -1;
+
 
 const FONT_FAMILY_NAMES = [
      'Limelight',
@@ -225,6 +237,30 @@ class _Element_Text{
   
 }
 
+const ELEMENT_OVERLAY_MENU_ID = "element-overlay-menu";
+const ELEMENT_OVERLAY_BASE_ID = "element-base-menu";
+
+
+ function menuHandler(e){
+     let colmId = e.currentTarget.getAttribute("data-colmid");
+     let rowId = e.currentTarget.getAttribute("data-rowId");
+     let menuId = e.currentTarget.getAttribute("data-menuId")
+     _RIGHT_CLICK_ELEMENT_COLMID = colmId;
+     _RIGHT_CLICK_ELEMENT_ROWID = rowId;
+     contextMenu.show({
+       id: menuId,
+       event: e
+     });
+   }
+
+   function basemenuHandler(e){
+     let menuId = e.currentTarget.getAttribute("data-menuId")
+     contextMenu.show({
+       id: menuId,
+       event: e
+     });
+   }
+
 
 
 const firebaseHelp = new firebaseHelper();
@@ -243,6 +279,7 @@ export default class LandAct extends React.Component{
                _txt_pop_shw:false,
                _edit_menu_width:270,
                _desktop_viewing_mode: true,
+               _adder_type:0,
           }
          
           this._set_load_bool = this._set_load_bool.bind(this);
@@ -266,8 +303,13 @@ export default class LandAct extends React.Component{
           this._render_menu_slider = this._render_menu_slider.bind(this);
           this._renderer_resize_callback = this._renderer_resize_callback.bind(this);
           this._set_viewing_mode = this._set_viewing_mode.bind(this);
+          this._set_adder_type  =this._set_adder_type.bind(this);
           this.noti_pool = [];     
 
+     }
+
+     _set_adder_type(val){
+          this.setState({_adder_type:val});
      }
 
      _set_viewing_mode(val){
@@ -2264,9 +2306,21 @@ export default class LandAct extends React.Component{
      }
      _ELEMENT_ADDER_TO_ARRAY(element_type_id)
      {
-          this._set_url_param_selec_id(-1,-1);
+          //this._set_url_param_selec_id(-1,-1);
+         let INSRT_ELEMENT_ID = null;
+         let INSRT_ROW_ID =  null;
+         if(this.state._adder_type===0){
+          INSRT_ELEMENT_ID = _SELECTED_ELEMENT_ID;
+          INSRT_ROW_ID = _SELECTED_ELEMENT_ROW_ID;
+         }
+         else if(this.state._adder_type===1){
+          INSRT_ELEMENT_ID = _RIGHT_CLICK_ELEMENT_COLMID;
+          INSRT_ROW_ID = _RIGHT_CLICK_ELEMENT_ROWID;
+         }
+         console.log(INSRT_ELEMENT_ID+" "+INSRT_ROW_ID);
           let insert_id = null;
-                    if(_SELECTED_ELEMENT_ID===undefined||_SELECTED_ELEMENT_ID===null){
+                    if(INSRT_ELEMENT_ID===undefined||INSRT_ELEMENT_ID===null){
+                         
                          let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
                          _ELEMENT_ROWS_CORE_ARRAY.push(new Array(gotElement));                         
                          //insert_id = [(_ELEMENT_CORE_ARRAY.length-1)]; 
@@ -2275,24 +2329,24 @@ export default class LandAct extends React.Component{
                          switch(_INSERT_BOOL){
                               case 0:{
                                    let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
-                                   _ELEMENT_ROWS_CORE_ARRAY.splice(_SELECTED_ELEMENT_ROW_ID,0,new Array(gotElement));           
+                                   _ELEMENT_ROWS_CORE_ARRAY.splice(parseInt(INSRT_ROW_ID),0,new Array(gotElement));           
                                    //insert_id = _SELECTED_ELEMENT_ID;
                                    break;
                               }
                               case 1:{
                                    let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
-                                   _ELEMENT_ROWS_CORE_ARRAY.splice(_SELECTED_ELEMENT_ROW_ID+1,0,new Array(gotElement));           
+                                   _ELEMENT_ROWS_CORE_ARRAY.splice(parseInt(parseInt(INSRT_ROW_ID)+1),0,new Array(gotElement));           
                                    //insert_id = _SELECTED_ELEMENT_ID+1;
                                    break;
                               }
                               case 2:{
                                    let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
-                                   _ELEMENT_ROWS_CORE_ARRAY[_SELECTED_ELEMENT_ROW_ID].splice(_SELECTED_ELEMENT_ID,0,gotElement);           
+                                   _ELEMENT_ROWS_CORE_ARRAY[INSRT_ROW_ID].splice(INSRT_ELEMENT_ID,0,gotElement);           
                                    break;
                               }
                               case 3:{
                                    let gotElement = this._get_speci_element_class(element_type_id,_ELEMENT_ROWS_CORE_ARRAY.length);
-                                   _ELEMENT_ROWS_CORE_ARRAY[_SELECTED_ELEMENT_ROW_ID].splice(_SELECTED_ELEMENT_ID+1,0,gotElement);           
+                                   _ELEMENT_ROWS_CORE_ARRAY[INSRT_ROW_ID].splice(INSRT_ELEMENT_ID+1,0,gotElement);           
                                    //insert_id = _SELECTED_ELEMENT_ID+1;
                                    break;
                               }
@@ -2321,6 +2375,7 @@ export default class LandAct extends React.Component{
                     _ELEMENT_ROWS_CORE_ARRAY[j][l].element_id = l;
                }
           }
+          this.forceUpdate();
           console.log("RECALCULATAED ARRAY");
           //console.log(JSON.stringify(_ELEMENT_ROWS_CORE_ARRAY).toString());
           
@@ -2340,13 +2395,22 @@ export default class LandAct extends React.Component{
          this.forceUpdate();
     }
 
-    renderer_add_butt_callback(elem_id,elm_row_id,direc_bool){
-     if(elem_id!==null && direc_bool!==null){
-          _SELECTED_ELEMENT_ID = elem_id;
-          _SELECTED_ELEMENT_ROW_ID = elm_row_id;
-          _INSERT_BOOL = direc_bool;
-          this._set_elem_mod(true)
+    renderer_add_butt_callback(elem_id,elm_row_id,direc_bool,insrt_type){
+     if(insrt_type!==null){
+          this._set_adder_type(insrt_type);
+          if(insrt_type == 0){
+               if(elem_id!==null && direc_bool!==null){
+                    _SELECTED_ELEMENT_ID = elem_id;
+                    _SELECTED_ELEMENT_ROW_ID = elm_row_id;
+               }          
+          }
+          else if(insrt_type == 1){
+
+          }
      }
+     _INSERT_BOOL = direc_bool;
+     this._set_elem_mod(true)
+
 }
 _render_component(){
      RENDER_ELEMENT_ARRAY = [];
@@ -2361,39 +2425,26 @@ _render_component(){
                                    maxWidth:this.state._desktop_viewing_mode===true?'900px':'350px'
                               }}
                          >
-                              <div className='element_row_adders_main_cont'>
-                                        {this.state._select_row_id===i?
-                                        <div >
-                                        <button className='element_row_adders_add_above add_above'
-                                        onClick={()=>{
-                                             this.renderer_add_butt_callback(0,i,0)
-                                        }}>
-                                        <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Up</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 328l144-144 144 144'/></svg>
-                                        </button>
-                                        <button className='element_row_adders_add_above add_below'
-                                        onClick={()=>{
-                                             this.renderer_add_butt_callback(0,i,1)
-                                        }}>
-                                             <svg  className='element_row_adders_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
-                                        </button>
-                                        </div>
-                                        :undefined}
-                              </div>
-                              { row.map((element,j)=>{
-                              if(element.deleted===false){ 
-                                        hasAElement = true;
-                                        return(
-                                             new elementRender(element,
-                                             Router.query.row_id,
-                                             Router.query.select_id,)
-                                             ._render_element_overlay(
-                                                                      this._set_url_param_selec_id,
-                                                                      this.renderer_add_butt_callback,
-                                                                      this._renderer_resize_callback,
-                                                                      this._embeded_element_render_classback));
-                                                  }
-     
-                         })}          
+                                   { row.map((element,j)=>{
+                                   if(element.deleted===false){ 
+                                             hasAElement = true;
+                                             let elementData = new elementRender(element,
+                                                  Router.query.row_id,
+                                                  Router.query.select_id,)
+                                                  ._render_element_overlay(
+                                                                           this._set_url_param_selec_id,
+                                                                           this.renderer_add_butt_callback,
+                                                                           this._renderer_resize_callback,
+                                                                           this._embeded_element_render_classback)
+                                             return(
+                                                  <div className='element_context_menu_trigger' data-colmId={j} data-rowId={i} data-menuId={ELEMENT_OVERLAY_MENU_ID} onContextMenu={menuHandler}>
+                                                  {elementData}
+                                                  </div>
+                                             );
+                                        }
+               
+                                   })}       
+                              
                          </div>
                     )
                     if(hasAElement===false){
@@ -2421,6 +2472,85 @@ _render_component(){
      RENDER_ELEMENT_ARRAY.push(new elementRender()._render_foot_element());
      return RENDER_ELEMENT_ARRAY;
 }
+
+     _render_context_menu(){
+          return (
+               <div>
+                    <Menu id={ELEMENT_OVERLAY_BASE_ID} className='element_menu_main_cont' animation={animation.fade}>  
+               
+                    <Item className='element_menu_item_main_cont' onClick={()=>{
+                         this._set_url_param_selec_id(-1,-1);
+                         
+                    }}>
+                   Deselect all
+                 </Item>
+                 <Separator/>
+               <Item className='element_menu_item_main_cont'>
+                   Undo
+                 </Item>
+                 <Item className='element_menu_item_main_cont'>
+                   Redo
+                 </Item>
+                 <Separator />
+                 <Item className='element_menu_item_main_cont'>
+                   Paste
+                 </Item>
+               </Menu>
+               <Menu id={ELEMENT_OVERLAY_MENU_ID} className='element_menu_main_cont' animation={animation.fade}>  
+               <Submenu label="Add"  className='element_menu_item_main_cont element_sub_menu'>
+               <Item className='element_menu_item_main_cont' onClick={(event,props,triggerEvent,data)=>{
+                    this.renderer_add_butt_callback(0,_RIGHT_CLICK_ELEMENT_ROWID,0,1)
+                 }}>
+                   + Section above
+                 </Item>
+                 <Item className='element_menu_item_main_cont' onClick={(event,props,triggerEvent,data)=>{
+                    this.renderer_add_butt_callback(0,_RIGHT_CLICK_ELEMENT_ROWID,1,1)
+                 }}>
+                    + Section below
+                 </Item>
+                 <Separator className='element_menu_sep_main_cont' />
+                 <Item className='element_menu_item_main_cont' onClick={(event,props,triggerEvent,data)=>{
+                    this.renderer_add_butt_callback(_RIGHT_CLICK_ELEMENT_COLMID,_RIGHT_CLICK_ELEMENT_ROWID,2,1)
+                 }}>
+                    + Element to left
+                 </Item>
+                 <Item  className='element_menu_item_main_cont'  onClick={(event,props,triggerEvent,data)=>{
+                    this.renderer_add_butt_callback(_RIGHT_CLICK_ELEMENT_COLMID,_RIGHT_CLICK_ELEMENT_ROWID,3,1)
+                 }}>
+                    + Element to right
+                 </Item >
+               </Submenu>
+               <Separator />
+               <Item className='element_menu_item_main_cont'>
+                   Undo
+                 </Item>
+                 <Item className='element_menu_item_main_cont'>
+                   Redo
+                 </Item>
+                 <Separator />
+               <Item className='element_menu_item_main_cont'>
+                   Copy
+                 </Item>
+                 <Item className='element_menu_item_main_cont'>
+                   Paste
+                 </Item>
+                 <Item className='element_menu_item_main_cont'>
+                   Duplicate
+                 </Item>
+                 <Separator />
+                 <Item className='element_menu_item_main_cont menu_item_danger'  onClick={()=>{
+                                                       this._get_element_by_index(_RIGHT_CLICK_ELEMENT_ROWID,_RIGHT_CLICK_ELEMENT_COLMID).deleted = true;
+                                                       this._add_notification("Text element deleted","danger",1000);
+                                                       this._set_selec_element_id(-1-1)
+                                                       this.forceUpdate();           
+                                                  }}>
+               Delete
+                 </Item>
+               </Menu>
+             </div>
+          )
+     }
+
      _get_page_type_render(element){
           switch(element.element_type_id){
                case 0:{return(renderToString(new elementRender(element)._render_text_element()))}
@@ -2488,8 +2618,16 @@ _render_component(){
                return(   
                     <div className='land_act_creat_main_cont'
                     style={this._set_curr_back()}
+                    data-menuId={ELEMENT_OVERLAY_BASE_ID} 
+                     onContextMenu={basemenuHandler}
+                   
                     >
-                             <div className='land_act_creat_main_cont_grd_back' onMouseDown={()=>this._set_url_param_selec_id(-1-1)}></div>
+                             <div className='land_act_creat_main_cont_grd_back'  onMouseDown={(e)=>{
+                         if(e.nativeEvent.which==1){
+                              this._set_url_param_selec_id(-1,-1)
+                         }
+                         }
+                    }></div>
                          <div className='land_act_creat_main_sub_cont'>
 
                               {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
@@ -2522,9 +2660,9 @@ _render_component(){
                                         
                               </div>
                                         
-                         <div className='land_act_creat_sub_cont'>         
-                                  
+                         <div className='land_act_creat_sub_cont'>                                 
                                    {this._render_component()}
+                                   {this._render_context_menu()}
                          </div>
                          </div>
                     </div>);
@@ -2550,7 +2688,9 @@ _render_component(){
                                         </div>
                                                   
                                    <div className='land_act_creat_sub_cont_mobile '>         
+                                           
                                              {this._render_component()}
+                                             
                                    </div>
                                    </div>
                               </div>
@@ -2571,12 +2711,21 @@ _render_component(){
                <LoaderHelper/>     
                {this._render_notif()}
           </div>:
-          <div className='lander_base_main_cont' tabIndex={0}  onKeyDown={(e)=>{
+          <div className='lander_base_main_cont' 
+               tabIndex={0} 
+               onContextMenu={(e)=>{
+                         e.preventDefault();
+               }}
+               onKeyDown={(e)=>{
                switch(e.key){
                     case 'Escape':{
                          this._set_url_param_selec_id(-1,-1);
                          break;
                     }    
+                    case 'Delete':{
+
+                         break;
+                    }
                     default:{
                          break;
                     }
