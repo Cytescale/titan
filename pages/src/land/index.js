@@ -2624,7 +2624,6 @@ export default class LandAct extends React.Component{
           }
      );
      }
-
      _select_render_window(){
           if(this.state._desktop_viewing_mode===true){
                return(   
@@ -2710,7 +2709,6 @@ export default class LandAct extends React.Component{
                )
           }
      }
-
      _render_layer_menu_component(){
           
           let layer_menu_data = [];
@@ -2763,7 +2761,6 @@ export default class LandAct extends React.Component{
           }
           return(layer_menu_data);
      }
-
      _render_layer_menu(){
           if(this.state._show_layer_menu){
                return(
@@ -2787,9 +2784,6 @@ export default class LandAct extends React.Component{
                return(null)
           }
      }
-
-
-
      _render_init_template_menu(){
                return(
                     <Modal
@@ -2825,7 +2819,6 @@ export default class LandAct extends React.Component{
                     </Modal>  
                )
      }
-
      componentDidMount(){  
           this._init_land_user_check();   
           if(this.state._select_template_id===0){
@@ -2837,9 +2830,6 @@ export default class LandAct extends React.Component{
 
           // this._update_preview_wind();
       }
-
-
-
      render(){               
      return(
           this.state.loading===true?
