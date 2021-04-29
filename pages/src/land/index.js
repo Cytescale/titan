@@ -171,7 +171,7 @@ class backgrounClass{
           this.back_type = 0;
           this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
-          this.solid_color = '#fff';
+          this.solid_color = '#f6f6f6';
           this.default_value = {
                backgroundColor:'#f1f1f1',
                backgroundImage:'linear-gradient(160deg,#fff,#FDD075)',
@@ -189,6 +189,7 @@ class notiClass{
 }
 class _Element_Video_Youtube{
      constructor(row_id,indx_id,in_style){
+          this.element_name='Embeded'
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 4;
@@ -201,6 +202,7 @@ class _Element_Video_Youtube{
 }
 class _Element_Link{
      constructor(row_id,indx_id,in_style){
+          this.element_name='Link'
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 1;
@@ -214,6 +216,7 @@ class _Element_Link{
 }
 class _Element_Image{
      constructor(row_id,indx_id,in_style){
+          this.element_name='Image'
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 2;
@@ -225,6 +228,7 @@ class _Element_Image{
 }
 class _Element_Text{
      constructor(row_id,indx_id,in_style){
+          this.element_name='Text'
           this.deleted = false;
           this.enabled = true;
           this.element_type_id = 0;
@@ -273,6 +277,9 @@ export default class LandAct extends React.Component{
                isUnSaved:false,
                dname:"Not done..",
                element_count:0,
+               _temp_select_mod_show:false,
+               _select_template_id:0,
+               _show_layer_menu:false,
                _select_element_id:-1,
                _select_row_id:-1,
                _add_elem_mod_show:false,
@@ -304,18 +311,29 @@ export default class LandAct extends React.Component{
           this._renderer_resize_callback = this._renderer_resize_callback.bind(this);
           this._set_viewing_mode = this._set_viewing_mode.bind(this);
           this._set_adder_type  =this._set_adder_type.bind(this);
+          this._set_layer_menu_visi = this._set_layer_menu_visi.bind(this);
+          this._set_template_id = this._set_template_id.bind(this);
+          this._set_temp_mod_show = this._set_temp_mod_show.bind(this);
           this.noti_pool = [];     
 
      }
+     _set_temp_mod_show(bool){
+          this.setState({_temp_select_mod_show:bool});
+     }
+
+     _set_template_id(id){
+          this.setState({_select_template_id:id});
+     }
+     _set_layer_menu_visi(bool){
+          this.setState({_show_layer_menu:bool})
+     }    
 
      _set_adder_type(val){
           this.setState({_adder_type:val});
      }
-
      _set_viewing_mode(val){
           this.setState({_desktop_viewing_mode:val})
      }
-
      copytoClip(txt){
           copy(txt);  
      }
@@ -639,12 +657,14 @@ export default class LandAct extends React.Component{
      }
      _draw_font_family(element_id,row_id){
           let res = []
+          
                FONT_FAMILY_NAMES.map((e,ind)=>{
                  res.push(<Dropdown.Item as="button" onClick={()=>{
                     this._get_element_by_index(row_id,element_id).style.font_family = e;
                     this.forceUpdate();
                  }}>{e}</Dropdown.Item>);
                })
+          
           return res;
      }
      _set_element_count(int){
@@ -2388,13 +2408,11 @@ export default class LandAct extends React.Component{
      this._set_selec_element_id(element_index_id,element_row_id);
      this.forceUpdate();
     }
-
     _renderer_resize_callback(row_id,element_id,incr_hgt,incr_wdt){
          this._get_element_by_index(row_id,element_id).style.element_width = parseInt(incr_wdt);
          this._get_element_by_index(row_id,element_id).style.element_height = parseInt(incr_hgt);
          this.forceUpdate();
     }
-
     renderer_add_butt_callback(elem_id,elm_row_id,direc_bool,insrt_type){
      if(insrt_type!==null){
           this._set_adder_type(insrt_type);
@@ -2411,8 +2429,8 @@ export default class LandAct extends React.Component{
      _INSERT_BOOL = direc_bool;
      this._set_elem_mod(true)
 
-}
-_render_component(){
+     }
+     _render_component(){
      RENDER_ELEMENT_ARRAY = [];
      if(_ELEMENT_CORE_ARRAY!==null){
      _ELEMENT_ROWS_CORE_ARRAY.map(
@@ -2471,8 +2489,7 @@ _render_component(){
      // }
      RENDER_ELEMENT_ARRAY.push(new elementRender()._render_foot_element());
      return RENDER_ELEMENT_ARRAY;
-}
-
+     }
      _render_context_menu(){
           return (
                <div>
@@ -2550,7 +2567,6 @@ _render_component(){
              </div>
           )
      }
-
      _get_page_type_render(element){
           switch(element.element_type_id){
                case 0:{return(renderToString(new elementRender(element)._render_text_element()))}
@@ -2594,10 +2610,6 @@ _render_component(){
 
           //console.log("SEND DATA"+JSON.stringify(_SEND_DATA));
      }
-     componentDidUpdate(){
-          
-         // this._update_preview_wind();
-     }
      _add_noti_cont(){
           
           this._add_notification("TEXT","danger",2000);
@@ -2629,13 +2641,13 @@ _render_component(){
                          }
                     }></div>
                          <div className='land_act_creat_main_sub_cont'>
-
+                         
                               {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
                                         <div className='land_act_prv_add_bar_cont'>
                                         <div className='land_act_prv_add_bar_cir_cont'>
-                                        <div  className='land_act_prv_add_bar_cir'></div>
-                                        <div  className='land_act_prv_add_bar_cir'></div>
-                                        <div  className='land_act_prv_add_bar_cir'></div>
+                                        <div  className='land_act_prv_add_bar_cir '></div>
+                                        <div  className='land_act_prv_add_bar_cir '></div>
+                                        <div  className='land_act_prv_add_bar_cir '></div>
                                         </div>
                                         <div className='land_act_prv_add_bar'>
                                              <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
@@ -2699,10 +2711,134 @@ _render_component(){
           }
      }
 
+     _render_layer_menu_component(){
+          
+          let layer_menu_data = [];
+          for(let i = 0 ; i < _ELEMENT_ROWS_CORE_ARRAY.length;i++){
+                    let layer_row_element_data = [];
+                    for(let j = 0 ; j < _ELEMENT_ROWS_CORE_ARRAY[i].length ; j++){
+                         if(_ELEMENT_ROWS_CORE_ARRAY[i][j].deleted===false){
+                              layer_row_element_data.push(
+                                   <div data-colmId={j} data-rowId={i} data-menuId={ELEMENT_OVERLAY_MENU_ID} onContextMenu={menuHandler} className={`element_layer_menu_acord_body_cont ${(this.state._select_element_id == j )&&( this.state._select_row_id == i )?'layer_acrd_selected':undefined}`}
+                                   onMouseDown={(e)=>{
+                                        this._set_url_param_selec_id(j,i);
+                                   }}
+                                   >
+                                        {_ELEMENT_ROWS_CORE_ARRAY[i][j].element_name + " "+(j+1)}
+                                        <div className={`element_layer_menu_acord_visi_cont`} 
+                                                onClick={(e)=>{
+                                                 this._get_element_by_index(i,j).enabled = !(this._get_element_by_index(i,j).enabled)
+                                                 this.forceUpdate();
+                                        }} >
+                                             {
+                                                   this._get_element_by_index(i,j).enabled===true?
+                                                   <svg className={`element_layer_menu_acord_visi_cont_ico`} viewBox='0 0 512 512'><title>Eye</title><path d='M255.66 112c-77.94 0-157.89 45.11-220.83 135.33a16 16 0 00-.27 17.77C82.92 340.8 161.8 400 255.66 400c92.84 0 173.34-59.38 221.79-135.25a16.14 16.14 0 000-17.47C428.89 172.28 347.8 112 255.66 112z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><circle cx='256' cy='256' r='80' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
+                                                   :
+                                                  <svg  className={`element_layer_menu_acord_visi_cont_ico`}  viewBox='0 0 512 512'><title>Eye Off</title><path d='M432 448a15.92 15.92 0 01-11.31-4.69l-352-352a16 16 0 0122.62-22.62l352 352A16 16 0 01432 448zM255.66 384c-41.49 0-81.5-12.28-118.92-36.5-34.07-22-64.74-53.51-88.7-91v-.08c19.94-28.57 41.78-52.73 65.24-72.21a2 2 0 00.14-2.94L93.5 161.38a2 2 0 00-2.71-.12c-24.92 21-48.05 46.76-69.08 76.92a31.92 31.92 0 00-.64 35.54c26.41 41.33 60.4 76.14 98.28 100.65C162 402 207.9 416 255.66 416a239.13 239.13 0 0075.8-12.58 2 2 0 00.77-3.31l-21.58-21.58a4 4 0 00-3.83-1 204.8 204.8 0 01-51.16 6.47zM490.84 238.6c-26.46-40.92-60.79-75.68-99.27-100.53C349 110.55 302 96 255.66 96a227.34 227.34 0 00-74.89 12.83 2 2 0 00-.75 3.31l21.55 21.55a4 4 0 003.88 1 192.82 192.82 0 0150.21-6.69c40.69 0 80.58 12.43 118.55 37 34.71 22.4 65.74 53.88 89.76 91a.13.13 0 010 .16 310.72 310.72 0 01-64.12 72.73 2 2 0 00-.15 2.95l19.9 19.89a2 2 0 002.7.13 343.49 343.49 0 0068.64-78.48 32.2 32.2 0 00-.1-34.78z'/><path d='M256 160a95.88 95.88 0 00-21.37 2.4 2 2 0 00-1 3.38l112.59 112.56a2 2 0 003.38-1A96 96 0 00256 160zM165.78 233.66a2 2 0 00-3.38 1 96 96 0 00115 115 2 2 0 001-3.38z'/></svg>
+                                             }
+                                             
+                                        </div>
+                                   </div>
+                              )
+                         }
+                    }
+                    if(layer_row_element_data.length>0){
+                         layer_menu_data.push(
+                              <Accordion className='ele_men_acrd_main_cont'>
+                                        <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                                             <div className='_ele_acrd_header_main_cont'>
+                                             <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                                  {'Section '+(i+1)}
+                                             </div>
+                                        </Accordion.Toggle>
+                                        <Accordion.Collapse eventKey="0">
+                                             <div className='element_layer_menu_acord_body_main_cont'>
+                                                  {layer_row_element_data}
+                                             </div>
+                                        </Accordion.Collapse>
+                              </Accordion>
+                    );
+                    }
+                    
+          }
+          return(layer_menu_data);
+     }
+
+     _render_layer_menu(){
+          if(this.state._show_layer_menu){
+               return(
+                    <div className='element_layer_menu_main_cont'>
+                              <div className='element_layer_menu_head_main_cont'>
+                                   Elements
+                                   <div className='element_layer_menu_close_main_cont'>
+                                        <button className='element_layer_menu_close_butt' onClick={()=>{
+                                             this._set_layer_menu_visi(false);
+                                        }}>
+                                             <svg className='element_layer_menu_close_butt_ico' viewBox='0 0 512 512'><title>Close</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M368 368L144 144M368 144L144 368'/></svg>
+                                        </button>
+                                   </div>
+                              </div>
+                              <div className='element_layer_menu_body_main_cont'>
+                                   {this._render_layer_menu_component()}
+                              </div>
+                    </div>)
+          }
+          else{
+               return(null)
+          }
+     }
+
+
+
+     _render_init_template_menu(){
+               return(
+                    <Modal
+                              show={this.state._temp_select_mod_show}
+                              onHide={()=>{this._set_temp_mod_show(false)}}
+                              backdrop="static"
+                              keyboard={false}
+                              size="lg"
+                              aria-labelledby="contained-modal-title-vcenter"
+                              centered                        
+                              >       
+                              <div className='template_selection_main_cont'>
+                                   <div className='template_selection_head_main_cont'>
+                                        SELECT A TEMPLATE
+                                   </div>
+                                   <div className='template_selection_selec_main_cont'>
+                                        <div className='template_selection_selec_main_cont_row'>
+                                        <div className='template_1_main_cont' onClick={(e)=>{
+                                             this._set_template_id(1);
+                                             this._set_temp_mod_show(false);
+                                        }}>
+                                             <div className='template_1_main_cont_thumbnail'>
+                                                  <svg className='template_1_main_cont_thumbnail_ico' viewBox='0 0 512 512'><title>Add Circle</title><path d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 176v160M336 256H176'/></svg>
+                                             </div>
+                                             <div className='template_1_main_cont_tit'>
+                                                       Blank template
+                                             </div>
+                                        </div>
+                                        
+                                        </div>                                       
+                                   </div>    
+                              </div>                  
+                    </Modal>  
+               )
+     }
+
      componentDidMount(){  
           this._init_land_user_check();   
+          if(this.state._select_template_id===0){
+               this._set_temp_mod_show(true);
+          }
           
      }
+     componentDidUpdate(){
+
+          // this._update_preview_wind();
+      }
+
+
 
      render(){               
      return(
@@ -2732,12 +2868,41 @@ _render_component(){
                }
           }}
           >
+              
                <title>{process.env.APP_NAME}</title>
-               
+               {this._element_add_modal()}
                <div className='land_act_head_main_cont'>
-                    {this._element_add_modal()}
-                    <div className='land_act_head_tit_cont'> <div className='land_act_head_tit_cont_logo'/>{process.env.APP_NAME} 
+                        
+
+                    <div className='land_act_head_tit_cont'> 
+                              
+                              <Dropdown>
+                              <Dropdown.Toggle as={CustomToggle}  id="land_act_head_logo_drop_togg">
+                                   <div className='land_act_head_tit_cont_logo_cont'>
+                                   <div className='land_act_head_tit_cont_logo'/>
+                                      {/* {process.env.APP_NAME}  */}
+                                   <svg className='land_act_head_tit_cont_logo_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                   </div>
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu className='land_act_head_tit_cont_logo_menu'>
+                              <Dropdown.Item as="button">Save</Dropdown.Item>
+                              <Dropdown.Divider />
+                              <Dropdown.Item as="button">Undo</Dropdown.Item>
+                              <Dropdown.Item as="button">Redo</Dropdown.Item>
+                              <Dropdown.Divider />
+                              <Dropdown.Item as="button">Import</Dropdown.Item>
+                              <Dropdown.Item as="button">Export</Dropdown.Item>
+                              <Dropdown.Divider />
+                              <Dropdown.Item as="button">Prefrences</Dropdown.Item>
+                              <Dropdown.Item as="button">Template setting</Dropdown.Item>
+                              <Dropdown.Divider />
+                              <Dropdown.Item as="button">Help</Dropdown.Item>
+                              </Dropdown.Menu>
+                         </Dropdown>
+                
+                    
                     </div>  
+                         
                     <div className='land_act_head_cent_main_cont'>
                               
                               <div className='land_act_head_cent_link_cont'>
@@ -2754,6 +2919,7 @@ _render_component(){
                                         <svg className='land_act_head_cent_link_ico' viewBox='0 0 512 512'><title>Play</title><path d='M112 111v290c0 17.44 17 28.52 31 20.16l247.9-148.37c12.12-7.25 12.12-26.33 0-33.58L143 90.84c-14-8.36-31 2.72-31 20.16z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
                                         Preview</a></div>
                     </div>
+              
                     <div className='land_act_head_rght_main_cont'>
                               <div className='land_act_head_rght_feed_butt_cont'>
                                   <FeedbackComp/> 
@@ -2774,7 +2940,7 @@ _render_component(){
                </div>     
                
                <div className='land_act_main_bdy_cont'>
-                 
+              
                     <div className='land_act_main_bdy_left_main'>
                                         <div>
                                         <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
@@ -2831,7 +2997,7 @@ _render_component(){
                                                             </OverlayTrigger>
                                                        </div>
                                         
-                                        <div className='land_left_bdy_butt_main_cont'>
+                                        {/* <div className='land_left_bdy_butt_main_cont'>
                                              <div className='land_left_bdy_butt_main_tit_cont'>
                                                        <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
                                                        Page Settings
@@ -2840,7 +3006,18 @@ _render_component(){
                                                   <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                                              </button>
                                         </div>
-                                        
+                                         */}
+                                        <div className='land_left_bdy_butt_main_cont'>
+                                             <div className='land_left_bdy_butt_main_tit_cont'>
+                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                       Layers
+                                             </div>
+                                             <button className='land_act_back_cust_butt' onClick={()=>{
+                                                  this._set_layer_menu_visi(!this.state._show_layer_menu);
+                                             }}>
+                                                  <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Layers</title><path d='M434.8 137.65l-149.36-68.1c-16.19-7.4-42.69-7.4-58.88 0L77.3 137.65c-17.6 8-17.6 21.09 0 29.09l148 67.5c16.89 7.7 44.69 7.7 61.58 0l148-67.5c17.52-8 17.52-21.1-.08-29.09zM160 308.52l-82.7 37.11c-17.6 8-17.6 21.1 0 29.1l148 67.5c16.89 7.69 44.69 7.69 61.58 0l148-67.5c17.6-8 17.6-21.1 0-29.1l-79.94-38.47' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M160 204.48l-82.8 37.16c-17.6 8-17.6 21.1 0 29.1l148 67.49c16.89 7.7 44.69 7.7 61.58 0l148-67.49c17.7-8 17.7-21.1.1-29.1L352 204.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                             </button>
+                                        </div>
                                        
                                         <div className='land_left_bdy_butt_main_cont'>
                                              <div className='land_left_bdy_butt_main_tit_cont'>
@@ -2879,15 +3056,34 @@ _render_component(){
                                              </button>
                                         </div>
 
+                                                  <OverlayTrigger trigger="click" placement="right" overlay={ 
+                                                            <Popover id="popover-basic"  className='popover_back_class' backdropClassName="backdrop">
+                                                            <div className='popover_back_class_main_cont'>
+                                                                 <div className='popover_back_class_main_cont_tit'>System Information</div>
+                                                                      <div className='popover_info_class_data_main_cont'>
+                                                                                <div className='popover_info_class_data_tit'>Build Version</div>
+                                                                                <div className='popover_info_class_data_data'>{process.env.DEV_VERSION}</div>
+                                                                      </div>
+                                                                      <div className='popover_info_class_data_main_cont'>
+                                                                                <div className='popover_info_class_data_tit'>Build Variant</div>
+                                                                                <div className='popover_info_class_data_data'>{process.env.DEV_VARIANT}</div>
+                                                                      </div>
+                                                                      <div className='popover_info_class_data_main_cont'>
+                                                                                <div className='popover_info_class_data_tit'>System Status</div>
+                                                                                <div className='popover_info_class_data_data'>
+                                                                                <div className={process.env.DEV_SYSTEM_STATUS===true?'login_act_foot_sys_indi':'login_act_foot_sys_indi_non'}></div>    
+                                                                                </div>
+                                                                      </div>
+                                                            </div>
+                                                            </Popover>} rootClose={true}>
+                                                                      <button className='land_act_back_cust_butt'>
+                                                                      <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
+                                                                      </button>
+                                                  </OverlayTrigger>
 
-                                        <OverlayTrigger placement="right"  rootClose={true} delay={{ show: 200, hide:100 }} overlay={(props)=>(<Tooltip id="button-tooltip" {...props}>Information</Tooltip>)}>
-                                        <button className='land_act_back_cust_butt'>
-                                             <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
-                                        </button>
-                                        </OverlayTrigger>   
                                         </div>
                     </div>
-                    
+                    {this._render_layer_menu()}
                     {this._select_render_window()}
 
                     {this.state._select_element_id>=0 && ((typeof this.state._select_element_id) == 'number') ?
@@ -2923,8 +3119,7 @@ _render_component(){
                     }
                </div>            
                {this._render_notif()}
-             
-               <div className='app_ver_cont'>Version: {process.env.DEV_VERSION}</div>
+               {this._render_init_template_menu()}
         </div>
      );
 }

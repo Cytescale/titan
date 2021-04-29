@@ -212,7 +212,7 @@ cursor: pointer;
      background: rgba(14, 152, 255, 0.13);
      position: absolute;
      z-index: 100;
-    
+    pointer-events: none;
 }
 ._page_element_overlay_rect_non{
      visibility: hidden;
@@ -766,10 +766,7 @@ margin-bottom: 7px;
    .txt_algn_rad_ele_pop_butt{
         font-size: 13px;
    }
-   .dropdown-menu {
-        max-height: 300px;
-        overflow-y: scroll;
-   }
+
    .element_edit_overlay_main_cont{
         position: absolute;
         right: 0;
