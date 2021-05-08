@@ -8,6 +8,36 @@ export default class firestoreHelper{
           this.UID = UID;
      }
 
+
+     async _get_template(got_id){
+          let gotFile = null;
+          await axios(process.env.NEXT_PUBLIC_HOST+"api/cdn/getTemplate",{
+               method: 'POST',
+               mode: 'no-cors',
+               cache: 'no-cache',
+               headers: {
+                 'Content-Type': 'application/x-www-form-urlencoded',
+               },
+               credentials: 'same-origin',
+               redirect: 'follow',
+               referrerPolicy: 'no-referrer', 
+               data: qs.stringify({temp_code:got_id})
+             })
+             .then(res=>{
+                    if(res.data.errBool===false){
+                         gotFile = res.data;
+                    }
+                    else{
+                         gotFile = null;
+                    }
+             })
+             .catch(err=>{
+                  console.log(err);
+               
+             });
+             return gotFile;
+     }
+
      async _send_feedback_data(send_data){
           let update_res = null;
           await axios(process.env.NEXT_PUBLIC_HOST+"api/db/db_create_feed",{

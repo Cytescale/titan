@@ -9,4 +9,5 @@ module.exports = {
        DEV_VARIANT:"Alpha",
        DEV_SYSTEM_STATUS:true,
      },
+     include: ["templates"]
    }

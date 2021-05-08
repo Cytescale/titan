@@ -17,7 +17,7 @@ Account
 
 Logo menu
        Website name edit 
-       Import
+       Import ❤️
        Export ❤️ 
        Change template
               preference
@@ -37,7 +37,7 @@ Link editing
 Template selection
       Search
       Catergorisation
-      template importing
+      template importing ❤️
 
 Selection
        Multiple selection

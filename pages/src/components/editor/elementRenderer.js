@@ -256,7 +256,7 @@ export default class elementRenderer extends React.Component{
      }
 
      render(){
-          
+
           return(this.renderEditor());
      }
 
