@@ -18,8 +18,8 @@ export default async (req, res) => {
      let  temp_code = req.body.temp_code;
      switch(parseInt(temp_code)){
           case 1:{
-               console.log();
-               let data  = getFile(process.cwd()+'/templates/titan-template-1.json');
+               
+               let data  = getFile(__dirname+'/templates/titan-template-1.json');
                if(data){res.status(200).send({errBool:false,errMess:null,data:data});}
                else{res.status(200).send({errBool:true,errMess:'File collection error',data:null});}
                break;
