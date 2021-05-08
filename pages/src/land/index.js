@@ -3,7 +3,6 @@ import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
 import {Accordion,Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
-import Slider from 'react-rangeslider'
 import $ from 'jquery';
 import copy from "copy-to-clipboard";  
 import ImageUploading from 'react-images-uploading';
@@ -976,6 +975,7 @@ export default class LandAct extends React.Component{
                               <Dropdown.Divider />
                               <Dropdown.Item as="button">Import</Dropdown.Item>
                               <Dropdown.Item as="button" onClick={()=>{
+                                              if(this.state._website_component){
                                               const expt_name = "titan_export.json";
                                               var str = JSON.stringify(this.state._website_component);
                                               var dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(str);
@@ -985,8 +985,10 @@ export default class LandAct extends React.Component{
                                               element.style.display = 'none';
                                               element.click();
                                               this._add_notification("File exported","success",1000);
-
-                                              
+                                              }
+                                              else{
+                                                   console.log("LAND: File export error Null file");
+                                              }
                               }}>Export</Dropdown.Item>
                               <Dropdown.Divider />
                               <Dropdown.Item as="button">Prefrences</Dropdown.Item>
