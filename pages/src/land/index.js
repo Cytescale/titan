@@ -519,6 +519,7 @@ export default class LandAct extends React.Component{
      
      /*////////////////////////////////////RENDERERS SECTION ///////////////////////////////////////////////////*/
      _render_component(){
+          if(this.state._website_component && this.state._website_component!==undefined ){
           return <ElementRenderer 
           websiteComp={this.state._website_component}   
           currentSelectTypeId={null}
@@ -530,6 +531,10 @@ export default class LandAct extends React.Component{
           selectCallback={  this._set_url_param_selec_id}
           elementRenderCallback={null}
           />;
+          }
+          else{
+               return(<div>Empty Outer render</div>)
+          }
      }
      _render_context_menu(){
           return (

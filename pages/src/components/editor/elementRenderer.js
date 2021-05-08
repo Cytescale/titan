@@ -215,7 +215,7 @@ export default class elementRenderer extends React.Component{
      }
 
      renderEditor(){
-          if(this.props.websiteComp!==null){
+          if(this.props.websiteComp && this.props.websiteComp!==undefined){
           let RENDER_EDITOR_ARRAY = [];
           for(let i = 0 ; i < this.props.websiteComp.getSectionArray().length;i++){
                let hasAElement = false;
@@ -250,9 +250,13 @@ export default class elementRenderer extends React.Component{
                
           }
           return RENDER_EDITOR_ARRAY;}
+          else{
+               return(<div>Empty Render</div>)
+          }
      }
 
      render(){
+          
           return(this.renderEditor());
      }
 
