@@ -1,6 +1,7 @@
 const fs = require('fs')
 
 
+
 function getFile(url){
      try {
           const data = fs.readFileSync(url, 'utf8')
@@ -17,7 +18,8 @@ export default async (req, res) => {
      let  temp_code = req.body.temp_code;
      switch(parseInt(temp_code)){
           case 1:{
-               let data  = getFile('templates/titan-template-1.json');
+               console.log();
+               let data  = getFile(process.cwd()+'/templates/titan-template-1.json');
                if(data){res.status(200).send({errBool:false,errMess:null,data:data});}
                else{res.status(200).send({errBool:true,errMess:'File collection error',data:null});}
                break;
