@@ -45,6 +45,9 @@ export default class elementRender{
 
 
      }
+
+         
+
           _render_element_overlay(set_selec_callback,add_butt_callback,resize_callback,callback){
           return(
                <div className='overlay_build_lines'

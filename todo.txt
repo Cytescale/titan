@@ -1,0 +1,89 @@
+FRONTEND
+
+Sign up page
+     base page
+
+Account                 
+      pass Change
+      company name Change
+      display name Change
+      reset account
+      deactivate Account
+      profile photo Change
+      API
+          pageid 
+          uid
+          api key
+
+Logo menu
+       Website name edit 
+       Import
+       Export ❤️ 
+       Change template
+              preference
+                    Page id
+                    Show gird
+                    Grid type       
+                    margin lines
+                    row lines
+Website settings
+       Save
+       Publish
+       Code export
+Link editing
+      Link edit
+      Link share
+
+Template selection
+      Search
+      Catergorisation
+      template importing
+
+Selection
+       Multiple selection
+                select all 
+                deselect all 
+       Multiple select menu
+                delete
+                disable
+Edit 
+      Copy
+      Paste
+      Duplicate
+      Undo
+      Redo
+Layer menu
+      naming
+      Reordering
+
+new Elements
+     Ask me a question 
+     social media Link
+     footer
+
+
+
+
+CANCLED Spacer
+CANCLED Page settings
+DONE logo menu
+DONE Information menu
+DONE template selector
+DONE layer menu
+DONE right click menu
+DONE MOBILE Mode
+DONE element resizing
+DONE NEW Sliders
+DONE New Menu layout
+DONE New Scroll bar
+DONE Box shadow
+DONE Transprnt background
+DONE delete glitch
+DONE Vertical align
+
+
+SECONDARY LIST
+3-5 templates to choose from at least(hence, the ui for it)
+feedback service(if works, typeform etc).
+placement decisions
+optimizing user journeys amap

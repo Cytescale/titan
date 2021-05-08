@@ -1040,3 +1040,15 @@ background: rgba(14, 152, 255, 0.13);
      font-size: 14px;
 
 }
+.land_act_head_cent_main_cont_wb_name_cont{
+     
+}
+
+.land_act_head_cent_main_cont_wb_name_fld{
+     width: 300px;
+     text-align: center;
+     height: 58px;
+     
+     background-color: rgba(0,0,0,0.0);
+     border-style: none;
+}

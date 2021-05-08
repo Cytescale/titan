@@ -23,13 +23,10 @@ if(process.env.NEXT_PUBLIC_HOSTED=='true'){
     tracesSampleRate: 1.0,
   });
   console.log("SENTRY: sentry.io initiated");
-}
-else{
+}else{
   console.log("SENTRY: No sentry.io initiated");
 }
-
 firebaseHelp._init_firebase_app();
-
 //firebaseHelp._app_init_auth_state_inti();
 function start({ Component, pageProps }) { 
   return <Component {...pageProps} />
