@@ -35,7 +35,7 @@ export default class LoaderHelper extends React.Component{
                     <div  className='loader_cont_prog_cont'>
                     <ProgressBar className='loader_cont_prog' now={this.props.prog} />
                     </div>
-                    <div className='loader_main_cont_txt'>Loading..</div>
+                    <div className='loader_main_cont_txt'>Just a sec..</div>
                     </div>
                </div>
           );

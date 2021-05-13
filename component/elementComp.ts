@@ -41,7 +41,7 @@ export default class elementComp {
                bordered:false,
                font_family:'Poppins',
                border_color:'#000',
-               back_color:'#f1f1f1',
+               back_color:'#fff',
                text_color:'#000',
                font_size:17,
                font_weight:500,

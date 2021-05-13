@@ -356,9 +356,9 @@ backdrop-filter: blur(7px);
      z-index: 30;
      
      background-image: 
-     linear-gradient(45deg,#727272 .1em, transparent .1em),
-      linear-gradient(45deg, #727272 .1em, transparent .1em); 
-     background-size:1.5em 1.5em;
+     linear-gradient(0deg,rgb(0,0,0,0.05) .1em, transparent .1em),
+      linear-gradient(90deg, rgb(0,0,0,0.05) .1em, transparent .1em); 
+     background-size:1em 1em;
 }
 .land_act_creat_tit_main_cont{
      font-size: 62px;
@@ -429,7 +429,7 @@ backdrop-filter: blur(7px);
      align-items: center;
      }
      .land_act_main_bdy_left_add_butt{
-          background-color: #6fcf97;
+          background-color: #66D655;
           border-style: none;
           width: 60px;
           height: 60px;
@@ -571,10 +571,18 @@ height: 100%;
      padding-bottom: 12px;
      padding-top: 12px;
 }
-.land_act_prv_add_ico{
-     width: 32px;
-     height: 18px;
+.land_act_prv_add_ico_cont{
+     height: 100%;
+     display: flex;
+     justify-content: baseline;
+     align-items: center;
      margin-right: 8px;
+}
+
+.land_act_prv_add_ico{
+     width: 28px;
+     height: 28px;
+     
      color: #fff;
      border-right: 1px solid #fff;
      padding-right: 7px;
@@ -633,6 +641,30 @@ height: 100%;
 
 }
 
+.land_act_prv_add_play_butt{
+     background-color: #fff;
+     border-style: none;
+     border-radius: 320px;
+     width: 32px;
+     height: 32px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding-left: 8px;     
+}
+.land_act_prv_add_play_butt_cont{
+     height: 100%;
+     margin-left: 8px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+}
+.land_act_prv_add_play_ico{
+     width: 18px;
+     height: 18px;
+     color: #0E98FF;
+}
+
 .land_act_prv_add_lnk{
      color:var(--body_brow_ard_lnk_color);
 }
@@ -643,6 +675,7 @@ height: 100%;
 }
 
 .land_act_prv_add_lnk:hover{
+     color: #fff;
      text-decoration: none;
 }
 .land_act_prv_add_bar_rel_butt{
@@ -1142,7 +1175,8 @@ background: rgba(14, 152, 255, 0.13);
      display: flex;
      justify-content: center;
      align-items: center;
-     background-color: rgb(255,255,255,0.3);
+     color: var(--pop_txt_color);
+     background-color: var(--primary-dark-color);
 }
 
 .template_selection_head_main_srch_cont{

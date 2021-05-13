@@ -58,7 +58,7 @@ class backgrounClass{
           this.back_type = 0;
           this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
-          this.solid_color = '#e0e0e0';
+          this.solid_color = '#f1f1f1';
           this.default_value = {
                backgroundColor:'#f1f1f1',
                backgroundImage:'linear-gradient(160deg,#fff,#FDD075)',
@@ -319,10 +319,10 @@ export default class LandAct extends React.Component{
      async _init_land_user_check(){
           this._set_load_bool(true);
           _BACK_DATA = new backgrounClass();
-          this._set_loading_prog(50);
+          this._set_loading_prog(40);
           await firebaseHelp._init_user_check(null,_URLS.login).then((res)=>{
                if(res===true){
-                    this._set_loading_prog(80);
+                    this._set_loading_prog(60);
                     storeHelper._get_base_page_data().then((r)=>{
                          console.log("LAND: init website load success");
                          this._set_loading_prog(100);
@@ -822,7 +822,9 @@ export default class LandAct extends React.Component{
                                              <div  className='land_act_prv_add_bar_cir '></div>
                                              </div> */}
                                              <div className='land_act_prv_add_bar'>
+                                                  <div className='land_act_prv_add_ico_cont'>
                                                   <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
+                                                  </div>
                                                   <a className='land_act_prv_add_lnk' href={this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null}>
                                                   {this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null}
                                                   </a>
@@ -838,9 +840,11 @@ export default class LandAct extends React.Component{
                                              }}
                                              ><svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Copy</title><rect x='128' y='128' width='336' height='336' rx='57' ry='57' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path d='M383.5 128l.5-24a56.16 56.16 0 00-56-56H112a64.19 64.19 0 00-64 64v216a56.16 56.16 0 0056 56h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg></button>
 
-                                             {/* <button className='land_act_prv_add_cpy_butt'>
-                                                  <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Share</title><path d='M336 192h40a40 40 0 0140 40v192a40 40 0 01-40 40H136a40 40 0 01-40-40V232a40 40 0 0140-40h40M336 128l-80-80-80 80M256 321V48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                             </button> */}
+                                             <div className='land_act_prv_add_play_butt_cont'>
+                                             <button className='land_act_prv_add_play_butt'>
+                                                  <svg className='land_act_prv_add_play_ico' viewBox='0 0 512 512'><title>Play</title><path d='M112 111v290c0 17.44 17 28.52 31 20.16l247.9-148.37c12.12-7.25 12.12-26.33 0-33.58L143 90.84c-14-8.36-31 2.72-31 20.16z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/></svg>
+                                             </button>
+                                             </div>
                                              </div>    
                                    </div>
                                         
@@ -1091,8 +1095,7 @@ export default class LandAct extends React.Component{
                <title>{process.env.APP_NAME}</title>
                {this._element_add_modal()}
                <div className='land_act_head_main_cont'>
-                        
-
+                    
                     <div className='land_act_head_tit_cont'> 
                               
                               <Dropdown>
@@ -1163,8 +1166,7 @@ export default class LandAct extends React.Component{
                                         autoComplete={false} />
                               </div>
 
-                    </div>
-                         
+                    </div>               
                     <div className='land_act_head_rght_main_cont'>
                               <div className='land_act_head_rght_feed_butt_cont'>
                                   <FeedbackComp/> 
