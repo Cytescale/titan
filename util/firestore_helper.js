@@ -129,5 +129,33 @@ export default class firestoreHelper{
              return _PAGE_DATA;
      }
 
+     async _get_base_page_data(){
+          let _PAGE_DATA = null;
+          let send_data ={
+               UID:this.UID
+          }
+          await axios(process.env.NEXT_PUBLIC_HOST+"api/db/db_get_base_page",{
+               method: 'POST',
+               mode: 'no-cors',
+               cache: 'no-cache',
+               headers: {
+                 'Content-Type': 'application/x-www-form-urlencoded',
+               },
+               credentials: 'same-origin',
+               redirect: 'follow',
+               referrerPolicy: 'no-referrer', 
+               data: qs.stringify(send_data)
+             })
+             .then(res=>{
+                    if(res.data!==null && res.status === 200){
+                              _PAGE_DATA = res.data;
+                    }
+             })
+             .catch(err=>{
+                  console.log(err);
+             });
+             return _PAGE_DATA;
+     }
+
 
 }

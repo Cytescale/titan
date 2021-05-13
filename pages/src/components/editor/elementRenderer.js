@@ -31,8 +31,8 @@ export default class elementRenderer extends React.Component{
                return(
                     <div className='overlay_build_lines'
                     >
-                               <div className='overlay_build_line_1'  style={{visibility:isSelected===true?'visible':'hidden'}}></div>
-                              <div className='overlay_build_line_2' style={{visibility:isSelected===true?'visible':'hidden'}}></div>
+                               {/* <div className='overlay_build_line_1'  style={{visibility:isSelected===true?'visible':'hidden'}}></div>
+                              <div className='overlay_build_line_2' style={{visibility:isSelected===true?'visible':'hidden'}}></div> */}
                                 <Resizable
                                              
                                              className='ele_main_resizer_main_cont'

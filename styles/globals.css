@@ -2,13 +2,80 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alata&family=Alegreya+Sans+SC:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Allerta+Stencil&family=Antonio:wght@100;200;300;400;500;600;700&family=Bebas+Neue&family=Bellota:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Bowlby+One&family=Calligraffitti&family=Chango&family=Charm:wght@400;700&family=Cherry+Cream+Soda&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700;800;900&family=Coiny&family=Comfortaa:wght@300;400;500;600;700&family=Copse&family=DM+Serif+Display:ital@0;1&family=Dancing+Script:wght@400;500;600;700&family=Dela+Gothic+One&family=Fredoka+One&family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Julius+Sans+One&family=Lexend+Exa&family=Lexend+Giga&family=Lexend+Mega&family=Lexend+Peta&family=Lexend:wght@100;300;400;500;600;700;800&family=Limelight&family=Lobster&family=Marcellus+SC&family=Merienda+One&family=Metal+Mania&family=Michroma&family=Monoton&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nova+Cut&family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&family=Orbitron:wght@400;500;600;700;800;900&family=Pacifico&family=Pinyon+Script&family=Pirata+One&family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Questrial&family=Quicksand:wght@300;400;500;600;700&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rammetto+One&family=Reem+Kufi&family=Righteous&family=Rozha+One&family=Rye&family=Sen:wght@400;700;800&family=Stalinist+One&family=Teko:wght@300;400;500;600;700&family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&family=Varela&family=Varela+Round&family=Zen+Dots&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800&display=swap');
+
+
+
 html,
 body {
-  padding: 0;
-  margin: 0;
-  color: #000;
-  font-family: Poppins,-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  --primary-dark-color:#181818;
+
+  --body_scroll_bar_track: #121212;
+  --body_scroll_bar_thumb: #424242;
+  --body_scroll_bar_thumb-hover: #626262;
+
+
+  --body_head_back_color:var(--primary-dark-color);
+  --body_head_txt_color:#080808;
+  --body_head_bord_color:#323232;
+  --body_head_int_fld_color:#fff;
+
+
+  --body_brow_back_color:#0E98FF;
+  --body_brow_ard_bar_back_color:#0E98FF;
+  --body_brow_ard_lnk_color:#fff;
+  --body_brow_ard_butt_color:#fff;
+
+  --left_pane_back_color: var(--primary-dark-color);
+  --left_pane_butt_back_color: var(--primary-dark-color);
+  --left_pane_butt_ico_color: #929292;
+  --left_pane_butt_back_color-hover: #212121;
+
+  --right_pane_back_color: var(--primary-dark-color);
+  --right_pane_butt_back_color: var(--primary-dark-color);
+  --right_pane_head_text_color: #bdbdbd;
+  --right_pane_text_color: #727272;
+  --right_pane_acord_head_back_color: #222222;
+  --right_pane_butt_ico_color: #929292;
+  --right_pane_down_arrow_color:#828282;
+  --right_pane_butt_back_color-hover: #212121;
+  --right_pane_border_color: #323232;
+
+  --right_pane_opt_butt_back_color:#424242;
+  --right_pane_opt_butt_back_color_hover:#626262;
+  --right_pane_txt_int_fld_color: #525252;
+
+  --right_pane_joint_fld_back_color:#424242;
+  --right_pane_joint_fld_label_color:#e0e0e0;
+  --right_pane_joint_fld_txt_color:#fff;
+
+
+  --layer_menu_back_color:#121212;
+  --layer_menu_head_color:#525252;
+  --layer_menu_head_text_color: var(--right_pane_head_text_color);
+  --layer_menu_txt_color:#e0e0e0;
+  --layer_menu_close_back_color:#525252;  
+  --layer_menu_close_ico_color:#212112;  
+
+  --slider_back_color: #424242;
+  --slider_bar_color: #0E98FF;
+  --slider_text_color: #fff;
+
+
+  --context_menu_back_color:#212121;
+  --context_menu_butt_back_color_hover:#424242;
+  --context_menu_text_color:#e0e0e0;
+  --context_menu_ico_color:#e0e0e0;
+
+  --pop_back_color:#212121;
+  --pop_head_txt_color:#727272;
+  --pop_txt_color:#fff;
+
+    padding: 0;
+    margin: 0;
+    color: #000;
+    font-family: Poppins,-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
@@ -29,7 +96,7 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--primary-dark-color);
 }
 .loader_main_cont_img{
 
@@ -38,6 +105,19 @@ a {
  margin-top: 5px;
  font-size: 17px;
  font-weight: 600; 
+ color: #fff;
+}
+
+.loader_cont_prog_cont{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 17px;
+}
+
+.loader_cont_prog{
+  height: 100%;
 }
 
 .loader_cont{

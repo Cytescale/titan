@@ -1,7 +1,7 @@
 import React, { useRef,useState,useEffect,Suspense } from 'react';
 import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
-import {Accordion,Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
+import {Accordion,Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup, Spinner } from 'react-bootstrap';
 import LoaderHelper from '../loader_helper';
 import $ from 'jquery';
 import copy from "copy-to-clipboard";  
@@ -58,7 +58,7 @@ class backgrounClass{
           this.back_type = 0;
           this.back_image = null;
           this.colors_array = back_preset_gradient[Math.floor(Math.random() * back_preset_gradient.length)];
-          this.solid_color = '#f6f6f6';
+          this.solid_color = '#e0e0e0';
           this.default_value = {
                backgroundColor:'#f1f1f1',
                backgroundImage:'linear-gradient(160deg,#fff,#FDD075)',
@@ -87,6 +87,8 @@ export default class LandAct extends React.Component{
           super(props);            
           this.state={
                loading:false,
+               loading_prog:0,
+               template_loading:false,
                isUnSaved:false,
                dname:"Not done..",
                _temp_select_mod_show:false,
@@ -127,7 +129,8 @@ export default class LandAct extends React.Component{
           this.basemenuHandler = this.basemenuHandler.bind(this);
           this.elementMenuUpdate = this.elementMenuUpdate.bind(this);
           this.websiteNameChangeHandler = this.websiteNameChangeHandler.bind(this);
-          
+          this._set_template_loading = this._set_template_loading.bind(this);
+          this._set_loading_prog = this._set_loading_prog.bind(this);
           this.noti_pool = [];     
      }
      /*////////////////////////////////////STATES SETTERS SECTION ///////////////////////////////////////////////////*/
@@ -137,6 +140,12 @@ export default class LandAct extends React.Component{
                _context_select_colm_id:val,
                _select_type_id:2
                })
+     }
+     _set_loading_prog(val){
+          this.setState({loading_prog:val});
+     }
+     _set_template_loading(bool){
+          this.setState({template_loading:bool})
      }
      _set_temp_mod_show(bool){
           this.setState({_temp_select_mod_show:bool});
@@ -309,12 +318,26 @@ export default class LandAct extends React.Component{
      }
      async _init_land_user_check(){
           this._set_load_bool(true);
+          _BACK_DATA = new backgrounClass();
+          this._set_loading_prog(50);
           await firebaseHelp._init_user_check(null,_URLS.login).then((res)=>{
                if(res===true){
-                    this._init_land_data(1);          
+                    this._set_loading_prog(80);
+                    storeHelper._get_base_page_data().then((r)=>{
+                         console.log("LAND: init website load success");
+                         this._set_loading_prog(100);
+                         this._set_load_bool(false);
+                         console.log(r);
+                         if(!r.page_data){
+                              this._set_website_component(null);
+                         }
+                    });
+                    if(this.state._website_component===null){
+                         this._set_temp_mod_show(true);
+                    }
                }
           }
-     );
+     )
      }
      /*///////////////////////////////////////////////////////////////////////////////////////*/
    
@@ -571,7 +594,7 @@ export default class LandAct extends React.Component{
                  }}>
                     + Section below
                  </Item>
-                 <Separator className='element_menu_sep_main_cont' />
+
                  <Item className='element_menu_item_main_cont' onClick={(event,props,triggerEvent,data)=>{
                     this.renderer_add_butt_callback(this.state._context_select_colm_id,this.state._context_select_row_id,2,1)
                  }}>
@@ -688,51 +711,91 @@ export default class LandAct extends React.Component{
                return(null)
           }
      }
-     _render_init_template_menu(){
+     _render_current_website_template(){
+          if(this.state._website_component!==null){
                return(
+                    <div className='template_1_main_cont' onClick={(e)=>{
+          
+                    }}>
+                         <div className='template_1_main_cont_thumbnail'>
+          
+                         </div>
+                         <div className='template_1_main_cont_tit'>
+                                   Current website
+                         </div>
+                    </div>);
+          }
+          else{
+               return(<div className='template_1_main_cont_no_web'>No current websites</div>)
+          }
+          
+     }
+     _render_init_template_menu(){
+          
+          return(
                     <Modal
                               show={this.state._temp_select_mod_show}
                               onHide={()=>{this._set_temp_mod_show(false)}}
                               backdrop="static"
                               keyboard={false}
                               size="lg"
+                              className='land_act_elem_add_cont_bdy_main'
                               aria-labelledby="contained-modal-title-vcenter"
                               centered                        
-                              >       
+                              >   
+                              <div className='template_selection_main_outer_cont'>
+                                   
                               <div className='template_selection_main_cont'>
                                    <div className='template_selection_head_main_cont'>
-                                        SELECT A TEMPLATE
+                                        Select Template
+                                   </div>
+                                   <div className='template_selection_head_main_srch_cont'>
+                                        <input type='text' className='template_selection_head_main_srch_fld' placeholder='Search'></input>
                                    </div>
                                    <div className='template_selection_selec_main_cont'>
-                                        <div className='template_selection_selec_main_cont_row_tit'>Basic Template</div>
-                                        <div className='template_selection_selec_main_cont_row'>
-                                                  <div className='template_1_main_cont' onClick={(e)=>{
-                                                       this._set_temp_mod_show(false);
-                                                       this._set_website_component(new websiteComp())
-                                                  }}>
-                                                       <div className='template_1_main_cont_thumbnail'>
-                                                            <svg className='template_1_main_cont_thumbnail_ico' viewBox='0 0 512 512'><title>Add Circle</title><path d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 176v160M336 256H176'/></svg>
-                                                       </div>
-                                                       <div className='template_1_main_cont_tit'>
-                                                                 Blank template
-                                                       </div>
+                                   <div className='template_selection_selec_main_cont_row_main_cont'>
+                                                  <div className='template_selection_selec_main_cont_row_tit'>Your Page</div>
+                                                            <div className='template_selection_selec_main_cont_row'>
+                                                                      {this._render_current_website_template()}
+                                                            </div>          
                                                   </div>
-                                                  <div className='template_1_main_cont' onClick={(e)=>{
-                                                        this.loadTemplate(1);
-                                                       
-                                                  }}>
-                                                       <div className='template_1_main_cont_thumbnail'>
+                                        <div className='template_selection_selec_main_cont_row_main_cont'>
+                                             <div className='template_selection_selec_main_cont_row_tit'>Basic Template</div>
+                                             <div className='template_selection_selec_main_cont_row'
+
+                                             >
+                                                       <div className='template_1_main_cont' onClick={(e)=>{
+                                                            this._set_temp_mod_show(false);
+                                                            this._set_website_component(new websiteComp())
+                                                       }}>
+                                                            <div className='template_1_main_cont_thumbnail'>
+                                                                 <svg className='template_1_main_cont_thumbnail_ico' viewBox='0 0 512 512'><title>Add Circle</title><path d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 176v160M336 256H176'/></svg>
+                                                            </div>
+                                                            <div className='template_1_main_cont_tit'>
+                                                                      Blank template
+                                                            </div>
+                                                       </div>
+                                                       <div className='template_1_main_cont' onClick={(e)=>{
+                                                            this._set_template_loading(true);
+                                                            this.loadTemplate(1);
                                                             
+                                                       }}>
+                                                            <div className='template_1_main_cont_thumbnail'>
+                                                                 
+                                                            </div>
+                                                            <div className='template_1_main_cont_tit'>
+                                                                      Default template
+                                                            </div>
                                                        </div>
-                                                       <div className='template_1_main_cont_tit'>
-                                                                 Default template
-                                                       </div>
-                                                  </div>
-                                        
+                                             
+                                             </div>
                                         </div>                                       
                                    </div>    
-                              </div>                  
+                              </div>
+                                   <div className='template_selection_main_outer_loading' style={{visibility:this.state.template_loading==true?'visible':'hidden'}} >Loading..</div>
+                              </div>                      
                     </Modal>  
+      
                )
      }
      _select_render_window(){
@@ -751,36 +814,35 @@ export default class LandAct extends React.Component{
                          }
                     }></div>
                          <div className='land_act_creat_main_sub_cont'>
-                         
-                              {/* <Button className='land_act_gen_butt' onClick={()=>{this._gen_page_code();}}>Save</Button> */}
-                                        <div className='land_act_prv_add_bar_cont'>
-                                        <div className='land_act_prv_add_bar_cir_cont'>
-                                        <div  className='land_act_prv_add_bar_cir '></div>
-                                        <div  className='land_act_prv_add_bar_cir '></div>
-                                        <div  className='land_act_prv_add_bar_cir '></div>
-                                        </div>
-                                        <div className='land_act_prv_add_bar'>
-                                             <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
-                                             <a className='land_act_prv_add_lnk' href={this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null}>
-                                             {this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null}
-                                             </a>
-                                        </div>
-                                        <button className='land_act_prv_add_cpy_butt'>
-                                             <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Create</title><path d='M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z'/></svg>
-                                        </button>
+                                        <div className='land_act_prv_add_bar_cont_outer'>
+                                             <div className='land_act_prv_add_bar_cont'>
+                                             {/* <div className='land_act_prv_add_bar_cir_cont'>
+                                             <div  className='land_act_prv_add_bar_cir '></div>
+                                             <div  className='land_act_prv_add_bar_cir '></div>
+                                             <div  className='land_act_prv_add_bar_cir '></div>
+                                             </div> */}
+                                             <div className='land_act_prv_add_bar'>
+                                                  <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
+                                                  <a className='land_act_prv_add_lnk' href={this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null}>
+                                                  {this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null}
+                                                  </a>
+                                             </div>
+                                             {/* <button className='land_act_prv_add_cpy_butt'>
+                                                  <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Create</title><path d='M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z'/></svg>
+                                             </button> */}
 
-                                        <button className='land_act_prv_add_cpy_butt'
-                                        onClick={()=>{
-                                             this.copytoClip(this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null);
-                                             this._add_notification("Link copied to clipboard","success",1000);
-                                        }}
-                                        ><svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Copy</title><rect x='128' y='128' width='336' height='336' rx='57' ry='57' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path d='M383.5 128l.5-24a56.16 56.16 0 00-56-56H112a64.19 64.19 0 00-64 64v216a56.16 56.16 0 0056 56h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg></button>
+                                             <button className='land_act_prv_add_cpy_butt'
+                                             onClick={()=>{
+                                                  this.copytoClip(this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null);
+                                                  this._add_notification("Link copied to clipboard","success",1000);
+                                             }}
+                                             ><svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Copy</title><rect x='128' y='128' width='336' height='336' rx='57' ry='57' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path d='M383.5 128l.5-24a56.16 56.16 0 00-56-56H112a64.19 64.19 0 00-64 64v216a56.16 56.16 0 0056 56h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg></button>
 
-                                        <button className='land_act_prv_add_cpy_butt'>
-                                             <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Share</title><path d='M336 192h40a40 40 0 0140 40v192a40 40 0 01-40 40H136a40 40 0 01-40-40V232a40 40 0 0140-40h40M336 128l-80-80-80 80M256 321V48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                        </button>
-                                        
-                              </div>
+                                             {/* <button className='land_act_prv_add_cpy_butt'>
+                                                  <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Share</title><path d='M336 192h40a40 40 0 0140 40v192a40 40 0 01-40 40H136a40 40 0 01-40-40V232a40 40 0 0140-40h40M336 128l-80-80-80 80M256 321V48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                             </button> */}
+                                             </div>    
+                                   </div>
                                         
                          <div className='land_act_creat_sub_cont'>                                 
                                    {this._render_component()}
@@ -830,6 +892,7 @@ export default class LandAct extends React.Component{
                show={this.state._add_elem_mod_show}
                onHide={()=>{this._set_elem_mod(false)}}
                size="sm"
+               className='land_act_elem_add_cont_bdy_main'
                aria-labelledby="contained-modal-title-vcenter"
                backdropClassName="backdrop"
               centered
@@ -945,8 +1008,6 @@ export default class LandAct extends React.Component{
           }
      }
 
-     
-
      async loadTemplate(int){          
           let resu = await storeHelper._get_template(int);
           if(resu){
@@ -954,7 +1015,9 @@ export default class LandAct extends React.Component{
                if(dw)
                {
                     this._set_website_component(dw);
+                    this._set_template_loading(false);
                     this._set_temp_mod_show(false);
+               
                     return true;
                }
                else{
@@ -968,11 +1031,10 @@ export default class LandAct extends React.Component{
      /*////////////////////////////////////COMPONENT SECTION ///////////////////////////////////////////////////*/
 
      componentDidMount(){  
+          this._set_loading_prog(20);
           this._init_land_user_check();   
           this._set_browserfs_configure();
-          if(this.state._website_component===null){
-               this._set_temp_mod_show(true);
-          }
+          
      }
      elementMenuUpdate(){
           this.forceUpdate();
@@ -1001,7 +1063,7 @@ export default class LandAct extends React.Component{
      return(
           this.state.loading===true?
           <div>
-               <LoaderHelper/>     
+               <LoaderHelper prog={this.state.loading_prog} />     
                {this._render_notif()}
           </div>:
           <div className='lander_base_main_cont' 
@@ -1042,12 +1104,12 @@ export default class LandAct extends React.Component{
                                    </div>
                               </Dropdown.Toggle>
                               <Dropdown.Menu className='land_act_head_tit_cont_logo_menu' >
-                              <Dropdown.Item as="button">Save</Dropdown.Item>
-                              <Dropdown.Divider />
-                              <Dropdown.Item as="button">Undo</Dropdown.Item>
-                              <Dropdown.Item as="button">Redo</Dropdown.Item>
-                              <Dropdown.Divider />
-                              <Dropdown.Item as="button" onClick={()=>{
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt'>Save</Dropdown.Item>
+                              
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt'>Undo</Dropdown.Item>
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt'>Redo</Dropdown.Item>
+                              
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt' onClick={()=>{
                                           let element = document.createElement('input');
                                           element.setAttribute('type','file');
                                           element.setAttribute('multiple',"false");
@@ -1062,7 +1124,7 @@ export default class LandAct extends React.Component{
                               }}>
                                    Import     
                               </Dropdown.Item>
-                              <Dropdown.Item as="button" onClick={()=>{
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt' onClick={()=>{
                                               if(this.state._website_component){
                                               const expt_name = "titan_export.json";
                                               var str = JSON.stringify(this.state._website_component);
@@ -1078,11 +1140,11 @@ export default class LandAct extends React.Component{
                                                    console.log("LAND: File export error Null file");
                                               }
                               }}>Export</Dropdown.Item>
-                              <Dropdown.Divider />
-                              <Dropdown.Item as="button">Prefrences</Dropdown.Item>
-                              <Dropdown.Item as="button">Template setting</Dropdown.Item>
-                              <Dropdown.Divider />
-                              <Dropdown.Item as="button">Help</Dropdown.Item>
+                              
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt'>Prefrences</Dropdown.Item>
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt'>Template setting</Dropdown.Item>
+                              
+                              <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt'>Help</Dropdown.Item>
                               </Dropdown.Menu>
                          </Dropdown>
                 
@@ -1127,7 +1189,7 @@ export default class LandAct extends React.Component{
                     <div className='land_act_main_bdy_left_main'>
                                         <div>
                                         <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
-                                              <div className='land_left_bdy_butt_main_cont'>
+                                                  <div className='land_left_bdy_butt_main_cont'>
                                                        <div className='land_left_bdy_butt_main_tit_cont'>
                                                                  <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
                                                                  Save
@@ -1136,7 +1198,7 @@ export default class LandAct extends React.Component{
                                                             <svg className='land_act_back_cust_butt_ico_save' viewBox='0 0 512 512'><title>Save</title><path d='M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                                                        </button>
                                                   </div>
-
+                                               
                                                   <div className='land_left_bdy_butt_main_cont'>
                                                        <div className='land_left_bdy_butt_main_tit_cont'>
                                                                  <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>

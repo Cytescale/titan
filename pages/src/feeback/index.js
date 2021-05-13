@@ -110,7 +110,7 @@ export default class FeedbackComp extends React.Component{
           return(
                <div className='feed_back_main_cont'>
                <OverlayTrigger trigger="click" rootClose={true} target={this} placement="bottom" overlay={this.feedBackPop()}>
-               <Button variant={'outline-dark'}  className='feed_back_main_butt'>Feedback</Button>
+               <Button variant={'outline-light'}  className='feed_back_main_butt'>Feedback</Button>
                </OverlayTrigger>     
                </div>
           )
