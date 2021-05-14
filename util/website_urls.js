@@ -6,6 +6,7 @@ if(_BASE_URL!==null){
      login:_BASE_URL+'src/login',
      signup:_BASE_URL+'src/signup',
      backend_firestore_init:_BASE_URL+"api/firebase_firestore_init", 
+     imagekitauthenticationEndpoint:_BASE_URL+"api/cdn/imageKitAuth"
 }
 }
 

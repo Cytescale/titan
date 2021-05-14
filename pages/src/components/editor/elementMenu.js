@@ -1,10 +1,11 @@
 import React from "react";
-
 import {Accordion,Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
 import { Resizable } from "re-resizable";
 import {ChromePicker} from 'react-color'
 import FONT_FAMILY_NAMES from '../../../../util/fontFamily';
 import ImageUploading from 'react-images-uploading';
+import axios from 'axios';
+import qs from 'qs';
 
 
 var _SLIDER_EDIT_BOOl = false;
@@ -29,6 +30,11 @@ export default class elementMenu extends React.Component{
           updateEditor
           addNotification
      */
+
+
+       
+
+         
 
           _add_notification(txt,type,dura){
                this.props.addNotification(txt,type,dura);
@@ -929,6 +935,7 @@ export default class elementMenu extends React.Component{
                                                                  value={element.image_data}
                                                                  onChange={(imageList,addUpdateIndex)=>{
                                                                       element.image_data = imageList;
+                                                                      // this._image_upload(imageList[0]);
                                                                       this.props.updateEditor(); 
                                                                  }}
                                                                  maxNumber={1}
@@ -950,7 +957,6 @@ export default class elementMenu extends React.Component{
                                                                            <img src={image['data_url']} className='image_img' alt="" width="100" />
                                                                            <div className="image-item__btn-wrapper">
                                                                            <Button variant={'primary'} className='image-item__btn-wrapper_butt'  onClick={() => onImageUpdate(index)}>Update</Button>
-                                                                           {/* <Button variant={'primary'} className='image-item__btn-wrapper_butt'  onClick={() => onImageRemove(index)}>Remove</Button> */}
                                                                            </div>
                                                                       </div>
                                                                       ))}

@@ -17,6 +17,10 @@ export default class elementComp {
      NAME = null;
      _STYLE:(typeof STLYE_COMP)|any|null = null; 
      image_data =null;
+     image_tumb_url:string = null;
+     image_data_url:string =  null;
+     imageKitFileId:string = null;
+     image_size:number=null;
 
      constructor(type_id:ELEMENT_TYPE|null,row_id:number|null,colm_id:number|null,base_id:number|null){
           this.TYPE_ID = type_id;

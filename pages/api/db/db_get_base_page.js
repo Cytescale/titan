@@ -23,10 +23,10 @@ export default async (req, res) => {
                     else{
                          const page_data = await _get_website_data(profile_data.PID);  
                          if(page_data){
-                              fin_res = {errCode:0,errBool:false,mess:'API: Page found',page_id:profile_data.PID,page_data:page_data}    
+                              fin_res = {errCode:0,errBool:false,mess:'API: Page found success',page_id:profile_data.PID,page_data:page_data}    
                          }
                          else{
-                              fin_res = {errCode:3,errBool:true,mess:'API: Page not found',page_id:profile_data.PID,page_data:null}                                                                
+                              fin_res = {errCode:3,errBool:true,mess:'API: Page found fail',page_id:profile_data.PID,page_data:null}                                                                
                          }
                          
                     }

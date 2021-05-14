@@ -15,7 +15,7 @@ export default class websiteComp {
      VIEW_ID:string = null;
      DIMENSION:Array<number> = [900,null];
      ELEMENT_COUNT:number=0;
-
+     WEBSITE_VALIDITY_ID:number = 1001;
      constructor(){
 
      }
@@ -76,15 +76,17 @@ export default class websiteComp {
 
      recalcElementIds(){
           let z = 0;
+          this.ELEMENT_COUNT = 0;
           for(let i = 0 ; i < this.getSectionArray().length;i++){
                for(let j = 0 ; j < this.getSectionArray()[i].getElementArray().length ; j++){          
+                    this.ELEMENT_COUNT++;
                     this.getSectionArray()[i].getElementArray()[j].COLUMN_ID = j;
                     this.getSectionArray()[i].getElementArray()[j].ROW_ID = i;
                     this.getSectionArray()[i].getElementArray()[j].BASE_ID=z;
                      z++;
                }
           }
-          console.log("WEBSITE COMP: ids recalculated");
+          console.log("WEBSITE COMP: ids recalculatedw with count "+this.ELEMENT_COUNT);
 
      }
 

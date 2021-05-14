@@ -173,18 +173,44 @@ export default class elementRenderer extends React.Component{
      _image_inner_data(element){
           return(
                <div className='_page_element_inner_data_main_cont'>
-                    {element.image_data!==null?element.image_data.map((image, index) => (
-                         <img src={image['data_url']}
+                    {element.image_data!==null?element.image_data.map((image, index) => 
+                         {
+                              return(<img src={image['data_url']}
                               style={{
                               width:element.STYLE.image_width+"%",
                               height:element.STYLE.image_height+"%",
                               borderRadius:element.STYLE.border_radius+"px",
                               }}
                          ></img>
-                         )):<div>Image element</div>}
+                         )}):element.image_data_url!==null?
+                         <div>
+                         <img src={element.image_data_url}
+                                                       style={{
+                                                       width:element.STYLE.image_width+"%",
+                                                       height:element.STYLE.image_height+"%",
+                                                       borderRadius:element.STYLE.border_radius+"px",
+                                                       }}
+                         ></img>
+                         </div>:
+                         <div>Image element</div>}
                </div>
           )
      }
+     // _image_inner_data(element){
+     //      return(
+     //           <div className='_page_element_inner_data_main_cont'>
+     //                {element.image_data_url!==null?
+     //                     <img src={element.image_data_url}
+     //                          style={{
+     //                          width:element.STYLE.image_width+"%",
+     //                          height:element.STYLE.image_height+"%",
+     //                          borderRadius:element.STYLE.border_radius+"px",
+     //                          }}
+     //                     />
+     //                     :<div>Image element</div>}
+     //           </div>
+     //      )
+     // }
 
      _embeded_inner_data(element){
           return(

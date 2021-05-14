@@ -2,6 +2,7 @@ import React, { useRef,useState,useEffect,Suspense } from 'react';
 import firebaseHelper from '../../../util/firebase_helper';
 import firestoreHelper from '../../../util/firestore_helper';
 import {Accordion,Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup, Spinner } from 'react-bootstrap';
+
 import LoaderHelper from '../loader_helper';
 import $ from 'jquery';
 import copy from "copy-to-clipboard";  
@@ -17,8 +18,8 @@ import websiteComp  from '../../../component/websiteComp';
 import sectionComp from  '../../../component/sectionComp';
 import elementComp from '../../../component/elementComp';
 import ElementMenu from '../components/editor/elementMenu';
-const BrowserFS = require('browserfs')
 
+const BrowserFS = require('browserfs')
 
 import {
      Menu,
@@ -82,14 +83,16 @@ const firebaseHelp = new firebaseHelper();
 
 
 export default class LandAct extends React.Component{
-     
+     TEMP_WEBSITE_DATA = null;     
+     SAVE_STATE = false;
      constructor(props){
           super(props);            
           this.state={
                loading:false,
                loading_prog:0,
                template_loading:false,
-               isUnSaved:false,
+               _issaving:false,
+               _issaved:false,
                dname:"Not done..",
                _temp_select_mod_show:false,
                _show_layer_menu:false,
@@ -131,9 +134,18 @@ export default class LandAct extends React.Component{
           this.websiteNameChangeHandler = this.websiteNameChangeHandler.bind(this);
           this._set_template_loading = this._set_template_loading.bind(this);
           this._set_loading_prog = this._set_loading_prog.bind(this);
+          this._website_component_save = this._website_component_save.bind(this);
+          this._set_issaving_bool = this._set_issaving_bool.bind(this);
+          this._set_issave_bool = this._set_issave_bool.bind(this);
           this.noti_pool = [];     
      }
      /*////////////////////////////////////STATES SETTERS SECTION ///////////////////////////////////////////////////*/
+     _set_issaving_bool(bool){
+          this.setState({_issaving:bool})
+     }
+     _set_issave_bool(bool){
+          this.setState({_issaved:bool})
+     }
      _set_context_select(val,row_id){
           this.setState({
                _context_select_row_id:row_id,
@@ -327,9 +339,18 @@ export default class LandAct extends React.Component{
                          console.log("LAND: init website load success");
                          this._set_loading_prog(100);
                          this._set_load_bool(false);
-                         console.log(r);
                          if(!r.page_data){
                               this._set_website_component(null);
+                         }
+                         else{
+                              const foundData = JSON.parse(r.page_data._PAGE_CORE_ARRAY);
+                              if(foundData.WEBSITE_VALIDITY_ID == 1001){
+                                   this.TEMP_WEBSITE_DATA = JSON.stringify(foundData);
+                                   let dw = this.parseLoadData(foundData);
+                                   if(dw){
+                                        this._set_website_component(dw);
+                                   }
+                              }
                          }
                     });
                     if(this.state._website_component===null){
@@ -715,7 +736,7 @@ export default class LandAct extends React.Component{
           if(this.state._website_component!==null){
                return(
                     <div className='template_1_main_cont' onClick={(e)=>{
-          
+                         this._set_temp_mod_show(false);
                     }}>
                          <div className='template_1_main_cont_thumbnail'>
           
@@ -848,7 +869,7 @@ export default class LandAct extends React.Component{
                                              </div>    
                                    </div>
                                         
-                         <div className='land_act_creat_sub_cont'>                                 
+                         <div className='land_act_creat_sub_cont'>                
                                    {this._render_component()}
                                    {this._render_context_menu()}
                          </div>
@@ -890,6 +911,58 @@ export default class LandAct extends React.Component{
      /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
        /*////////////////////////////////////UTILS SECTION ///////////////////////////////////////////////////*/
+     
+     async _website_component_save(){
+          let temp_save_data = this.state._website_component;
+          let succPass = 0;
+          let failElementIndx = [];
+          if(this.state._website_component){
+               this._set_issaving_bool(true);
+               console.log("Save start at init count "+temp_save_data.ELEMENT_COUNT);
+               for(let i = 0 ; i < temp_save_data.getSectionArray().length ; i++){
+                    for(let j = 0 ; j < temp_save_data.getSectionArray()[i].getElementArray().length ; j++){
+                         if(!temp_save_data.getSectionArray()[i].getElementArray()[j].DELETED){
+                              if(parseInt(temp_save_data.getSectionArray()[i].getElementArray()[j].TYPE_ID) === 2){
+                                   if(temp_save_data.getSectionArray()[i].getElementArray()[j].image_data){
+                                        console.log("Imaeg upload init");
+                                        let res = await storeHelper._image_upload(temp_save_data.getSectionArray()[i].getElementArray()[j].image_data[0]);
+                                        if(res.fileId){
+                                             temp_save_data.getSectionArray()[i].getElementArray()[j].image_tumb_url = res.thumbnailUrl
+                                             temp_save_data.getSectionArray()[i].getElementArray()[j].imageKitFileId = res.fileId;
+                                             temp_save_data.getSectionArray()[i].getElementArray()[j].image_data_url = res.url;
+                                             succPass++;     
+                                             temp_save_data.getSectionArray()[i].getElementArray()[j].image_data = null;
+                                        }
+                                        else{
+                                             failElementIndx.push([i,j]);           
+                                        }
+                                   }
+                              }else{
+                                   succPass++;
+                              }
+                         }
+                    }
+               }    
+               let pageUpateRes = await storeHelper._update_page_data({
+                     UID:cookies.get('accessToken'),
+                    _ELEMENT_COUNT:temp_save_data.ELEMENT_COUNT,
+                    _PAGE_CORE_ARRAY:JSON.stringify(temp_save_data),
+                    _PAGE_CORE_CODE:'null',
+               });
+               if(pageUpateRes.errBool === false){
+                    console.log("Save end at success count"+succPass);          
+                    this.SAVE_STATE = true;
+                    this.TEMP_WEBSITE_DATA = JSON.stringify(temp_save_data);
+                    this._set_issave_bool(true);
+               }
+               else{
+                    console.log("Save end at failuer count"+succPass);     
+                    this.SAVE_STATE = false;
+                    this._set_issave_bool(false);
+               }
+               this._set_issaving_bool(false);
+          }
+     }
      _element_add_modal() {
           return (
             <Modal
@@ -940,11 +1013,11 @@ export default class LandAct extends React.Component{
           console.log(`LAND: Element Added  `);
           this._set_elem_mod(false);
      }
-    _set_url_param_selec_id(element_index_id,element_row_id,selec_type_id){
+     _set_url_param_selec_id(element_index_id,element_row_id,selec_type_id){
      Router.push({query:{ row_id:element_row_id,select_id:element_index_id}},null,{scroll:false,shallow:true});
      this._set_selec_element_id(element_index_id,element_row_id,selec_type_id);
     }
-    _get_element_by_index(i,j){
+     _get_element_by_index(i,j){
      if(this.state._website_component.getSectionArray()[i].getElementArray()[j]!==undefined){
           return(this.state._website_component.getSectionArray()[i].getElementArray()[j]);
      }
@@ -952,12 +1025,12 @@ export default class LandAct extends React.Component{
           return false;
      }
      }
-    _renderer_resize_callback(row_id,element_id,incr_hgt,incr_wdt){
+     _renderer_resize_callback(row_id,element_id,incr_hgt,incr_wdt){
           this._get_element_by_index(row_id,element_id).STYLE.element_width = parseInt(incr_wdt);
           this._get_element_by_index(row_id,element_id).STYLE.element_height = parseInt(incr_hgt);
           this.forceUpdate();
-    }
-    renderer_add_butt_callback(elem_id,elm_row_id,direc_bool,insrt_type){
+     }
+     renderer_add_butt_callback(elem_id,elm_row_id,direc_bool,insrt_type){
      if(insrt_type!==null){
           this._set_adder_type(insrt_type);
           if(insrt_type == 0){
@@ -991,7 +1064,6 @@ export default class LandAct extends React.Component{
           (e)=>{this._browserfs_callback(e)}
           )
      }
-
      parseLoadData(dataParse){
           let tw = Object.assign(new websiteComp,dataParse);
           for(let i = 0 ; i < dataParse.SECTION_ARRAY.length;i++){
@@ -1002,7 +1074,6 @@ export default class LandAct extends React.Component{
           }
           return tw;
      }
-
      handleFileImport(evt){
           let dataParse = JSON.parse(evt.target.result)
           if(dataParse){
@@ -1011,7 +1082,6 @@ export default class LandAct extends React.Component{
                {this._set_website_component(dw);}
           }
      }
-
      async loadTemplate(int){          
           let resu = await storeHelper._get_template(int);
           if(resu){
@@ -1029,7 +1099,6 @@ export default class LandAct extends React.Component{
                }
           }
      }
-
      /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////*/   
 
      /*////////////////////////////////////COMPONENT SECTION ///////////////////////////////////////////////////*/
@@ -1043,8 +1112,26 @@ export default class LandAct extends React.Component{
      elementMenuUpdate(){
           this.forceUpdate();
      }
+     
+     updateSaveState(){
+          if(_.isEqual(JSON.stringify(this.state._website_component),this.TEMP_WEBSITE_DATA)==true){
+               this.SAVE_STATE = true;
+               return;   
+          }
+          else{
+               this.SAVE_STATE = false;
+               return;   
+          }
+     }
+
      componentDidUpdate(){
-          
+               this.updateSaveState();
+               // console.log(this.TEMP_WEBSITE_DATA);     
+               //  console.log(this.state._website_component);
+               //console.log(_.isEqual(JSON.stringify(this.state._website_component),this.TEMP_WEBSITE_DATA));
+               
+            
+
       }
       /*//////////////////////////////////////////////////////////////////////////////////////////////////////*/
  
@@ -1151,6 +1238,11 @@ export default class LandAct extends React.Component{
                               </Dropdown.Menu>
                          </Dropdown>
                 
+
+                                   <div className='land_act_sav_indi_cont'>
+                                             {this.state._issaving===true?<div className='land_act_save_indi indi_isaving'>Saving <Spinner animation="border" className='land_act_save_indi_spin'/></div>:this.SAVE_STATE===true?<div className='land_act_save_indi indi_saved'>Saved</div>:<div className='land_act_save_indi indi_unsaved'>Unsaved</div>}
+                                   </div>    
+                
                     
                     </div>  
 
@@ -1196,7 +1288,7 @@ export default class LandAct extends React.Component{
                                                                  <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
                                                                  Save
                                                        </div>
-                                                       <button className='land_act_back_cust_butt'>
+                                                       <button className='land_act_back_cust_butt' onClick={this._website_component_save}>
                                                             <svg className='land_act_back_cust_butt_ico_save' viewBox='0 0 512 512'><title>Save</title><path d='M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                                                        </button>
                                                   </div>
@@ -1239,7 +1331,7 @@ export default class LandAct extends React.Component{
                                                             </div>
                                                             </Popover>} rootClose={true}>
                                                                  <button className='land_act_back_cust_butt'>
-                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32'/><circle cx='152' cy='311' r='32'/><circle cx='224' cy='144' r='32'/><circle cx='256' cy='367' r='48'/><circle cx='328' cy='144' r='32'/></svg>
+                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32' fill='currentColor'/><circle cx='152' cy='311' r='32' fill='currentColor'/><circle cx='224' cy='144' r='32' fill='currentColor'/><circle cx='256' cy='367' r='48' fill='currentColor'/><circle cx='328' cy='144' r='32' /></svg>
                                                                  </button>
                                                             </OverlayTrigger>
                                                        </div>
@@ -1288,7 +1380,7 @@ export default class LandAct extends React.Component{
 
 
                                         <div className='land_left_bdy_butt_main_cont'>
-                                             <div className='land_left_bdy_butt_main_tit_cont'>
+                                             {/* <div className='land_left_bdy_butt_main_tit_cont'>
                                                        <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
                                                        {  this.state._desktop_viewing_mode===true?'Desktop Mode':'Phone Mode'}
                                              </div>
@@ -1300,7 +1392,7 @@ export default class LandAct extends React.Component{
                                                   <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Desktop</title><rect x='32' y='64' width='448' height='320' rx='32' ry='32' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M304 448l-8-64h-80l-8 64h96z'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M368 448H144'/><path d='M32 304v48a32.09 32.09 0 0032 32h384a32.09 32.09 0 0032-32v-48zm224 64a16 16 0 1116-16 16 16 0 01-16 16z'/></svg>
                                                   :<svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Phone Portrait</title><rect x='128' y='16' width='256' height='480' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M176 16h24a8 8 0 018 8h0a16 16 0 0016 16h64a16 16 0 0016-16h0a8 8 0 018-8h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                                                        }
-                                             </button>
+                                             </button> */}
                                         </div>
 
                                                   <OverlayTrigger trigger="click" placement="right" overlay={ 
@@ -1324,7 +1416,7 @@ export default class LandAct extends React.Component{
                                                             </div>
                                                             </Popover>} rootClose={true}>
                                                                       <button className='land_act_back_cust_butt'>
-                                                                      <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'/></svg>
+                                                                      <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'  fill='currentColor'/></svg>
                                                                       </button>
                                                   </OverlayTrigger>
 
