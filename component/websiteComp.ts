@@ -18,6 +18,7 @@ export default class websiteComp {
      ELEMENT_COUNT:number=0;
      WEBSITE_VALIDITY_ID:number = 1001;
      BACKGROUND_DATA:any  = new backgrounClass(); 
+     DISPLAY_SCALE:number = 100; 
      constructor(){
 
      }
@@ -91,6 +92,20 @@ export default class websiteComp {
           console.log("WEBSITE COMP: ids recalculatedw with count "+this.ELEMENT_COUNT);
 
      }
+
+     incrScale(){
+          if(this.DISPLAY_SCALE<=90){
+               this.DISPLAY_SCALE = this.DISPLAY_SCALE+10;
+          }
+     }
+
+     decrScale(){
+          if(this.DISPLAY_SCALE>=20){
+               this.DISPLAY_SCALE = this.DISPLAY_SCALE-10;
+          }
+     }
+     
+
 
      consoleSectionArray(){
           for(let i = 0 ; i < this.getSectionArray().length;i++){

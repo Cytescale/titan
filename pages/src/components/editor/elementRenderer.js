@@ -74,7 +74,8 @@ export default class elementRenderer extends React.Component{
                                                   this.props.resizeCallback(element.ROW_ID,element.COLUMN_ID,ref.style.height,ref.style.width);
                                                 }}
                                              >
-                              <div className='overlay_add_butt_cont'>
+                              <div className='overlay_lab_cont' style={{visibility:isSelected===true?'visible':'hidden'}}>
+                                        {element.NAME}
                               </div>
                               <div  className="_page_element_main_bdy" id={'_page_element_spci_'+element.TYPE_ID} 
                                                   onMouseDown={(e)=>{
@@ -196,22 +197,7 @@ export default class elementRenderer extends React.Component{
                </div>
           )
      }
-     // _image_inner_data(element){
-     //      return(
-     //           <div className='_page_element_inner_data_main_cont'>
-     //                {element.image_data_url!==null?
-     //                     <img src={element.image_data_url}
-     //                          style={{
-     //                          width:element.STYLE.image_width+"%",
-     //                          height:element.STYLE.image_height+"%",
-     //                          borderRadius:element.STYLE.border_radius+"px",
-     //                          }}
-     //                     />
-     //                     :<div>Image element</div>}
-     //           </div>
-     //      )
-     // }
-
+    
      _embeded_inner_data(element){
           return(
                <div className='_page_element_inner_data_main_cont'>

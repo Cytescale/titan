@@ -76,7 +76,7 @@ padding: 12px;
      width: 100%;
      position: fixed;
      height: 56px;
-     z-index: 100;
+     z-index: 500;
      display: inline-flex;
      background: var(--body_head_back_color) ;
      border-bottom: 1px solid var(--body_head_bord_color);
@@ -329,7 +329,7 @@ backdrop-filter: blur(7px);
      justify-content: center;
      align-items: center;
      position: relative;
-    
+     
 }
 
 .land_act_creat_main_cont_mobile_main_cont{
@@ -390,6 +390,7 @@ backdrop-filter: blur(7px);
 }
 .land_act_creat_sub_cont{
      width: 900px;
+     
      opacity: 1;
      /* box-shadow: 0px 7px 10px #e0e0e0; */
 }
@@ -426,9 +427,10 @@ backdrop-filter: blur(7px);
      position: fixed;
      display: flex;
      background-color: var(--left_pane_back_color);
-     /* border-right: 1px solid #e0e0e0; */
+
+     box-shadow: 5px 0px 10px rgb(0,0,0,0.2);
      justify-content: center;
-     z-index: 90;
+     z-index: 300;
      top: 0;
      bottom: 0;
      left: 0;
@@ -987,6 +989,7 @@ flex: 1;
      height: 100%;
      pointer-events: all;
      background-color: var(--right_pane_back_color);
+     
      overflow: hidden;
      overflow-y: scroll;
      position: relative;
@@ -1003,8 +1006,9 @@ flex: 1;
      overflow-y: scroll;
      position: relative;
      padding-bottom: 52px;
-     /* border-left: 1px solid #e0e0e0; */
-     animation: menu_slide 0.2s ease-in;
+     /* border-left: 1px solid var(--right_pane_border_color);   */
+     box-shadow: -5px 0px 10px rgb(0,0,0,0.2);
+     /* animation: menu_slide 0.2s ease-in; */
 }
 .land_act_main_bdy_right_sub_resizer{
      position: absolute;
@@ -1368,25 +1372,26 @@ border-style: none;
 .land_act_save_indi{
      height: 26px;
      width: 100%;
-     border-radius: 3px;
+     border-radius: 32px;
      color: #fff;
-     font-size: 12px;
+     font-size: 11px;
      display: flex;
      align-items: center;
      justify-content: center;
-     font-weight: 400;
-     font-family: inter;
+     font-weight: 800;
+     font-family: quicksand;
 }
 .indi_isaving{
-     background-color: #F6BC4F;
-     color: #000;
+     /* background-color: #F6BC4F; */
+     color: #F6BC4F;
 }
 .indi_saved{
-     background-color: #8FDE82;
-     color: #000;
+     /* background: linear-gradient(180deg, #32542c 0%, #A2F096 100%); */
+     color: #A2F096;
 }
 .indi_unsaved{
-     background-color: #EE6A5E;
+     /* background-color: #EE6A5E; */
+     color: #EE6A5E;
 }
 .land_act_save_indi_spin{
      width: 15px;
@@ -1395,4 +1400,97 @@ border-style: none;
 }
 .pref_menu_main_cont{
      z-index: 99999;
+}
+
+.land_act_rgt_main_bdy_cont{
+     position: fixed;
+     height: 100%;
+     top: 0;
+     bottom: 0;
+     right: 0;
+     z-index: 200;
+     display: inline-flex;
+
+}
+
+.land_act_rgt_main_cont{
+     width: 32px;
+     position: relative;
+     height: 100%;
+
+}
+
+
+
+.land_act_rgt_outer_main_cont_butt{
+     width: 22px;
+     height: 22px;
+     color: #fff;
+     outline: none;
+     border-style: none;
+     border-radius:4px;
+     background-color: var(--right_pane_back_color);
+     margin-right: 7px;
+ 
+
+}
+.land_act_rgt_outer_main_cont_fld{
+     width: 42px;
+     height: 22px;
+     background-color: var(--right_pane_txt_int_fld_color);
+     color: var(--right_pane_head_text_color);
+     font-size: 11px;
+     border-radius: 4px;
+     margin-right: 7px;
+     text-align: center;
+     border-style: none;
+     outline:none;
+
+}
+.land_act_rgt_bottom_outer_main_cont{
+     width: calc(100vw);
+     height: 36px;
+     position: absolute;
+     display: inline-flex;
+     justify-content: flex-end;
+     align-items: center;
+     bottom: 0;
+     right: 0;
+     
+     background-color: #111111;
+}
+.land_act_rgt_outer_main_cont{
+     width: auto;
+     height: 22px;
+     display: inline-flex;
+     padding-left: 16px;
+     padding-right: 16px;
+     display: flex;
+     align-items: center;
+
+     margin-right: 12px;
+     border-left: 1px solid var(--right_pane_border_color);
+}
+
+.land_act_sav_indi_main_cont{
+     display: flex;
+     align-items: center;
+     height: 22px;
+     max-width: 70px;
+     width: fit-content;
+     padding-left: 16px;
+     padding-right: 16px;
+     border-left: 1px solid var(--right_pane_border_color);
+}
+.land_act_sav_width_main_cont{
+     border-left: 1px solid var(--right_pane_border_color);
+     color: var(--right_pane_head_text_color);
+     font-size: 11px;
+     height: 22px;
+     display: flex;
+     align-items: center;
+     font-family: quicksand;
+     padding-left: 16px;
+     padding-right: 16px;
+     font-weight: 600;
 }

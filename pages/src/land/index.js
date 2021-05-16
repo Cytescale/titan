@@ -32,6 +32,7 @@ import {
      contextMenu ,
      animation
    } from "react-contexify";
+import { transform } from 'typescript';
 
 
 
@@ -141,6 +142,7 @@ export default class LandAct extends React.Component{
           this._website_component_save = this._website_component_save.bind(this);
           this._set_issaving_bool = this._set_issaving_bool.bind(this);
           this._set_issave_bool = this._set_issave_bool.bind(this);
+          this._render_save_indi = this._render_save_indi.bind(this);
           this.noti_pool = [];     
      }
      /*////////////////////////////////////STATES SETTERS SECTION ///////////////////////////////////////////////////*/
@@ -936,7 +938,6 @@ export default class LandAct extends React.Component{
                     style={this._set_curr_back()}
                     data-menuId={ELEMENT_OVERLAY_BASE_ID} 
                      onContextMenu={this.basemenuHandler}
-                   
                     >
                              <div className='land_act_creat_main_cont_grd_back'  onMouseDown={(e)=>{
                          if(e.nativeEvent.which==1){
@@ -978,8 +979,13 @@ export default class LandAct extends React.Component{
                                              </div>
                                              </div>    
                                    </div>
-                                        
-                         <div className='land_act_creat_sub_cont'>                
+                                
+                         <div className='land_act_creat_sub_cont'
+                              style={{
+                                   transform:this.state._website_component?`scale(${this.state._website_component.DISPLAY_SCALE/100,this.state._website_component.DISPLAY_SCALE/100})`:undefined,
+                              }
+                              }
+                         >                
                                    {this._render_component()}
                                    {this._render_context_menu()}
                          </div>
@@ -1082,6 +1088,11 @@ export default class LandAct extends React.Component{
           </button>
      </OverlayTrigger>
      </div>);
+     }
+
+     _render_save_indi(){
+          return(this.state._issaving===true?<div className='land_act_save_indi indi_isaving'>Saving <Spinner animation="border" className='land_act_save_indi_spin'/></div>:this.SAVE_STATE===true?<div className='land_act_save_indi indi_saved'>Saved</div>:<div className='land_act_save_indi indi_unsaved'>Unsaved</div>
+          )
      }
 
 
@@ -1435,9 +1446,7 @@ export default class LandAct extends React.Component{
                          </Dropdown>
                 
 
-                                   <div className='land_act_sav_indi_cont'>
-                                             {this.state._issaving===true?<div className='land_act_save_indi indi_isaving'>Saving <Spinner animation="border" className='land_act_save_indi_spin'/></div>:this.SAVE_STATE===true?<div className='land_act_save_indi indi_saved'>Saved</div>:<div className='land_act_save_indi indi_unsaved'>Unsaved</div>}
-                                   </div>    
+                                
                 
                     
                     </div>  
@@ -1469,7 +1478,6 @@ export default class LandAct extends React.Component{
                </div>     
                
                <div className='land_act_main_bdy_cont'>
-              
                     <div className='land_act_main_bdy_left_main'>
                                         <div>
                                         <button className='land_act_main_bdy_left_add_butt' onClick={()=>{this._set_elem_mod(true)}}>+</button>
@@ -1479,22 +1487,12 @@ export default class LandAct extends React.Component{
                                                                  Save
                                                        </div>
                                                        <button className='land_act_back_cust_butt' onClick={this._website_component_save}>
-                                                            <svg className='land_act_back_cust_butt_ico_save' viewBox='0 0 512 512'><title>Save</title><path d='M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                            <svg  className='land_act_back_cust_butt_ico_save' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.59 3.59c-.38-.38-.89-.59-1.42-.59H5c-1.11 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7.83c0-.53-.21-1.04-.59-1.41l-2.82-2.83zM12 19c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm1-10H7c-1.1 0-2-.9-2-2s.9-2 2-2h6c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
+                                                            
                                                        </button>
                                                   </div>
                                                                           
                                                                  {this._render_background_menu()};
-                                        
-                                                       {/* <div className='land_left_bdy_butt_main_cont'>
-                                                            <div className='land_left_bdy_butt_main_tit_cont'>
-                                                                      <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                                      Page Settings
-                                                            </div>
-                                                            <button className='land_act_back_cust_butt'>
-                                                                 <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                                            </button>
-                                                       </div>
-                                                        */}
                                                        <div className='land_left_bdy_butt_main_cont'>
                                                             <div className='land_left_bdy_butt_main_tit_cont'>
                                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
@@ -1503,7 +1501,8 @@ export default class LandAct extends React.Component{
                                                             <button className='land_act_back_cust_butt' onClick={()=>{
                                                                  this._set_layer_menu_visi(!this.state._show_layer_menu);
                                                             }}>
-                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Layers</title><path d='M434.8 137.65l-149.36-68.1c-16.19-7.4-42.69-7.4-58.88 0L77.3 137.65c-17.6 8-17.6 21.09 0 29.09l148 67.5c16.89 7.7 44.69 7.7 61.58 0l148-67.5c17.52-8 17.52-21.1-.08-29.09zM160 308.52l-82.7 37.11c-17.6 8-17.6 21.1 0 29.1l148 67.5c16.89 7.69 44.69 7.69 61.58 0l148-67.5c17.6-8 17.6-21.1 0-29.1l-79.94-38.47' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M160 204.48l-82.8 37.16c-17.6 8-17.6 21.1 0 29.1l148 67.49c16.89 7.7 44.69 7.7 61.58 0l148-67.49c17.7-8 17.7-21.1.1-29.1L352 204.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                                 <svg className='land_act_back_cust_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.6 18.06c-.36.28-.87.28-1.23 0l-6.15-4.78c-.36-.28-.86-.28-1.22 0-.51.4-.51 1.17 0 1.57l6.76 5.26c.72.56 1.73.56 2.46 0l6.76-5.26c.51-.4.51-1.17 0-1.57l-.01-.01c-.36-.28-.86-.28-1.22 0l-6.15 4.79zm.63-3.02l6.76-5.26c.51-.4.51-1.18 0-1.58l-6.76-5.26c-.72-.56-1.73-.56-2.46 0L4.01 8.21c-.51.4-.51 1.18 0 1.58l6.76 5.26c.72.56 1.74.56 2.46-.01z"/></svg>
+                                                                 
                                                             </button>
                                                        </div>
                                                   
@@ -1513,7 +1512,7 @@ export default class LandAct extends React.Component{
                                                                       Undo
                                                             </div>
                                                             <button className='land_act_back_cust_butt'>
-                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Redo</title><path d='M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                                 <svg className='land_act_back_cust_butt_ico'  height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L3.71 8.71C3.08 8.08 2 8.52 2 9.41V15c0 .55.45 1 1 1h5.59c.89 0 1.34-1.08.71-1.71l-1.91-1.91c1.39-1.16 3.16-1.88 5.12-1.88 3.16 0 5.89 1.84 7.19 4.5.27.56.91.84 1.5.64.71-.23 1.07-1.04.75-1.72C20.23 10.42 16.65 8 12.5 8z"/></svg>
                                                             </button>
                                                        </div>
 
@@ -1523,25 +1522,13 @@ export default class LandAct extends React.Component{
                                                                       Redo
                                                             </div>
                                                             <button className='land_act_back_cust_butt'>
-                                                                      <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Undo</title><path d='M240 424v-96c116.4 0 159.39 33.76 208 96 0-119.23-39.57-240-208-240V88L64 256z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                                 <svg className='land_act_back_cust_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.16 0-7.74 2.42-9.44 5.93-.32.67.04 1.47.75 1.71.59.2 1.23-.08 1.5-.64 1.3-2.66 4.03-4.5 7.19-4.5 1.95 0 3.73.72 5.12 1.88l-1.91 1.91c-.63.63-.19 1.71.7 1.71H21c.55 0 1-.45 1-1V9.41c0-.89-1.08-1.34-1.71-.71l-1.89 1.9z"/></svg>
+                                                                      
                                                             </button>
                                                        </div>
 
-
                                         <div className='land_left_bdy_butt_main_cont'>
-                                             {/* <div className='land_left_bdy_butt_main_tit_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                       {  this.state._desktop_viewing_mode===true?'Desktop Mode':'Phone Mode'}
-                                             </div>
-                                             <button className='land_act_back_cust_butt' onClick={()=>{
-                                                  this._set_viewing_mode(!this.state._desktop_viewing_mode);
-                                             }}>
-                                                       {
-                                                       this.state._desktop_viewing_mode===true?
-                                                  <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Desktop</title><rect x='32' y='64' width='448' height='320' rx='32' ry='32' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/><path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M304 448l-8-64h-80l-8 64h96z'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M368 448H144'/><path d='M32 304v48a32.09 32.09 0 0032 32h384a32.09 32.09 0 0032-32v-48zm224 64a16 16 0 1116-16 16 16 0 01-16 16z'/></svg>
-                                                  :<svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Phone Portrait</title><rect x='128' y='16' width='256' height='480' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M176 16h24a8 8 0 018 8h0a16 16 0 0016 16h64a16 16 0 0016-16h0a8 8 0 018-8h24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                                       }
-                                             </button> */}
+                                             
                                         </div>
 
                                                   <OverlayTrigger trigger="click" placement="right" overlay={ 
@@ -1580,6 +1567,9 @@ export default class LandAct extends React.Component{
                      selectTypeId={null}
                      addNotification={this._add_notification}
                      updateEditor={this.elementMenuUpdate}
+                     saveIndi={this._render_save_indi}
+                    
+
                     />
                </div>            
                {this._render_notif()}

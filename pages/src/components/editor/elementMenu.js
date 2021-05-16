@@ -26,6 +26,7 @@ export default class elementMenu extends React.Component{
           selectTypeId
           updateEditor
           addNotification
+          saveIndi  
      */
 
 
@@ -505,7 +506,7 @@ export default class elementMenu extends React.Component{
                     return(
                     <div className='ele_pop_main_bdy'>
                               <div className='pop_txt_head_main_cont'>
-                                        <div className='pop_txt_head_txt'>Text</div>
+                                        <div className='pop_txt_main_head_txt'>Text</div>
                                              <div className='pop_txt_head_rght_cont'>
                                              <div className='pop_txt_head_rght_cont_swt'>
                                              <input type="checkbox" checked={element.ENABLED} id="switch" onChange={(e)=>{    
@@ -554,7 +555,7 @@ export default class elementMenu extends React.Component{
                                    <Accordion className='ele_men_acrd_main_cont'>
                                         <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
                                              <div className='_ele_acrd_header_main_cont'>
-                                             <svg className='_ele_acrd_header_main_cont_left_ico' height="36px" viewBox="0 0 24 24" width="36px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M5 17v2h14v-2H5zm4.5-4.2h5l.9 2.2h2.1L12.75 4h-1.5L6.5 15h2.1l.9-2.2zM12 5.98L13.87 11h-3.74L12 5.98z"/></svg>
+                                             <svg className='_ele_acrd_header_main_cont_left_ico'  height="36px" viewBox="0 0 24 24" width="36px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M5 17v2h14v-2H5zm4.5-4.2h5l.9 2.2h2.1L12.75 4h-1.5L6.5 15h2.1l.9-2.2zM12 5.98L13.87 11h-3.74L12 5.98z"/></svg>
                                              <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
                                                   Font
                                              </div>
@@ -564,15 +565,28 @@ export default class elementMenu extends React.Component{
                                                   <DropdownButton variant={'light'} id="font_choice_drop_menu" title={element.STYLE.font_family}>
                                                        {this._draw_font_family(element)}
                                                   </DropdownButton>
-                                                  <div className='ele_pop_bdy_txt'>Font Size</div>    
-                                                       <div className='ele_pop_bdy_slid_cont'>
-                                                       {this._render_menu_slider((element.STYLE.font_size),0,100,(val)=>{element.STYLE.font_size = val;})}
+                                                  <div className='ele_pop_bdy_txt'>Font</div>    
+
+                                                  <div className='ele_pop_box_shad_main_cont_row'>
+                                                            <div className='ele_pop_box_shad_main_txt_main_cont'>
+                                                            <div className='ele_pop_box_shad_main_txt_main_cont_lab'>Size</div>
+                                                            <input type='text' className='ele_pop_box_shad_main_txt' value={element.STYLE.font_size}
+                                                            onChange={(e)=>{
+                                                                 element.STYLE.font_size = e.target.value
+                                                                 this.props.updateEditor();
+                                                            }}
+                                                            ></input>
+                                                            </div>
+                                                            <div className='ele_pop_box_shad_main_txt_main_cont'>
+                                                            <div className='ele_pop_box_shad_main_txt_main_cont_lab'>Weight</div>
+                                                            <input type='text' className='ele_pop_box_shad_main_txt' value={element.STYLE.font_weight}
+                                                            onChange={(e)=>{
+                                                                 element.STYLE.font_weight = e.target.value
+                                                                 this.props.updateEditor();
+                                                            }}></input>
+                                                            </div>
                                                   </div>
-                                        
-                                                  <div className='ele_pop_bdy_txt'>Font weight</div>    
-                                                       <div className='ele_pop_bdy_slid_cont'>
-                                                       {this._render_menu_slider((element.STYLE.font_weight),0,900,(val)=>{element.STYLE.font_weight = val;})}
-                                                  </div>
+                                                  
                                                        <div className='ele_pop_bdy_txt'>Text Color</div>
                                                             <OverlayTrigger
                                                             trigger="click"
@@ -618,7 +632,7 @@ export default class elementMenu extends React.Component{
                                              }
                                         }></input>
                                         </div>
-     
+                                             
                                         <div className='ele_pop_bdy_txt'>Box shadow</div>
                                         <div className='ele_pop_box_shad_main_cont'>
      
@@ -717,7 +731,7 @@ export default class elementMenu extends React.Component{
                                              <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
                                              Border 
                                              <div className='_ele_acrd_menu_chck_main_cont'>
-                                                  <input type='checkbox' className='_ele_acrd_menu_chck' checked={element.STYLE.bordered}
+                                                  <input type='checkbox'  className='_ele_acrd_menu_chck' checked={element.STYLE.bordered}
                                              onClick={(e)=>{
                                                   element.STYLE.bordered = !element.STYLE.bordered
                                                    this.props.updateEditor();
@@ -733,7 +747,7 @@ export default class elementMenu extends React.Component{
                                                   
                                                   <div className='ele_pop_bdy_txt'>Border raidus</div>    
                                                   <div className='ele_pop_bdy_slid_cont'>
-                                                  {this._render_menu_slider((element.STYLE.border_radius),0,100,(val)=>{element.STYLE.border_radius = val;})}
+                                                  {this._render_menu_slider((element.STYLE.border_radius),0,360,(val)=>{element.STYLE.border_radius = val;})}
                                                   </div>
      
                                                   <div className='ele_pop_bdy_txt'>Border Color</div>
@@ -1660,7 +1674,7 @@ export default class elementMenu extends React.Component{
                right={false}
                minWidth={250}
                style={{
-                    position:'fixed',
+                    
                     top:0,
                     right:0,
                     height:'100%',
@@ -1691,7 +1705,39 @@ export default class elementMenu extends React.Component{
      render(){
           return(
                <div>
+                    <div className='land_act_rgt_main_bdy_cont'>
+                    <div className='land_act_rgt_main_cont'>
+                              <div className='land_act_rgt_bottom_outer_main_cont'>
+                              <div className='land_act_sav_indi_main_cont'>
+                                   <div className='land_act_sav_indi_cont'>
+                                            {this.props.saveIndi()}
+                                   </div>    
+                              </div>
+                              <div className='land_act_sav_width_main_cont'>
+                                        {this.props.websiteComponent?`${this.props.websiteComponent.DIMENSION[0]}Px`:undefined}
+                              </div>
+                              <div className='land_act_rgt_outer_main_cont'>
+                                   <button className='land_act_rgt_outer_main_cont_butt' onClick={()=>{
+                                        this.props.websiteComponent.decrScale();
+                                        this.props.updateEditor();
+                                   }}>
+                                        -
+                                   </button>
+                                   <input disabled type='text' className='land_act_rgt_outer_main_cont_fld' value={`${this.props.websiteComponent?this.props.websiteComponent.DISPLAY_SCALE:undefined}%`}>
+                                   </input>
+                                   <button className='land_act_rgt_outer_main_cont_butt'
+                                    onClick={()=>{
+                                        this.props.websiteComponent.incrScale();
+                                        this.props.updateEditor();
+                                   }}>
+                                        +
+                                   </button>
+                                  
+                              </div>
+                              </div>
+                    </div>
                    {this.props.columnId>=0 && ((typeof this.props.columnId) == 'number') ?this.renderBaseMenu():undefined}
+                   </div>
                </div>
           )
      }
