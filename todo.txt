@@ -19,7 +19,7 @@ Logo menu
        Website name edit 
        Import ❤️
        Export ❤️ 
-       Change template
+       Change template 
               preference
                     Page id
                     Show gird
@@ -27,16 +27,16 @@ Logo menu
                     margin lines
                     row lines
 Website settings
-       Save
-       Publish
-       Code export
+       Save ❤️
+       Publish 💣
+       Code export ❤️
 Link editing
       Link edit
       Link share
 
 Template selection
       Search
-      Catergorisation
+      Catergorisation ❤️
       template importing ❤️
 
 Selection
@@ -52,7 +52,7 @@ Edit
       Duplicate
       Undo
       Redo
-Layer menu
+Layer menu 
       naming
       Reordering
 

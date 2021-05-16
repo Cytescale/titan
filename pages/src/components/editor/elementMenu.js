@@ -1,12 +1,9 @@
 import React from "react";
-import {Accordion,Alert,Button,Dropdown,Modal,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup } from 'react-bootstrap';
+import {Accordion,Alert,Button,Dropdown,Modal,Nav,OverlayTrigger,Tooltip,Popover,Tabs,Tab,DropdownButton,ToggleButton,ButtonGroup,ToggleButtonGroup ,Row,Col } from 'react-bootstrap';
 import { Resizable } from "re-resizable";
 import {ChromePicker} from 'react-color'
 import FONT_FAMILY_NAMES from '../../../../util/fontFamily';
 import ImageUploading from 'react-images-uploading';
-import axios from 'axios';
-import qs from 'qs';
-
 
 var _SLIDER_EDIT_BOOl = false;
 var _SLIDER_SELECT_BOOl = false;
@@ -547,7 +544,7 @@ export default class elementMenu extends React.Component{
                                              wrap="hard"
                                         placeholder='Text Value' 
                                         className='ele_txt_pop_cont' 
-                                        value={element.INNER_DATA!==undefined?element.data:"undefined"}
+                                        value={element.INNER_DATA?element.INNER_DATA:"undefined"}
                                         onChange={(e)=>{
                                              element.INNER_DATA  = e.target.value;
                                               this.props.updateEditor();
@@ -1652,41 +1649,88 @@ export default class elementMenu extends React.Component{
      componentDidUpdate(){
          
      }
+
+     renderBaseMenu(){
+          return(
+               <Resizable
+               maxWidth={400}
+               boundsByDirection={true}
+               top={false}
+               bottom={false}
+               right={false}
+               minWidth={250}
+               style={{
+                    position:'fixed',
+                    top:0,
+                    right:0,
+                    height:'100%',
+                    paddingTop:'56px',
+                  }}
+               
+               defaultSize={{
+                    width: this.state._edit_menu_width,
+                    height:'100%'
+               }}
+               >
+               
+               <div className='land_act_main_bdy_right_main'>
+               {this.props.columnId>=0 && ((typeof this.props.columnId) == 'number') ?
+                              <div className='land_act_main_bdy_right_sub'>
+                                   {this._render_element_menu()}
+                              </div>
+                          :undefined}
+               </div>
+               
+               
+               
+               </Resizable>
+          );
+     }
+   
+
      render(){
           return(
                <div>
-                           {this.props.columnId>=0 && ((typeof this.props.columnId) == 'number') ?
-                                    <Resizable
-                                        maxWidth={400}
-                                        boundsByDirection={true}
-                                        top={false}
-                                        bottom={false}
-                                        right={false}
-                                        minWidth={250}
-                                        style={{
-                                             position:'fixed',
-                                             top:0,
-                                             right:0,
-                                             height:'100%',
-                                             paddingTop:'56px',
-                                           }}
-                                        
-                                        defaultSize={{
-                                             width: this.state._edit_menu_width,
-                                             height:'100%'
-                                        }}
-                                        >
-                               <div className='land_act_main_bdy_right_main'>
-                                   {this.props.columnId>=0 && ((typeof this.props.columnId) == 'number') ?
-                                                  <div className='land_act_main_bdy_right_sub'>
-                                                       {this._render_element_menu()}
-                                                  </div>
-                                   :undefined}
-                                   </div>
-                    </Resizable>:undefined
-                    }
+                   {this.props.columnId>=0 && ((typeof this.props.columnId) == 'number') ?this.renderBaseMenu():undefined}
                </div>
           )
      }
 
 }
+
+// <div className="land_act_main_bdy_right_both_menu_main_body_cont">
+// <Tab.Container id="land_act_main_bdy_right_both_menu_main">
+// <Row className='land_act_main_bdy_right_inner_menu_main_row_cont'>
+// <Col className='land_act_main_bdy_right_inner_menu_main_cont_selec'>
+//      <Nav variant="pills" className="flex-column">
+//      <Nav.Item bsPrefix='nav-item right_pane_nav_item' className="land_act_main_bdy_right_inner_menu_main_cont_selec_pill_butt">
+//           <Nav.Link eventKey="first" bsPrefix='nav-link right_pane_nav'>     
+//           <svg className='land_act_main_bdy_right_inner_menu_main_cont_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18c0 .55.45 1 1 1h5v-2H4c-.55 0-1 .45-1 1zM3 6c0 .55.45 1 1 1h9V5H4c-.55 0-1 .45-1 1zm10 14v-1h7c.55 0 1-.45 1-1s-.45-1-1-1h-7v-1c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1zM7 10v1H4c-.55 0-1 .45-1 1s.45 1 1 1h3v1c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1s-1 .45-1 1zm14 2c0-.55-.45-1-1-1h-9v2h9c.55 0 1-.45 1-1zm-5-3c.55 0 1-.45 1-1V7h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V4c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1z"/></svg>
+//           </Nav.Link>
+//      </Nav.Item>
+//      {this.props.columnId>=0 && ((typeof this.props.columnId) == 'number') ?
+//      <Nav.Item  className="land_act_main_bdy_right_inner_menu_main_cont_selec_pill_butt">
+//           <Nav.Link eventKey="second" bsPrefix='nav-link right_pane_nav'>
+//           <svg className='land_act_main_bdy_right_inner_menu_main_cont_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18c0 .55.45 1 1 1h5v-2H4c-.55 0-1 .45-1 1zM3 6c0 .55.45 1 1 1h9V5H4c-.55 0-1 .45-1 1zm10 14v-1h7c.55 0 1-.45 1-1s-.45-1-1-1h-7v-1c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1zM7 10v1H4c-.55 0-1 .45-1 1s.45 1 1 1h3v1c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1s-1 .45-1 1zm14 2c0-.55-.45-1-1-1h-9v2h9c.55 0 1-.45 1-1zm-5-3c.55 0 1-.45 1-1V7h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V4c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1z"/></svg>
+//           </Nav.Link>
+//      </Nav.Item>:undefined
+//      }
+//      </Nav>
+// </Col>
+// <Col className='land_act_main_bdy_right_inner_menu_main_cont'>
+//      <Tab.Content>
+//      <Tab.Pane eventKey="first">
+//           <div className='land_act_main_bdy_right_inner_menu_main_inner_cont'>
+//           Up there
+//           </div>
+//      </Tab.Pane>
+//      <Tab.Pane eventKey="second">
+//           <div className='land_act_main_bdy_right_inner_menu_main_inner_cont'>
+//                {this.props.columnId>=0 && ((typeof this.props.columnId) == 'number') ?this.renderBaseMenu():undefined}
+//           </div>
+//      </Tab.Pane>
+//      </Tab.Content>
+// </Col>
+// </Row>
+// </Tab.Container>
+// </div>

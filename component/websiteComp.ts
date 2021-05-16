@@ -1,5 +1,6 @@
 import sectionComp from './sectionComp';
 import elementComp from './elementComp';
+import backgrounClass from './website_background';
 import type{ELEMENT_TYPE} from './elementTypeId';
 
 
@@ -16,6 +17,7 @@ export default class websiteComp {
      DIMENSION:Array<number> = [900,null];
      ELEMENT_COUNT:number=0;
      WEBSITE_VALIDITY_ID:number = 1001;
+     BACKGROUND_DATA:any  = new backgrounClass(); 
      constructor(){
 
      }

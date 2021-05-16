@@ -518,10 +518,10 @@ cursor: pointer;
      background-color: var(--right_pane_txt_int_fld_color);
 }
 .ele_pop_bdy_txt{
-     padding-top: 10px;
-     padding-bottom: 5px;
-     font-weight: 400;
+     padding-bottom: 10px;
+     font-weight: 500;
      font-size: 11px;
+     
      font-family: inter;
      color:var(--right_pane_text_color);
 }
@@ -735,7 +735,7 @@ cursor: pointer;
      border-bottom-right-radius: 0px
    }
    .ele_pop_bdy_slid_hold{
-        width: 80%;
+        width: 100%;
 
    }
    .dropdown-ele-po-butt{

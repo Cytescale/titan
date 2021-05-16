@@ -107,7 +107,6 @@ export default class elementComp {
           return this.STYLE;
      }
      set STYLE(value){
-          console.log("style change");
           this._STYLE = value;
      }
      get STYLE(){

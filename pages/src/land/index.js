@@ -19,8 +19,11 @@ import sectionComp from  '../../../component/sectionComp';
 import elementComp from '../../../component/elementComp';
 import ElementMenu from '../components/editor/elementMenu';
 
+
 const BrowserFS = require('browserfs')
 
+var _SLIDER_EDIT_BOOl = false;
+var _SLIDER_SELECT_BOOl = false;
 import {
      Menu,
      Item,
@@ -96,6 +99,7 @@ export default class LandAct extends React.Component{
                dname:"Not done..",
                _temp_select_mod_show:false,
                _show_layer_menu:false,
+               _show_pref_menu:false,
                _select_element_id:-1,
                _select_row_id:-1,
                _select_type_id:-1,
@@ -145,6 +149,9 @@ export default class LandAct extends React.Component{
      }
      _set_issave_bool(bool){
           this.setState({_issaved:bool})
+     }
+     _set_show_pref_menu(bool){
+          this.setState({_show_pref_menu:bool})
      }
      _set_context_select(val,row_id){
           this.setState({
@@ -343,12 +350,14 @@ export default class LandAct extends React.Component{
                               this._set_website_component(null);
                          }
                          else{
-                              const foundData = JSON.parse(r.page_data._PAGE_CORE_ARRAY);
-                              if(foundData.WEBSITE_VALIDITY_ID == 1001){
-                                   this.TEMP_WEBSITE_DATA = JSON.stringify(foundData);
-                                   let dw = this.parseLoadData(foundData);
-                                   if(dw){
-                                        this._set_website_component(dw);
+                              if(r.page_data._PAGE_CORE_ARRAY !== null && r.page_data._PAGE_CORE_ARRAY !== 'null'){
+                                   const foundData = JSON.parse(r.page_data._PAGE_CORE_ARRAY);
+                                   if(foundData.WEBSITE_VALIDITY_ID == 1001){
+                                        this.TEMP_WEBSITE_DATA = JSON.stringify(foundData);
+                                        let dw = this.parseLoadData(foundData);
+                                        if(dw){
+                                             this._set_website_component(dw);
+                                        }
                                    }
                               }
                          }
@@ -366,19 +375,21 @@ export default class LandAct extends React.Component{
      /*////////////////////////////////////WEBSITE BACKGROUND SECTION ///////////////////////////////////////////////////*/
      _set_curr_back(){
           let set_style = {}
-          if(_BACK_DATA!==null){
-               switch(_BACK_DATA.back_type){
+          if(this.state._website_component){
+          let _BACK_DATA_CURR  = this.state._website_component.BACKGROUND_DATA;
+          if(_BACK_DATA_CURR!==null){
+               switch(_BACK_DATA_CURR.back_type){
                     case 0:{
                          set_style = {
-                              backgroundColor:_BACK_DATA.solid_color,
+                              backgroundColor:_BACK_DATA_CURR.solid_color,
                          }
                          break;
                     }
                     case 1:{
-                         let linerString = 'linear-gradient('+_BACK_DATA.grad_deg+'deg , ';
-                         _BACK_DATA.colors_array.map((e,ind)=>{
+                         let linerString = 'linear-gradient('+_BACK_DATA_CURR.grad_deg+'deg , ';
+                         _BACK_DATA_CURR.colors_array.map((e,ind)=>{
                               let tr = e ;
-                              if(ind !== (_BACK_DATA.colors_array.length-1)){
+                              if(ind !== (_BACK_DATA_CURR.colors_array.length-1)){
                                     tr+=',';
                               }
                               linerString += tr;
@@ -392,9 +403,9 @@ export default class LandAct extends React.Component{
                          break;
                     }
                     case 2:{
-                         if(_BACK_DATA.back_image!==null){
+                         if(_BACK_DATA_CURR.back_image!==null){
                          let linerString = 'url("';
-                         _BACK_DATA.back_image.map((e,ind)=>{
+                         _BACK_DATA_CURR.back_image.map((e,ind)=>{
                               let tr = e ;
                               if(tr!==null){
                                    linerString += tr['data_url']+'")';
@@ -409,102 +420,200 @@ export default class LandAct extends React.Component{
                          break;
                     }
                     default:{
-                         set_style = _BACK_DATA.default_value
+                         set_style = _BACK_DATA_CURR.default_value
                          break;
                     }
                }
           }
+          }
           return set_style;
      }
      _get_back_type(){
-          if(_BACK_DATA!==null){
-          switch(_BACK_DATA.back_type){
+          if(this.state._website_component){
+               let _BACK_DATA_CURR  = this.state._website_component.BACKGROUND_DATA;
+          if(_BACK_DATA_CURR!==null){
+          switch(_BACK_DATA_CURR.back_type){
                case 0:{return 'Solid'}
                case 1:{return 'Linear gradient'}
                case 2:{return 'Image'}
                default:{return 'Loading'}
-          }}
+          }}}
      }
      _draw_linear_grad_tab(){
-          let res = [];
-          _BACK_DATA.colors_array.map((e,ind)=>{
-               res.push(<Dropdown.Item as="button" onClick={()=>{
-                    _BACK_DATA.selec_color = ind
-                    this.forceUpdate();
-               }}>Color {ind}</Dropdown.Item>)
-          })
-          return res;
+          if(this.state._website_component){
+               let _BACK_DATA_CURR  = this.state._website_component.BACKGROUND_DATA;
+               if(_BACK_DATA_CURR!==null){
+                    let res = [];
+                    _BACK_DATA_CURR.colors_array.map((e,ind)=>{
+                         res.push(<Dropdown.Item as="button" onClick={()=>{
+                              _BACK_DATA_CURR.selec_color = ind
+                              this.forceUpdate();
+                         }}>Color {(ind+1)}</Dropdown.Item>)
+                    })
+                    return res;          
+          
+               }}
      }
+
+     _render_menu_slider(base_val,min,max,callback){
+          let perc = 0;
+          return(
+          <div className='ele_menu_custom_slider_main_cont'
+          style={{
+               pointerEvents:_SLIDER_EDIT_BOOl===true?'none':'all'
+
+          }}
+          onMouseDown={(e)=>{
+               if(_SLIDER_EDIT_BOOl===false){
+               _SLIDER_SELECT_BOOl = true;
+                this.forceUpdate();
+               }
+          }} 
+          onMouseMove={(e)=>{
+               if(_SLIDER_SELECT_BOOl===true){
+               e.persist();
+               let xOffset = e.nativeEvent.offsetX; 
+               let parrentWidth = e.currentTarget.offsetWidth ; 
+               let slider_width =  min
+               if((xOffset/parrentWidth)>min){
+                     slider_width = (xOffset/parrentWidth)*max;
+                     perc  =(xOffset/parrentWidth)*100;
+               }
+               else{
+                     slider_width = min
+                     perc  = 0;
+               }
+               callback(parseInt(slider_width.toFixed(0)))
+               this.forceUpdate(); }
+          }}
+          onMouseUp={(e)=>{
+               _SLIDER_SELECT_BOOl = false;
+               this.forceUpdate();
+          }}
+          onMouseLeave={(e)=>{
+               _SLIDER_SELECT_BOOl = false;
+               this.forceUpdate();
+          }}
+          >
+          <div className='ele_menu_custom_slider_val_cont' style={{width:((base_val/max)*100)+'%'}}></div>
+          <div className='ele_menu_custom_slider_val_counter'>
+                    <div className='ele_menu_custom_slider_val_counter_sub'
+                      style={{
+                         pointerEvents:_SLIDER_SELECT_BOOl===true?'none':'all',
+                    }}
+                    >
+                    {<input type='text' className='ele_menu_custom_slider_val_counter_edit'
+                         style={{
+                              pointerEvents:_SLIDER_SELECT_BOOl===true?'none':'all',
+                              color:'inherit'
+                         }}
+                         onFocus={(e)=>{
+                              if(_SLIDER_SELECT_BOOl!==true){
+                                   _SLIDER_EDIT_BOOl = true
+                                   this.forceUpdate();
+                              }
+                         }}
+                         onBlur={(e)=>{
+                              _SLIDER_EDIT_BOOl = false
+                              this.forceUpdate();
+                         }}
+                    value={base_val} onChange={(e)=>{
+                         if(e.target.value == ""){
+                              callback(parseInt(min))
+                              this.forceUpdate();
+                              return;
+                         }
+                         if(parseInt(e.target.value)>=min && parseInt(e.target.value)<=max){
+                              callback(parseInt(e.target.value))
+                         }
+                         this.forceUpdate();
+                    }} ></input>}
+                    </div>
+               </div>
+          </div>)
+     }
+
      _get_back_picker(){
-          if(_BACK_DATA!==null){
-               switch(_BACK_DATA.back_type){
+          if(this.state._website_component){
+          let _BACK_DATA_CURR  = this.state._website_component.BACKGROUND_DATA;
+          if(_BACK_DATA_CURR!==null){
+               switch(_BACK_DATA_CURR.back_type){
                     case 0:{return (
                          <div>
-                         <ChromePicker
-                            color={_BACK_DATA.solid_color}
-                            onChange={(col)=>{
-                              _BACK_DATA.solid_color=col.hex;
-                              this.forceUpdate();
-                            }}
-                            onChangeComplete={()=>{this.forceUpdate();}}
-                         >
-                         </ChromePicker>
-
+                                                            <OverlayTrigger
+                                                            trigger="click"
+                                                            placement="right"
+                                                            rootClose={true}
+                                                            overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
+                                                            <ChromePicker
+                                                                 color={_BACK_DATA_CURR.solid_color}
+                                                                 onChange={(col)=>{
+                                                                      _BACK_DATA_CURR.solid_color = col.hex;
+                                                                       this.forceUpdate();
+                                                                 }}
+                                                                 onChangeComplete={()=>{ this.forceUpdate();}}
+                                                            >
+                                                            </ChromePicker>
+                                                            </Popover>}
+                                                            >
+                                                            <Button variant={'light'} className='ele_pop_bdy_col_butt'>
+                                                                 <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_BACK_DATA_CURR.solid_color!==null?_BACK_DATA_CURR.solid_color:'#fff'}}></div>
+                                                                 {_BACK_DATA_CURR.solid_color}
+                                                            </Button>
+                                                            </OverlayTrigger>
+                    
                     </div>)}
                     case 1:{return (
                          <div>
+                              <div className='ele_pop_hr_div_class'></div>
                               <Button variant={'primary'} 
                                    className='popover_back_class_add_butt'
                                    onClick={()=>{
-                                   _BACK_DATA.colors_array.push('#e0e0e0');
-                                   console.log("BACK COLOR ADDED FOR SIZE"+_BACK_DATA.colors_array.length)
+                                        _BACK_DATA_CURR.colors_array.push('#e0e0e0');
+                                   console.log("BACK COLOR ADDED FOR SIZE"+_BACK_DATA_CURR.colors_array.length)
                                    this.forceUpdate();
-                              }}>Add Color</Button>
+                              }}>Add Color +</Button>
                               <Dropdown>
-                              <Dropdown.Toggle variant="primary" id="popover_back_class_color_selec_butt">
-                              Color {_BACK_DATA.selec_color}
+                              <Dropdown.Toggle variant="primary"  className='popover_back_class_add_butt' id="popover_back_class_color_selec_butt">
+                              Color {_BACK_DATA_CURR.selec_color}
                               </Dropdown.Toggle>
                                    <Dropdown.Menu>
                                    {this._draw_linear_grad_tab()}
                                    </Dropdown.Menu>
                               </Dropdown>
-
+                              <div className='ele_pop_hr_div_class'></div>
                               <div className='ele_pop_bdy_txt'>Gradient angle</div>    
                                         <div className='ele_pop_bdy_slid_cont'>
                                         <div className='ele_pop_bdy_slid_hold'>
-                                        <Slider
-                                        orientation="horizontal"
-                                        tooltip={false}
-                                        max='360'
-                                        value={_BACK_DATA.grad_deg}
-                                        onChange={(val) =>{
-                                             _BACK_DATA.grad_deg =val;   
-                                             this.forceUpdate();
-                                        }}
-                                        />
+                                       {this._render_menu_slider(_BACK_DATA_CURR.grad_deg,0,360,(val)=>{_BACK_DATA_CURR.grad_deg = val;})}
                                         </div>
-                                        <input type='text' className='ele_bdy_pop_sld_txt_fld' value={_BACK_DATA.grad_deg}
-                                        onChange={(e)=>{
-                                        _BACK_DATA.grad_deg = e.target.value;   
-                                        this.forceUpdate();
-                                        }}
-                                        />
                                         </div>
-
-                              <ChromePicker
-                              color={_BACK_DATA.colors_array[_BACK_DATA.selec_color]}
-                              className="popover_back_class_color_selec_pick"
-                              onChange={(col)=>{
-                                   _BACK_DATA.colors_array[_BACK_DATA.selec_color]=col.hex;
-                                   this.forceUpdate();
-                              }}
-                              onChangeComplete={()=>{this.forceUpdate();}}
-                              >
-                              </ChromePicker>
-
-                              <Button variant='danger' id='popover_back_class_color_selec_butt' onClick={()=>{
-                                   if(_BACK_DATA.colors_array.length>=3){
-                                        _BACK_DATA.colors_array.splice((_BACK_DATA.colors_array.length-1),1);
+                                        
+                                                             <OverlayTrigger
+                                                            trigger="click"
+                                                            placement="right"
+                                                            rootClose={true}
+                                                            overlay={<Popover id="popover-basic"  className='element_color_pick_popover'    backdropClassName="backdrop">
+                                                            <ChromePicker
+                                                                 color={_BACK_DATA_CURR.colors_array[_BACK_DATA_CURR.selec_color]}
+                                                                 onChange={(col)=>{
+                                                                      _BACK_DATA_CURR.colors_array[_BACK_DATA_CURR.selec_color] = col.hex;
+                                                                       this.forceUpdate();
+                                                                 }}
+                                                                 onChangeComplete={()=>{ this.forceUpdate();}}
+                                                            >
+                                                            </ChromePicker>
+                                                            </Popover>}
+                                                            >
+                                                            <Button variant={'light'} className='ele_pop_bdy_col_butt'>
+                                                                 <div className='ele_pop_bdy_col_butt_col' style={{backgroundColor:_BACK_DATA_CURR.colors_array[_BACK_DATA_CURR.selec_color]!==null?_BACK_DATA_CURR.colors_array[_BACK_DATA_CURR.selec_color]:'#fff'}}></div>
+                                                                 {_BACK_DATA_CURR.colors_array[_BACK_DATA_CURR.selec_color]}
+                                                            </Button>
+                                        </OverlayTrigger>
+                                        <div className='ele_pop_hr_div_class'></div>
+                              <Button variant='danger' className='popover_back_class_add_butt left_pane_back_del_butt'  id='popover_back_class_color_selec_butt' onClick={()=>{
+                                   if(_BACK_DATA_CURR.colors_array.length>=3){
+                                        _BACK_DATA_CURR.colors_array.splice((_BACK_DATA_CURR.colors_array.length-1),1);
                                         this.forceUpdate();
                                    }
                                    else{
@@ -556,7 +665,8 @@ export default class LandAct extends React.Component{
                          );
                     }
                     default:{return 'Loading'}
-               }}
+               }}}
+               
      }
      /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
      
@@ -907,39 +1017,115 @@ export default class LandAct extends React.Component{
                )
           }
      }
+    
+
+     _render_background_menu(){
+          return(
+               <div className='land_left_bdy_butt_main_cont'>
+               <OverlayTrigger trigger="click" placement="right" className='land_left_bdy_butt_main_cont_over' overlay={ 
+                    <Popover id="popover-basic"  className='popover_back_class' bsPrefix='left_cont_pop_cont' backdropClassName="backdrop">
+                    <div className='popover_back_class_main_cont'>
+                         <div className='popover_back_class_main_cont_tit'>Page Tunner</div>
+                         <Accordion className='ele_men_acrd_main_cont'>
+                         <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>
+                              <div className='_ele_acrd_header_main_cont'>
+                              {/* <svg className='_ele_acrd_header_main_cont_left_ico' height="36px" viewBox="0 0 24 24" width="36px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M5 17v2h14v-2H5zm4.5-4.2h5l.9 2.2h2.1L12.75 4h-1.5L6.5 15h2.1l.9-2.2zM12 5.98L13.87 11h-3.74L12 5.98z"/></svg> */}
+                              <svg className='_ele_acrd_header_main_cont_ico' viewBox='0 0 512 512'><title>Chevron Down</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M112 184l144 144 144-144'/></svg>
+                                   Background
+                              </div>
+                         </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0" className='pop_acrd_main_cont'>
+                                   <div className='ele_menu_bdy_main_cont'>
+                                   <div className='ele_pop_bdy_txt'>Background type</div>    
+                              <Dropdown>
+                              <Dropdown.Toggle variant="light" id="popover_back_class_selec_butt">
+                              {this._get_back_type() }
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu className='popover_back_class_selec_menu'>
+                              <Dropdown.Item as="button" onClick={()=>{
+                                   if(this.state._website_component){
+                                        this.state._website_component.BACKGROUND_DATA.back_type = 0;
+                                        this.forceUpdate();
+                                   }
+                                   }}>Solid</Dropdown.Item>
+                              <Dropdown.Item as="button"
+                                   onClick={()=>{
+                                        if(this.state._website_component){
+                                             console.log("HIT HIT");
+                                             this.state._website_component.BACKGROUND_DATA.back_type = 1;
+                                             this.forceUpdate();
+                                        }
+                                   }}
+                              >Linear Gradient</Dropdown.Item>
+                              {/* <Dropdown.Item as="button"
+                                   onClick={()=>{
+                                        if(this.state.websiteComponent){
+                                             this.state.websiteComponent.BACKGROUND_DATA.back_type = 2;
+                                             this.forceUpdate();
+                                        }
+                                   }}
+                              >Image</Dropdown.Item> */}
+                              </Dropdown.Menu>
+                              </Dropdown>
+                              <div className='popover_back_class_main_pick_cont'>
+                                   {this._get_back_picker()}
+                              </div>
+                    </div>
+               </Accordion.Collapse>
+          </Accordion>
+          
+         
+     </div>
+     </Popover>} rootClose={false}>
+          <button className='land_act_back_cust_butt'>
+           <svg className='land_act_back_cust_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18c0 .55.45 1 1 1h5v-2H4c-.55 0-1 .45-1 1zM3 6c0 .55.45 1 1 1h9V5H4c-.55 0-1 .45-1 1zm10 14v-1h7c.55 0 1-.45 1-1s-.45-1-1-1h-7v-1c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1zM7 10v1H4c-.55 0-1 .45-1 1s.45 1 1 1h3v1c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1s-1 .45-1 1zm14 2c0-.55-.45-1-1-1h-9v2h9c.55 0 1-.45 1-1zm-5-3c.55 0 1-.45 1-1V7h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V4c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1z"/></svg>
+          </button>
+     </OverlayTrigger>
+     </div>);
+     }
+
 
      /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
        /*////////////////////////////////////UTILS SECTION ///////////////////////////////////////////////////*/
      
      async _website_component_save(){
-          let temp_save_data = this.state._website_component;
+          let temp_save_data_str = JSON.stringify(this.state._website_component)
+          let temp_save_data = JSON.parse(temp_save_data_str);
           let succPass = 0;
           let failElementIndx = [];
           if(this.state._website_component){
                this._set_issaving_bool(true);
                console.log("Save start at init count "+temp_save_data.ELEMENT_COUNT);
-               for(let i = 0 ; i < temp_save_data.getSectionArray().length ; i++){
-                    for(let j = 0 ; j < temp_save_data.getSectionArray()[i].getElementArray().length ; j++){
-                         if(!temp_save_data.getSectionArray()[i].getElementArray()[j].DELETED){
-                              if(parseInt(temp_save_data.getSectionArray()[i].getElementArray()[j].TYPE_ID) === 2){
-                                   if(temp_save_data.getSectionArray()[i].getElementArray()[j].image_data){
+               for(let i = 0 ; i < temp_save_data.SECTION_ARRAY.length ; i++){
+                    for(let j = 0 ; j < temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY.length ; j++){
+                         if(!temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].DELETED){
+                              if(parseInt(temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].TYPE_ID) === 2){
+                                   if(temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].image_data){
                                         console.log("Imaeg upload init");
-                                        let res = await storeHelper._image_upload(temp_save_data.getSectionArray()[i].getElementArray()[j].image_data[0]);
+                                        let res = await storeHelper._image_upload(temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].image_data[0]);
                                         if(res.fileId){
-                                             temp_save_data.getSectionArray()[i].getElementArray()[j].image_tumb_url = res.thumbnailUrl
-                                             temp_save_data.getSectionArray()[i].getElementArray()[j].imageKitFileId = res.fileId;
-                                             temp_save_data.getSectionArray()[i].getElementArray()[j].image_data_url = res.url;
+                                             temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].image_tumb_url = res.thumbnailUrl
+                                             temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].imageKitFileId = res.fileId;
+                                             temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].image_data_url = res.url;
+                                             temp_save_data.SECTION_ARRAY[i].ELEMENT_ARRAY[j].image_data = null;
                                              succPass++;     
-                                             temp_save_data.getSectionArray()[i].getElementArray()[j].image_data = null;
+                                             this.state._website_component.getSectionArray()[i].getElementArray()[j].image_data = null;
+                                             this.state._website_component.getSectionArray()[i].getElementArray()[j].image_tumb_url = res.thumbnailUrl
+                                             this.state._website_component.getSectionArray()[i].getElementArray()[j].imageKitFileId = res.fileId;
+                                             this.state._website_component.getSectionArray()[i].getElementArray()[j].image_data_url = res.url;
                                         }
                                         else{
                                              failElementIndx.push([i,j]);           
                                         }
                                    }
                               }else{
+
                                    succPass++;
                               }
+                         }
+                         else{
+
                          }
                     }
                }    
@@ -1107,7 +1293,17 @@ export default class LandAct extends React.Component{
           this._set_loading_prog(20);
           this._init_land_user_check();   
           this._set_browserfs_configure();
-          
+          window.addEventListener('beforeunload',(e)=>{
+               e.preventDefault();
+               if(this.SAVE_STATE===true){
+                    return;
+               }
+               else{
+                    e.returnValue  = '';
+               }
+               
+               
+          });
      }
      elementMenuUpdate(){
           this.forceUpdate();
@@ -1249,13 +1445,7 @@ export default class LandAct extends React.Component{
                     <div className='land_act_head_cent_main_cont'>
                               
                               <div className='land_act_head_cent_main_cont_wb_name_cont'>
-                                        <input 
-                                        value={this.state._website_component?this.state._website_component.NAME:null}  
-                                        className='land_act_head_cent_main_cont_wb_name_fld' 
-                                        onChange={this.websiteNameChangeHandler}
-                                        autoCorrect={false}
-                                        autoCapitalize={true}
-                                        autoComplete={false} />
+                                        Project Titan
                               </div>
 
                     </div>               
@@ -1292,91 +1482,50 @@ export default class LandAct extends React.Component{
                                                             <svg className='land_act_back_cust_butt_ico_save' viewBox='0 0 512 512'><title>Save</title><path d='M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
                                                        </button>
                                                   </div>
-                                               
-                                                  <div className='land_left_bdy_butt_main_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont'>
-                                                                 <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                                 Page background
-                                                       </div>
-                                                            <OverlayTrigger trigger="click" placement="right" overlay={ 
-                                                            <Popover id="popover-basic"  className='popover_back_class' backdropClassName="backdrop">
-                                                            <div className='popover_back_class_main_cont'>
-                                                                 <div className='popover_back_class_main_cont_tit'>Background</div>
-                                                            <Dropdown>
-                                                                      <Dropdown.Toggle variant="light" id="popover_back_class_selec_butt">
-                                                                      {this._get_back_type() }
-                                                                      </Dropdown.Toggle>
-                                                                      <Dropdown.Menu className='popover_back_class_selec_menu'>
-                                                                      <Dropdown.Item as="button" onClick={()=>{
-                                                                           _BACK_DATA.back_type = 0;
-                                                                           this.forceUpdate();
-                                                                           }}>Solid</Dropdown.Item>
-                                                                      <Dropdown.Item as="button"
-                                                                           onClick={()=>{
-                                                                           _BACK_DATA.back_type = 1;
-                                                                           this.forceUpdate();
-                                                                           }}
-                                                                      >Linear Gradient</Dropdown.Item>
-                                                                      <Dropdown.Item as="button"
-                                                                           onClick={()=>{
-                                                                           _BACK_DATA.back_type = 2;
-                                                                           this.forceUpdate();
-                                                                           }}
-                                                                      >Image</Dropdown.Item>
-                                                                      </Dropdown.Menu>
-                                                                      </Dropdown>
-                                                                      <div className='popover_back_class_main_pick_cont'>
-                                                                           {this._get_back_picker()}
-                                                                      </div>
-                                                            </div>
-                                                            </Popover>} rootClose={true}>
-                                                                 <button className='land_act_back_cust_butt'>
-                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Color Palette</title><path d='M430.11 347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1 0-43.8l30.3-26.9c46.4-41 46.4-108.2 0-149.2-34.2-30.1-80.1-45-127.8-45-55.7 0-113.9 20.3-158.8 60.1-83.5 73.8-83.5 194.7 0 268.5 41.5 36.7 97.5 55 152.9 55.4h1.7c55.4 0 110-17.9 148.8-52.4 14.4-12.7 11.99-36.6.1-47.7z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><circle cx='144' cy='208' r='32' fill='currentColor'/><circle cx='152' cy='311' r='32' fill='currentColor'/><circle cx='224' cy='144' r='32' fill='currentColor'/><circle cx='256' cy='367' r='48' fill='currentColor'/><circle cx='328' cy='144' r='32' /></svg>
-                                                                 </button>
-                                                            </OverlayTrigger>
-                                                       </div>
+                                                                          
+                                                                 {this._render_background_menu()};
                                         
-                                        {/* <div className='land_left_bdy_butt_main_cont'>
-                                             <div className='land_left_bdy_butt_main_tit_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                       Page Settings
-                                             </div>
-                                             <button className='land_act_back_cust_butt'>
-                                                  <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                             </button>
-                                        </div>
-                                         */}
-                                        <div className='land_left_bdy_butt_main_cont'>
-                                             <div className='land_left_bdy_butt_main_tit_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                       Layers
-                                             </div>
-                                             <button className='land_act_back_cust_butt' onClick={()=>{
-                                                  this._set_layer_menu_visi(!this.state._show_layer_menu);
-                                             }}>
-                                                  <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Layers</title><path d='M434.8 137.65l-149.36-68.1c-16.19-7.4-42.69-7.4-58.88 0L77.3 137.65c-17.6 8-17.6 21.09 0 29.09l148 67.5c16.89 7.7 44.69 7.7 61.58 0l148-67.5c17.52-8 17.52-21.1-.08-29.09zM160 308.52l-82.7 37.11c-17.6 8-17.6 21.1 0 29.1l148 67.5c16.89 7.69 44.69 7.69 61.58 0l148-67.5c17.6-8 17.6-21.1 0-29.1l-79.94-38.47' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M160 204.48l-82.8 37.16c-17.6 8-17.6 21.1 0 29.1l148 67.49c16.89 7.7 44.69 7.7 61.58 0l148-67.49c17.7-8 17.7-21.1.1-29.1L352 204.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
-                                             </button>
-                                        </div>
-                                       
-                                        <div className='land_left_bdy_butt_main_cont'>
-                                             <div className='land_left_bdy_butt_main_tit_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                       Undo
-                                             </div>
-                                             <button className='land_act_back_cust_butt'>
-                                                   <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Redo</title><path d='M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
-                                             </button>
-                                        </div>
+                                                       {/* <div className='land_left_bdy_butt_main_cont'>
+                                                            <div className='land_left_bdy_butt_main_tit_cont'>
+                                                                      <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                                      Page Settings
+                                                            </div>
+                                                            <button className='land_act_back_cust_butt'>
+                                                                 <svg className='land_act_back_cust_butt_ico'  viewBox='0 0 512 512'><title>Hammer</title><path d='M277.42 247a24.68 24.68 0 00-4.08-5.47L255 223.44a21.63 21.63 0 00-6.56-4.57 20.93 20.93 0 00-23.28 4.27c-6.36 6.26-18 17.68-39 38.43C146 301.3 71.43 367.89 37.71 396.29a16 16 0 00-1.09 23.54l39 39.43a16.13 16.13 0 0023.67-.89c29.24-34.37 96.3-109 136-148.23 20.39-20.06 31.82-31.58 38.29-37.94a21.76 21.76 0 003.84-25.2zM478.43 201l-34.31-34a5.44 5.44 0 00-4-1.59 5.59 5.59 0 00-4 1.59h0a11.41 11.41 0 01-9.55 3.27c-4.48-.49-9.25-1.88-12.33-4.86-7-6.86 1.09-20.36-5.07-29a242.88 242.88 0 00-23.08-26.72c-7.06-7-34.81-33.47-81.55-52.53a123.79 123.79 0 00-47-9.24c-26.35 0-46.61 11.76-54 18.51-5.88 5.32-12 13.77-12 13.77a91.29 91.29 0 0110.81-3.2 79.53 79.53 0 0123.28-1.49C241.19 76.8 259.94 84.1 270 92c16.21 13 23.18 30.39 24.27 52.83.8 16.69-15.23 37.76-30.44 54.94a7.85 7.85 0 00.4 10.83l21.24 21.23a8 8 0 0011.14.1c13.93-13.51 31.09-28.47 40.82-34.46s17.58-7.68 21.35-8.09a35.71 35.71 0 0121.3 4.62 13.65 13.65 0 013.08 2.38c6.46 6.56 6.07 17.28-.5 23.74l-2 1.89a5.5 5.5 0 000 7.84l34.31 34a5.5 5.5 0 004 1.58 5.65 5.65 0 004-1.58L478.43 209a5.82 5.82 0 000-8z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                            </button>
+                                                       </div>
+                                                        */}
+                                                       <div className='land_left_bdy_butt_main_cont'>
+                                                            <div className='land_left_bdy_butt_main_tit_cont'>
+                                                                      <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                                      Layers
+                                                            </div>
+                                                            <button className='land_act_back_cust_butt' onClick={()=>{
+                                                                 this._set_layer_menu_visi(!this.state._show_layer_menu);
+                                                            }}>
+                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Layers</title><path d='M434.8 137.65l-149.36-68.1c-16.19-7.4-42.69-7.4-58.88 0L77.3 137.65c-17.6 8-17.6 21.09 0 29.09l148 67.5c16.89 7.7 44.69 7.7 61.58 0l148-67.5c17.52-8 17.52-21.1-.08-29.09zM160 308.52l-82.7 37.11c-17.6 8-17.6 21.1 0 29.1l148 67.5c16.89 7.69 44.69 7.69 61.58 0l148-67.5c17.6-8 17.6-21.1 0-29.1l-79.94-38.47' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M160 204.48l-82.8 37.16c-17.6 8-17.6 21.1 0 29.1l148 67.49c16.89 7.7 44.69 7.7 61.58 0l148-67.49c17.7-8 17.7-21.1.1-29.1L352 204.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                            </button>
+                                                       </div>
+                                                  
+                                                       <div className='land_left_bdy_butt_main_cont'>
+                                                            <div className='land_left_bdy_butt_main_tit_cont'>
+                                                                      <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                                      Undo
+                                                            </div>
+                                                            <button className='land_act_back_cust_butt'>
+                                                                 <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Redo</title><path d='M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                            </button>
+                                                       </div>
 
-                                        <div className='land_left_bdy_butt_main_cont'>
-                                             <div className='land_left_bdy_butt_main_tit_cont'>
-                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
-                                                       Redo
-                                             </div>
-                                             <button className='land_act_back_cust_butt'>
-                                                       <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Undo</title><path d='M240 424v-96c116.4 0 159.39 33.76 208 96 0-119.23-39.57-240-208-240V88L64 256z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
-                                             </button>
-                                        </div>
+                                                       <div className='land_left_bdy_butt_main_cont'>
+                                                            <div className='land_left_bdy_butt_main_tit_cont'>
+                                                                      <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
+                                                                      Redo
+                                                            </div>
+                                                            <button className='land_act_back_cust_butt'>
+                                                                      <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Arrow Undo</title><path d='M240 424v-96c116.4 0 159.39 33.76 208 96 0-119.23-39.57-240-208-240V88L64 256z' fill='none' stroke='currentColor' stroke-linejoin='round' stroke-width='32'/></svg>
+                                                            </button>
+                                                       </div>
 
 
                                         <div className='land_left_bdy_butt_main_cont'>
@@ -1396,7 +1545,7 @@ export default class LandAct extends React.Component{
                                         </div>
 
                                                   <OverlayTrigger trigger="click" placement="right" overlay={ 
-                                                            <Popover id="popover-basic"  className='popover_back_class' backdropClassName="backdrop">
+                                                            <Popover id="popover-basic"  className='popover_back_class' bsPrefix='left_cont_pop_cont'  backdropClassName="backdrop">
                                                             <div className='popover_back_class_main_cont'>
                                                                  <div className='popover_back_class_main_cont_tit'>System Information</div>
                                                                       <div className='popover_info_class_data_main_cont'>
