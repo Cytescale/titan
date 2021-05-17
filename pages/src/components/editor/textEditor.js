@@ -257,6 +257,8 @@ export default class textEditor extends React.Component{
                {this._render_typepogra_menu(element)}
                </div>
                );
+          }else{
+               return(<div>Empty menu</div>)
           }
      }
 
