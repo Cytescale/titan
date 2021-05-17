@@ -1016,6 +1016,7 @@ flex: 1;
      overflow-y: scroll;
      position: relative;
      padding-bottom: 52px;
+     
      border-left: 1px solid var(--right_pane_border_color);  
      /* box-shadow: -5px 0px 10px rgb(0,0,0,0.2); */
      /* animation: menu_slide 0.2s ease-in; */
@@ -1057,6 +1058,7 @@ flex: 1;
    .ele_menu_bdy_main_cont{
      padding: 0;
      margin: 0;
+     margin-right: 7px;
    }
 
  

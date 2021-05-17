@@ -13,6 +13,7 @@ export default class elementComp {
      DELETED:boolean = false;
      ENABLED:boolean = true;
      INNER_DATA:any  = "Undefined";
+     TEXT_RAW_DATA:any = null;
      URL_DATA:string = "";
      NAME = null;
      _STYLE:(typeof STLYE_COMP)|any|null = null; 
@@ -21,6 +22,7 @@ export default class elementComp {
      image_data_url:string =  null;
      imageKitFileId:string = null;
      image_size:number=null;
+
 
      constructor(type_id:ELEMENT_TYPE|null,row_id:number|null,colm_id:number|null,base_id:number|null){
           this.TYPE_ID = type_id;
@@ -40,6 +42,7 @@ export default class elementComp {
                padding_top:20,
                padding_bottom:20,
                padding:0,
+               line_height:10,
                border_radius:0,
                border_width:2,
                bordered:false,

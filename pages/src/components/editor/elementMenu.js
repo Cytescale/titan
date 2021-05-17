@@ -4,17 +4,19 @@ import { Resizable } from "re-resizable";
 import {ChromePicker} from 'react-color'
 import FONT_FAMILY_NAMES from '../../../../util/fontFamily';
 import ImageUploading from 'react-images-uploading';
+import {Editor, EditorState,RichUtils} from 'draft-js';
+import TextEditor from './textEditor';
 
 var _SLIDER_EDIT_BOOl = false;
 var _SLIDER_SELECT_BOOl = false;
 
 
 export default class elementMenu extends React.Component{
+     
      constructor(props){
           super(props);
           this.state={
                _edit_menu_width:270,
-
           }
           this._render_element_menu = this._render_element_menu.bind(this);
      }
@@ -29,12 +31,7 @@ export default class elementMenu extends React.Component{
           saveIndi  
      */
 
-
-       
-
-         
-
-          _add_notification(txt,type,dura){
+           _add_notification(txt,type,dura){
                this.props.addNotification(txt,type,dura);
           }
           _get_element_by_index(i,j){
@@ -541,6 +538,10 @@ export default class elementMenu extends React.Component{
                               <div>
                               <div className='ele_menu_bdy_main_cont'>
                                    <div className='ele_pop_bdy_txt'>Value</div>
+                                        
+                                        <TextEditor element={element} updateEditor={this.props.updateEditor}></TextEditor>
+
+                                        {/*                                      
                                         <textarea  
                                              wrap="hard"
                                         placeholder='Text Value' 
@@ -550,7 +551,7 @@ export default class elementMenu extends React.Component{
                                              element.INNER_DATA  = e.target.value;
                                               this.props.updateEditor();
                                         }} />
-                                 
+                                  */}
                                    </div>
                                    <Accordion className='ele_men_acrd_main_cont'>
                                         <Accordion.Toggle  eventKey="0" className='_ele_acrd_header_main'>

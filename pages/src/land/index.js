@@ -1420,6 +1420,7 @@ export default class LandAct extends React.Component{
           >
                {this._render_aprop_theme()}
                <title>{process.env.APP_NAME}</title>
+               <head><meta charset="utf-8" /></head>
                {this._element_add_modal()}
                <div className='land_act_head_main_cont'>
                     
@@ -1479,10 +1480,11 @@ export default class LandAct extends React.Component{
                          </Dropdown>
                               
                          <div className='land_act_head_main_left_butt_cont'>
-                                        <button className='theme_drop_togg_butt head_butt_blue' onClick={this._website_component_save}> 
-                                             Save
-                                             <svg  className='theme_drop_togg_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.59 3.59c-.38-.38-.89-.59-1.42-.59H5c-1.11 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7.83c0-.53-.21-1.04-.59-1.41l-2.82-2.83zM12 19c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm1-10H7c-1.1 0-2-.9-2-2s.9-2 2-2h6c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
-                                        </button>
+                         <button className='theme_drop_togg_butt head_butt_white' onClick={()=>{this._set_elem_mod(true)}}>
+                                             Add Element
+                                             <svg className='theme_drop_togg_butt_ico' viewBox='0 0 512 512'><title>Add</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 112v288M400 256H112'/></svg>
+                                   </button>
+                                        
                          </div>
                          <div className='land_act_head_main_left_butt_cont'>
                                                     {this._render_background_menu()}
@@ -1539,10 +1541,10 @@ export default class LandAct extends React.Component{
                               {this._render_theme_selec_button()}
                               </div>
                               <div className='land_act_head_rght_feed_butt_cont'>
-                              <button className='theme_drop_togg_butt head_butt_white' onClick={()=>{this._set_elem_mod(true)}}>
-                                             Add
-                                             <svg className='theme_drop_togg_butt_ico' viewBox='0 0 512 512'><title>Add</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 112v288M400 256H112'/></svg>
-                                   </button>
+                              <button className='theme_drop_togg_butt head_butt_blue' onClick={this._website_component_save}> 
+                                             Save
+                                             <svg  className='theme_drop_togg_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.59 3.59c-.38-.38-.89-.59-1.42-.59H5c-1.11 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7.83c0-.53-.21-1.04-.59-1.41l-2.82-2.83zM12 19c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm1-10H7c-1.1 0-2-.9-2-2s.9-2 2-2h6c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
+                                        </button>
                               </div>
 
                               {/* <div className='land_act_head_rght_feed_butt_cont'>

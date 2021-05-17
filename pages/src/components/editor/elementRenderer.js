@@ -2,6 +2,7 @@ import React from "react";
 import { Resizable } from "re-resizable";
 import Embed from 'react-embed';
 var tslib_1 = require("tslib");
+import draftToHtml from 'draftjs-to-html';
 
 
 
@@ -90,6 +91,7 @@ export default class elementRenderer extends React.Component{
                                                             overflow:'hidden',
                                                             width:'100%',
                                                             height:'100%',
+                                                            lineHeight:element.STYLE.line_height+'px',
                                                             textAlign:element.STYLE.text_align,
                                                             borderStyle:element.STYLE.bordered===true?'solid':'none',
                                                             borderWidth:element.STYLE.border_width,
@@ -154,16 +156,23 @@ export default class elementRenderer extends React.Component{
      }
 
      _text_inner_data(element){
+          const rawContentState = element.TEXT_RAW_DATA;
+          let markup = null;
+          if(rawContentState){
+               markup = draftToHtml(rawContentState);
+          }
           return(
-               <div className='_page_element_inner_data_main_cont'>
-                    {element.INNER_DATA}
+               <div className='_page_element_inner_data_main_cont' >
+                    {markup?<div style={{
+                    lineHeight:parseInt(element.STYLE.line_height)+"px",
+               }} dangerouslySetInnerHTML={{ __html:markup}} />:<div>Empty</div>}
                </div>
           )
      }
 
      _link_inner_data(element){
           return(
-               <div className='_page_element_inner_data_main_cont'>
+               <div className='_page_element_inner_data_main_cont' >
                      <a href={element.URL_DATA!==null?element.URL_DATA:'#'}>
                          {element.INNER_DATA}
                     </a>
