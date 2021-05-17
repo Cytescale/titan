@@ -241,6 +241,7 @@ export default class textEditor extends React.Component{
 
      render(){
           let element = this.props.element;
+          if(element){
           return(
                <div>
                <div className='ele_menu_bdy_edtor_main_cont'>
@@ -256,6 +257,7 @@ export default class textEditor extends React.Component{
                {this._render_typepogra_menu(element)}
                </div>
                );
+          }
      }
 
 }
