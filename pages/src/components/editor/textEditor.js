@@ -10,8 +10,10 @@ export default class textEditor extends React.Component{
      
      constructor(props){
           super(props);
+          if(this.props.element){
           if(this.props.element.TEXT_RAW_DATA){this._contentState = convertFromRaw(this.props.element.TEXT_RAW_DATA);
           }else{this._contentState = ContentState.createFromText('empty');}
+          }
 
           this.state={
                editorState: EditorState.createWithContent(this._contentState),
@@ -227,7 +229,6 @@ export default class textEditor extends React.Component{
 
      handleKeyCommand(command, editorState) {
           const newState = RichUtils.handleKeyCommand(editorState, command);
-      
           if (newState) {
             this.onChange(newState);
             return 'handled';
