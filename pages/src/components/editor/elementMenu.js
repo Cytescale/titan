@@ -1710,7 +1710,7 @@ export default class elementMenu extends React.Component{
                               <div className='land_act_rgt_bottom_outer_main_cont'>
                               <div className='land_act_sav_indi_main_cont'>
                                    <div className='land_act_sav_indi_cont'>
-                                            {this.props.saveIndi()}
+                                            {this.props.saveIndi?this.props.saveIndi():undefined}
                                    </div>    
                               </div>
                               <div className='land_act_sav_width_main_cont'>
