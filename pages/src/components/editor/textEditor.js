@@ -202,7 +202,7 @@ export default class textEditor extends React.Component{
                                                        onChange={(e)=>{
                                                             
                                                             this.props.updateEditor();
-                                                       }}
+                                                       }}   
                                                        ></input>
                                                        </div>
                           </div>
@@ -222,12 +222,7 @@ export default class textEditor extends React.Component{
      }
 
      componentDidUpdate(){
-          if(this.props.element.TEXT_RAW_DATA){
-               this._contentState = convertFromRaw(this.props.element.TEXT_RAW_DATA);
-          }else{
-               this._contentState = ContentState.createFromText('empty');
-          }
-          
+     
      }
 
      handleKeyCommand(command, editorState) {
