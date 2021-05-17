@@ -884,7 +884,7 @@ background-color: var(--right_pane_opt_butt_back_color);
      border: 2px solid #0E98FF;
    }
    .element_color_pick_popover{
-        margin-right: 32px;
+        margin: 16px;
           
    }
    .element_color_pick_popover > .arrow{

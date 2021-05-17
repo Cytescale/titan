@@ -315,7 +315,7 @@ backdrop-filter: blur(7px);
 
 .land_act_creat_main_cont{
      width: 100%;
-     margin-left: 60px;
+     margin-left: 0px;
      box-shadow: 0px 0px 12px 5px rgba(0,0,0,0.05);
      overflow: hidden;
      left: 0;
@@ -425,7 +425,7 @@ backdrop-filter: blur(7px);
      height: 100%;
      padding-top: 52px;     
      position: fixed;
-     display: flex;
+     display: none;
      background-color: var(--left_pane_back_color);
 
      box-shadow: 5px 0px 10px rgb(0,0,0,0.2);
@@ -444,10 +444,15 @@ backdrop-filter: blur(7px);
      width: 60px;
      height: 60px;
      display: flex;
-
      justify-content: center;
      align-items: center;
      }
+.head_round_top_butt{
+     width: 32px;
+     height: 32px;
+     border-radius: 6px;
+}
+
      .land_act_main_bdy_left_add_butt{
           background-color: #66D655;
           border-style: none;
@@ -490,7 +495,12 @@ backdrop-filter: blur(7px);
      .land_left_bdy_butt_main_cont{
           position: relative;
           margin-top: 0px;
-        }
+          
+     }
+     .head_round_butt_cont{
+          
+          
+     }
         .land_left_bdy_butt_main_tit_cont{
              position: absolute;
              width: max-content;
@@ -1006,8 +1016,8 @@ flex: 1;
      overflow-y: scroll;
      position: relative;
      padding-bottom: 52px;
-     /* border-left: 1px solid var(--right_pane_border_color);   */
-     box-shadow: -5px 0px 10px rgb(0,0,0,0.2);
+     border-left: 1px solid var(--right_pane_border_color);  
+     /* box-shadow: -5px 0px 10px rgb(0,0,0,0.2); */
      /* animation: menu_slide 0.2s ease-in; */
 }
 .land_act_main_bdy_right_sub_resizer{
@@ -1099,22 +1109,23 @@ flex: 1;
         width: 250px;
         height: 100vh;
         position: fixed;
-        margin-left: 60px;
+        margin-left: 0px;
         margin-top: 56px;
         background-color: var(--layer_menu_back_color);
         /* border-right: 1px solid #e0e0e0;
         border-left: 1px solid #e0e0e0; */
-        z-index: 20;
+        z-index: 300;
         animation: layer_menu_slide 0.2s ease-in;
    }
    .element_layer_menu_head_main_cont{
           color: var(--layer_menu_head_text_color);
           height: 56px;
           display: flex;
+          font-family: quicksand;
           align-items: center;
           padding-left: 16px;
           font-size: 14px;
-          font-weight: 400;
+          font-weight: 800;
           
    }
 
@@ -1133,11 +1144,13 @@ flex: 1;
 }
 
 .element_layer_menu_close_butt{
-     width: 28px;
-     height: 28px;
-
+     width: 22px;
+     height: 22px;
      border-radius: 100px;
-     padding: 4px;
+     padding: 1px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
      background-color: var(--layer_menu_close_back_color);
      border-style: none;
      color: var(--layer_menu_close_ico_color);
@@ -1213,9 +1226,8 @@ background: rgba(14, 152, 255, 0.13);
      justify-content: center;
      align-items: center;
      font-size: 18px;
-     font-family: quicksand;
      font-weight: 600;
-     color: var(--pop_head_txt_color);
+     color: var(--right_pane_head_text_color);
      border-bottom: 1px solid var(--right_pane_border_color);
 }
 
@@ -1289,7 +1301,7 @@ background: rgba(14, 152, 255, 0.13);
 .land_act_head_cent_main_cont_wb_name_cont{
      color: var(--body_head_logo_name_color);
      font-family: quicksand;
-     font-size: 18px;
+     font-size: 15px;
      font-weight: 800;
 }
 
@@ -1471,7 +1483,24 @@ border-style: none;
      margin-right: 12px;
      border-left: 1px solid var(--right_pane_border_color);
 }
-
+.land_act_sav_str_main_cont{
+     display: flex;
+     align-items: center;
+     height: 22px;
+     font-size: 13px;
+     font-weight: 600;
+     width: fit-content;
+     padding-left: 16px;
+     padding-right: 16px;
+     border-left: 1px solid var(--right_pane_border_color);   
+     color: var(--pop_head_txt_color);
+}
+.land_act_sav_str_main_cont_ico{
+     width: 18px;
+     height: 18px;
+     margin-left: 8px;
+     color: var(--pop_head_txt_color);
+}
 .land_act_sav_indi_main_cont{
      display: flex;
      align-items: center;
@@ -1493,4 +1522,46 @@ border-style: none;
      padding-left: 16px;
      padding-right: 16px;
      font-weight: 600;
+}
+
+.land_act_head_main_left_butt_cont{
+     padding: 0px;
+     padding-right: 6px;
+     margin-right: 6px;
+     border-right: 1px solid var(--body_head_bord_color);
+     display: flex;
+     justify-content: center;
+}
+.theme_drop_togg_butt{
+     background-color: var(--body_head_butt_back_color);
+     font-size: 12px;
+     width: auto;
+     padding: 6px;
+     padding-left: 8px;
+     border-radius: 5px;
+     padding-right: 8px;
+     font-family: quicksand;
+     font-weight: 800;
+     border:1px solid var(--body_head_butt_back_color);
+     outline: none;
+     color: var(--body_head_butt_back_txt_color);
+     vertical-align: middle;
+}
+.theme_drop_togg_butt_ico{
+     width: 16px;
+     height: 16px;
+     margin-left: 5px;
+     margin-top: -2px;
+}
+.head_butt_green{
+     background-color: #8FDE82;
+     color: #000;
+}
+.head_butt_blue{
+     background-color: #0E98FF;
+     color: #fff;
+}
+.head_butt_white{
+     background-color: #fff;
+     color: #000;
 }

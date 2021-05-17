@@ -110,7 +110,10 @@ export default class FeedbackComp extends React.Component{
           return(
                <div className='feed_back_main_cont'>
                <OverlayTrigger trigger="click" rootClose={true} target={this} placement="bottom" overlay={this.feedBackPop()}>
-               <Button variant={'outline-light'}  className='feed_back_main_butt'>Feedback</Button>
+               <Button variant={'primary'}  className='theme_drop_togg_butt'>
+                    Feedback
+                    <svg className='theme_drop_togg_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 2H4.01c-1.1 0-2 .9-2 2v18L6 18h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-5c0 .55-.45 1-1 1s-1-.45-1-1V7c0-.55.45-1 1-1s1 .45 1 1v2z"/></svg>
+                    </Button>
                </OverlayTrigger>     
                </div>
           )

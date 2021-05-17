@@ -20,6 +20,7 @@ body {
   --body_head_bord_color:#323232;
   --body_head_int_fld_color:#fff;
   --body_head_logo_name_color:#fff;
+  --body_head_butt_back_color:#454545;
 
   --body_brow_back_color:#0E98FF;
   --body_brow_ard_bar_back_color:#0E98FF;
@@ -39,7 +40,7 @@ body {
   --right_pane_butt_ico_color: #fff;
   --right_pane_down_arrow_color:#828282;
   --right_pane_butt_back_color-hover: #212121;
-  --right_pane_border_color: #383838;
+  --right_pane_border_color: #343434;
   --right_pane_acord_back_color:#262626;
   --right_pane_opt_butt_back_color:#424242;
   --right_pane_opt_butt_back_color_hover:#626262;
@@ -117,15 +118,14 @@ a {
 }
 
 .loader_cont_prog_cont{
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  min-width: 300px;
   height: 8px;
+  margin-top: 12px;
 }
 
 .loader_cont_prog{
   height: 100%;
+  border-radius: 320px;
 }
 
 .loader_cont{

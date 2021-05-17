@@ -18,7 +18,7 @@ import websiteComp  from '../../../component/websiteComp';
 import sectionComp from  '../../../component/sectionComp';
 import elementComp from '../../../component/elementComp';
 import ElementMenu from '../components/editor/elementMenu';
-
+import {GlobalStylesLight,GlobalStylesDark} from '../../../util/themes/editor_themes';
 
 const BrowserFS = require('browserfs')
 
@@ -84,7 +84,7 @@ const ELEMENT_OVERLAY_MENU_ID = "element-overlay-menu";
 const ELEMENT_OVERLAY_BASE_ID = "element-base-menu";
 const firebaseHelp = new firebaseHelper();
 
-
+let EDITOR_THEME = 'DARK';
 
 export default class LandAct extends React.Component{
      TEMP_WEBSITE_DATA = null;     
@@ -92,7 +92,7 @@ export default class LandAct extends React.Component{
      constructor(props){
           super(props);            
           this.state={
-               loading:false,
+               loading:true,
                loading_prog:0,
                template_loading:false,
                _issaving:false,
@@ -882,9 +882,9 @@ export default class LandAct extends React.Component{
                                    <div className='template_selection_head_main_cont'>
                                         Select Template
                                    </div>
-                                   <div className='template_selection_head_main_srch_cont'>
+                                   {/* <div className='template_selection_head_main_srch_cont'>
                                         <input type='text' className='template_selection_head_main_srch_fld' placeholder='Search'></input>
-                                   </div>
+                                   </div> */}
                                    <div className='template_selection_selec_main_cont'>
                                    <div className='template_selection_selec_main_cont_row_main_cont'>
                                                   <div className='template_selection_selec_main_cont_row_tit'>Your Page</div>
@@ -1027,8 +1027,8 @@ export default class LandAct extends React.Component{
 
      _render_background_menu(){
           return(
-               <div className='land_left_bdy_butt_main_cont'>
-               <OverlayTrigger trigger="click" placement="right" className='land_left_bdy_butt_main_cont_over' overlay={ 
+               <div className='land_left_bdy_butt_main_cont head_round_butt_cont'>
+               <OverlayTrigger trigger="click" placement="bottom" className='land_left_bdy_butt_main_cont_over' overlay={ 
                     <Popover id="popover-basic"  className='popover_back_class' bsPrefix='left_cont_pop_cont' backdropClassName="backdrop">
                     <div className='popover_back_class_main_cont'>
                          <div className='popover_back_class_main_cont_tit'>Page Tunner</div>
@@ -1083,7 +1083,7 @@ export default class LandAct extends React.Component{
          
      </div>
      </Popover>} rootClose={false}>
-          <button className='land_act_back_cust_butt'>
+          <button className='land_act_back_cust_butt head_round_top_butt'>
            <svg className='land_act_back_cust_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18c0 .55.45 1 1 1h5v-2H4c-.55 0-1 .45-1 1zM3 6c0 .55.45 1 1 1h9V5H4c-.55 0-1 .45-1 1zm10 14v-1h7c.55 0 1-.45 1-1s-.45-1-1-1h-7v-1c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1zM7 10v1H4c-.55 0-1 .45-1 1s.45 1 1 1h3v1c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1s-1 .45-1 1zm14 2c0-.55-.45-1-1-1h-9v2h9c.55 0 1-.45 1-1zm-5-3c.55 0 1-.45 1-1V7h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V4c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1z"/></svg>
           </button>
      </OverlayTrigger>
@@ -1095,6 +1095,39 @@ export default class LandAct extends React.Component{
           )
      }
 
+     _render_theme_selec_button(){
+          return(
+              <>  
+               <Dropdown as={ButtonGroup}>
+               <Dropdown.Toggle className="theme_drop_togg_butt">
+                    {EDITOR_THEME.toLowerCase()}    
+                    <svg className='theme_drop_togg_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 5.83L15.17 9l1.41-1.41L12 3 7.41 7.59 8.83 9 12 5.83zm0 12.34L8.83 15l-1.41 1.41L12 21l4.59-4.59L15.17 15 12 18.17z"/></svg>
+               </Dropdown.Toggle>
+               <Dropdown.Menu className="super-colors">
+                    <Dropdown.Item eventKey="1" as='button' onClick={()=>{EDITOR_THEME = 'DARK'; this.forceUpdate()}}>Dark</Dropdown.Item>
+                    <Dropdown.Item eventKey="2" onClick={()=>{EDITOR_THEME = 'LIGHT'; this.forceUpdate()}}>Light</Dropdown.Item>
+               </Dropdown.Menu>
+               </Dropdown>{' '}
+              </>
+          )
+     }
+
+     _render_aprop_theme(){
+          switch(EDITOR_THEME){
+               case 'DARK':{
+                    return(<GlobalStylesDark/>)
+                    break;
+               }
+               case 'LIGHT':{
+                    return(<GlobalStylesLight/>)
+                    break;
+               }
+               default:{
+                    return(<GlobalStylesDark/>)
+                    break;
+               }
+          }
+     }
 
      /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
@@ -1385,7 +1418,7 @@ export default class LandAct extends React.Component{
                }
           }}
           >
-              
+               {this._render_aprop_theme()}
                <title>{process.env.APP_NAME}</title>
                {this._element_add_modal()}
                <div className='land_act_head_main_cont'>
@@ -1444,10 +1477,50 @@ export default class LandAct extends React.Component{
                               <Dropdown.Item as="button" className='land_act_head_tit_cont_logo_menu_butt'>Help</Dropdown.Item>
                               </Dropdown.Menu>
                          </Dropdown>
-                
-
-                                
-                
+                              
+                         <div className='land_act_head_main_left_butt_cont'>
+                                        <button className='theme_drop_togg_butt head_butt_blue' onClick={this._website_component_save}> 
+                                             Save
+                                             <svg  className='theme_drop_togg_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.59 3.59c-.38-.38-.89-.59-1.42-.59H5c-1.11 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7.83c0-.53-.21-1.04-.59-1.41l-2.82-2.83zM12 19c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm1-10H7c-1.1 0-2-.9-2-2s.9-2 2-2h6c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
+                                        </button>
+                         </div>
+                         <div className='land_act_head_main_left_butt_cont'>
+                                                    {this._render_background_menu()}
+                         </div>
+                         <div className='land_act_head_main_left_butt_cont'>
+                                                             <button className='land_act_back_cust_butt head_round_top_butt' onClick={()=>{
+                                                                 this._set_layer_menu_visi(!this.state._show_layer_menu);
+                                                            }}>
+                                                                 <svg className='land_act_back_cust_butt_ico' height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.6 18.06c-.36.28-.87.28-1.23 0l-6.15-4.78c-.36-.28-.86-.28-1.22 0-.51.4-.51 1.17 0 1.57l6.76 5.26c.72.56 1.73.56 2.46 0l6.76-5.26c.51-.4.51-1.17 0-1.57l-.01-.01c-.36-.28-.86-.28-1.22 0l-6.15 4.79zm.63-3.02l6.76-5.26c.51-.4.51-1.18 0-1.58l-6.76-5.26c-.72-.56-1.73-.56-2.46 0L4.01 8.21c-.51.4-.51 1.18 0 1.58l6.76 5.26c.72.56 1.74.56 2.46-.01z"/></svg>
+                                                                 
+                                                            </button>
+                         </div>
+                                        <div className='land_act_head_main_left_butt_cont'>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={ 
+                                                                           <Popover id="popover-basic"  className='popover_back_class' bsPrefix='left_cont_pop_cont'  backdropClassName="backdrop">
+                                                                           <div className='popover_back_class_main_cont'>
+                                                                                <div className='popover_back_class_main_cont_tit'>System Information</div>
+                                                                                     <div className='popover_info_class_data_main_cont'>
+                                                                                               <div className='popover_info_class_data_tit'>Build Version</div>
+                                                                                               <div className='popover_info_class_data_data'>{process.env.DEV_VERSION}</div>
+                                                                                     </div>
+                                                                                     <div className='popover_info_class_data_main_cont'>
+                                                                                               <div className='popover_info_class_data_tit'>Build Variant</div>
+                                                                                               <div className='popover_info_class_data_data'>{process.env.DEV_VARIANT}</div>
+                                                                                     </div>
+                                                                                     <div className='popover_info_class_data_main_cont'>
+                                                                                               <div className='popover_info_class_data_tit'>System Status</div>
+                                                                                               <div className='popover_info_class_data_data'>
+                                                                                               <div className={process.env.DEV_SYSTEM_STATUS===true?'login_act_foot_sys_indi':'login_act_foot_sys_indi_non'}></div>    
+                                                                                               </div>
+                                                                                     </div>
+                                                                           </div>
+                                                                           </Popover>} rootClose={true}>
+                                                                                     <button className='land_act_back_cust_butt head_round_top_butt'>
+                                                                                     <svg className='land_act_back_cust_butt_ico' viewBox='0 0 512 512'><title>Information Circle</title><path d='M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M220 220h32v116'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32' d='M208 340h88'/><path d='M248 130a26 26 0 1026 26 26 26 0 00-26-26z'  fill='currentColor'/></svg>
+                                                                                     </button>
+                                                                 </OverlayTrigger>
+                                        </div>
                     
                     </div>  
 
@@ -1463,6 +1536,16 @@ export default class LandAct extends React.Component{
                                   <FeedbackComp/> 
                               </div>
                               <div className='land_act_head_rght_feed_butt_cont'>
+                              {this._render_theme_selec_button()}
+                              </div>
+                              <div className='land_act_head_rght_feed_butt_cont'>
+                              <button className='theme_drop_togg_butt head_butt_white' onClick={()=>{this._set_elem_mod(true)}}>
+                                             Add
+                                             <svg className='theme_drop_togg_butt_ico' viewBox='0 0 512 512'><title>Add</title><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M256 112v288M400 256H112'/></svg>
+                                   </button>
+                              </div>
+
+                              {/* <div className='land_act_head_rght_feed_butt_cont'>
                               <Dropdown>
                               <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                    <img src='http://simpleicon.com/wp-content/uploads/account.png' className='land_act_head_rght_acc_img'></img>                                   
@@ -1473,7 +1556,7 @@ export default class LandAct extends React.Component{
                               <Dropdown.Item as="button" onClick={firebaseHelp._firebaseGoogleSignOutInit}>Sign Out</Dropdown.Item>
                               </Dropdown.Menu>
                               </Dropdown>
-                              </div>
+                              </div> */}
                     </div>
                </div>     
                
@@ -1492,7 +1575,7 @@ export default class LandAct extends React.Component{
                                                        </button>
                                                   </div>
                                                                           
-                                                                 {this._render_background_menu()};
+                                                                 {/* {this._render_background_menu()}; */}
                                                        <div className='land_left_bdy_butt_main_cont'>
                                                             <div className='land_left_bdy_butt_main_tit_cont'>
                                                                       <div className='land_left_bdy_butt_main_tit_cont_arrow'></div>
