@@ -13,6 +13,8 @@ export default class textEditor extends React.Component{
           if(this.props.element){
           if(this.props.element.TEXT_RAW_DATA){this._contentState = convertFromRaw(this.props.element.TEXT_RAW_DATA);
           }else{this._contentState = ContentState.createFromText('empty');}
+          }else{
+               this._contentState = ContentState.createFromText('empty');
           }
 
           this.state={
