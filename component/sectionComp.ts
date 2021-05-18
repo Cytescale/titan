@@ -10,8 +10,14 @@ export default class selectionComp {
      STYLE:typeof STLYE_COMP =STLYE_COMP ;
      ENABLED:boolean = true;
       DELETED:boolean = false;
+     SECTION_STLYE:any|null = null; 
+
      constructor(base_id:number){
                this.BASE_ID = base_id;
+               this.SECTION_STLYE = {
+                    section_height:'300',
+                    section_width:'100',                    
+               }
      }
 
      

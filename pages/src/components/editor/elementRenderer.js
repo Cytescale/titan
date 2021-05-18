@@ -244,7 +244,9 @@ export default class elementRenderer extends React.Component{
                RENDER_EDITOR_ARRAY.push( 
                <div  className={this.props.currentSelectRowId===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}
                style={{
-                    pointerEvents:'none'
+                    pointerEvents:'none',
+                    height:this.props.websiteComp.getSectionArray()[i].SECTION_STLYE.section_height+'px',
+                         
                }}
                >
                     {

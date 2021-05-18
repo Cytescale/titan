@@ -987,8 +987,9 @@ export default class LandAct extends React.Component{
                               }
                          >                
                                    {this._render_component()}
-                                   {this._render_context_menu()}
+                                  
                          </div>
+                         {this._render_context_menu()}
                          </div>
                     </div>);
           }
@@ -1552,7 +1553,6 @@ export default class LandAct extends React.Component{
                               <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                    <img src='http://simpleicon.com/wp-content/uploads/account.png' className='land_act_head_rght_acc_img'></img>                                   
                               </Dropdown.Toggle>
-
                               <Dropdown.Menu>
                               <div className='land_act_head_nam_txt'>{this.state.dname}</div>
                               <Dropdown.Item as="button" onClick={firebaseHelp._firebaseGoogleSignOutInit}>Sign Out</Dropdown.Item>
@@ -1663,4 +1663,3 @@ export default class LandAct extends React.Component{
      );
 }
 }
-

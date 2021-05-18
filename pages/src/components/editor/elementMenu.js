@@ -1707,7 +1707,7 @@ export default class elementMenu extends React.Component{
           return(
                <div>
                     <div className='land_act_rgt_main_bdy_cont'>
-                    <div className='land_act_rgt_main_cont'>
+                    <div className='land_act_rgt_main_cont' >
                               <div className='land_act_rgt_bottom_outer_main_cont'>
                               {/* <div className='land_act_sav_str_main_cont'>
                                    Saved some seconds ago
