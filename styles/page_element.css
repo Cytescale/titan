@@ -39,6 +39,7 @@ pointer-events: all;
      flex-wrap: wrap;    
      pointer-events: none;
      width: 100%;
+     display: inline-flex;
      flex: 1;
      height: fit-content;
      overflow: hidden;
