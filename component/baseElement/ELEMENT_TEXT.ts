@@ -6,7 +6,7 @@ export default class ELEMENT_TEXT extends elementSkelton{
      constructor(){
           super('Text',2);
           this.setPropMenu(true,true,true,true,true,true)
-          this.getStyleComp().body.dimen.setDimen(
+          this.ELEMENT_STYLE.getCompStyle().body.dimen.setDimen(
                {
                x_type:0,
                y_type:0,

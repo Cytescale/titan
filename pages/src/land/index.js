@@ -373,7 +373,7 @@ export default class LandAct extends React.Component{
                          }
                     });
                     if(this.state._website_component===null){
-                         //this._set_temp_mod_show(true);
+                         this._set_temp_mod_show(true);
                     }
                }
           }
