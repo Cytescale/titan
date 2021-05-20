@@ -10,9 +10,9 @@ export default class Renderer extends React.Component{
           }
 
           _renderSectionStack(){
-               let sectionStackCode = this.props.websiteHelper.getWebsiteComp().getSectionStack().map((el,id)=>{
+               let sectionStackCode = this.props.websiteHelper?this.props.websiteHelper.getWebsiteComp().getSectionStack().map((el,id)=>{
                     return(el?<ELEMENT_SECTION_RENDER {...this.props} sectionData={el}/>:<div>Empt</div>)
-               });
+               }):null;
                return sectionStackCode; 
           }
           render(){
