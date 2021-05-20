@@ -58,6 +58,7 @@ export default class elementRenderer extends React.Component{
                                              style={{
                                                   position:'relative',
                                                   top:0,
+                                                  overflow:'hidden',
                                                   right:0,
                                                   height:'100%', 
                                                   opacity:element.ENABLED===true?1:0.5,
@@ -244,9 +245,7 @@ export default class elementRenderer extends React.Component{
                RENDER_EDITOR_ARRAY.push( 
                <div  className={this.props.currentSelectRowId===i?'element_row_main_cont element_row_main_sec':'element_row_main_cont element_row_main_nonsec'}
                style={{
-                    pointerEvents:'none',
-                    height:this.props.websiteComp.getSectionArray()[i].SECTION_STLYE.section_height+'px',
-                         
+                    pointerEvents:'none',     
                }}
                >
                     {

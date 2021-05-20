@@ -1,35 +1,40 @@
 import compDimen from "./compDimen";
 import compColor from "./compColor";
+import baseDimen from "./baseDimen";
 export default class compStyle {
      STYLE = null;
      constructor(){
           this.STYLE = {
                position:{
-                    type:'px',
-                    top:0,
-                    bottom:0,
-                    left:0,
-                    right:0,
-                    x_global:0,
-                    y_global:0,
-                    x_relative:0,
-                    y_relative:0,
+                    position:'relative',
+                    top:new baseDimen(),
+                    bottom:new baseDimen(),
+                    left:new baseDimen(),
+                    right:new baseDimen(),
+                    x_global:new baseDimen(),
+                    y_global:new baseDimen(),
+                    x_relative:new baseDimen(),
+                    y_relative:new baseDimen(),
+               },
+               stick:{
+                    top:false,
+                    left:false,
+                    right:false,
+                    bottom:false,
                },
                margin:{
-                    type:'px',
-                    margin:0,
-                    margin_top:0,
-                    margin_bottom:0,
-                    margin_left:0,
-                    margin_right:0,
+                    margin:new baseDimen(),
+                    margin_top:new baseDimen(),
+                    margin_bottom:new baseDimen(),
+                    margin_left:new baseDimen(),
+                    margin_right:new baseDimen(),
                },
                padding:{
-                    type:'px',
-                    padding:0,
-                    padding_right:0,
-                    padding_left:12,
-                    padding_top:20,
-                    padding_bottom:20,
+                    padding:new baseDimen(),
+                    padding_right:new baseDimen(),
+                    padding_left:new baseDimen(),
+                    padding_top:new baseDimen(),
+                    padding_bottom:new baseDimen(),
                },
                border:{
                     bordered:false,
@@ -54,20 +59,23 @@ export default class compStyle {
                     bold:false,
                     italic:false,
                     underline:false,
-                    text_align:'start',
+                    text_align:'left',
                     vertical_center:false,   
                },
                body:{
                     dimen:new compDimen(),
                     back_color:new compColor(),
+                    display:'block',
+                    overflow:'show',
+                    z_index:30,
                },    
                slider:'10',
           }
      }
      getCompStyle(){
-          return this.STYLE();
+          return this.STYLE;
      }
      setCompStyle(val){
-          val?this.STYLE=val:null;
+          val?this.STYLE=Object.assign({},this.STYLE,val):null;
      }
 }

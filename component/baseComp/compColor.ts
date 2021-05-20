@@ -2,7 +2,7 @@ export default class compColor {
      COLOR = null;
      constructor(){
           this.COLOR = {
-               colorStr:'rgb(0,0,0)',
+               colorStr:'#fff',
                alpha:1,
           }
      }

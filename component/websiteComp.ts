@@ -3,8 +3,6 @@ import elementComp from './elementComp';
 import backgrounClass from './website_background';
 import type{ELEMENT_TYPE} from './elementTypeId';
 
-
-
 export default class websiteComp {
      NAME:string = "Website"
      TEMPLATE_ID:number = null;
@@ -19,10 +17,17 @@ export default class websiteComp {
      WEBSITE_VALIDITY_ID:number = 1001;
      BACKGROUND_DATA:any  = new backgrounClass(); 
      DISPLAY_SCALE:number = 100; 
-     constructor(){
 
+
+     SECTION_ARR:Array<any> = [];
+
+     editorCompHelp = null;
+
+     constructor(){
+          
      }
-     addElement(element_type_id:ELEMENT_TYPE|null,row_id:number|null,colm_id:number|null,insert_direction:number|null,callback:Function|null):boolean{
+
+     addElement(element_type_id:ELEMENT_TYPE|null,row_id:number|null,colm_id:number|null,insert_direction:number|null,callback:Function|null):boolean{     
           if(row_id==null){
                let sc:sectionComp = new sectionComp(this.SECTION_ARRAY.length)
                sc.getElementArray().push(new elementComp(element_type_id,this.getSectionArray().length,0,0));
@@ -33,7 +38,8 @@ export default class websiteComp {
                     case 0:{
                          let sc:sectionComp = new sectionComp(this.getSectionArray().length)
                          sc.getElementArray().push(new elementComp(element_type_id,row_id,this.getSectionArray()[row_id].getElementArray().length,0));
-                         this.getSectionArray().splice((row_id),0,sc);
+                         this.getSectionArray().splice((row_id),0,sc);     
+                         
                          break;
                     }
                     case 1:{

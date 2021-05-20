@@ -331,6 +331,20 @@ backdrop-filter: blur(7px);
      position: relative;
      
 }
+/* 
+.land_act_creat_main_cont{
+     width: 100%;
+     margin-left: 0px;
+     box-shadow: 0px 0px 12px 5px rgba(0,0,0,0.05);
+     overflow: hidden;
+     left: 0;
+     margin-top: 55px;
+     min-height: calc(100vh - 56px);
+     animation: appr_back 0.6s ease;
+     z-index: 0;     
+     position: relative;
+     
+} */
 
 .land_act_creat_main_cont_mobile_main_cont{
      width: 100%;
@@ -390,10 +404,13 @@ backdrop-filter: blur(7px);
 }
 .land_act_creat_sub_cont{
      width: 900px;
-     
      opacity: 1;
-     /* box-shadow: 0px 7px 10px #e0e0e0; */
 }
+/* .land_act_creat_sub_cont{
+     width: 100%;
+     opacity: 1;
+     
+} */
 .land_act_creat_sub_cont_mobile{
      width: 100%;
      opacity: 1;

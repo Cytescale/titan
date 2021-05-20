@@ -4,6 +4,7 @@ import 'react-contexify/dist/ReactContexify.css';
 import '../styles/noti.css';
 import '../styles/globals.css'
 import '../styles/login.css';
+import '../styles/websiteComp/section.css';
 import '../styles/land.css';
 import '../styles/page_element.css';
 

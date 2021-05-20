@@ -86,6 +86,12 @@ const firebaseHelp = new firebaseHelper();
 
 let EDITOR_THEME = 'DARK';
 
+
+import editorCompHelper from '../../../component/helpers/editorCompHelper';
+import Renderer from '../components/editor/renderer';
+
+
+
 export default class LandAct extends React.Component{
      TEMP_WEBSITE_DATA = null;     
      SAVE_STATE = false;
@@ -110,6 +116,7 @@ export default class LandAct extends React.Component{
                _desktop_viewing_mode: true,
                _adder_type:0,
                _website_component : null,
+               editorHelperComp:new editorCompHelper(),
           }
           this.fileUpload = React.createRef();
 
@@ -143,6 +150,7 @@ export default class LandAct extends React.Component{
           this._set_issaving_bool = this._set_issaving_bool.bind(this);
           this._set_issave_bool = this._set_issave_bool.bind(this);
           this._render_save_indi = this._render_save_indi.bind(this);
+          this.stateUpdateHandler =this.stateUpdateHandler.bind(this);
           this.noti_pool = [];     
      }
      /*////////////////////////////////////STATES SETTERS SECTION ///////////////////////////////////////////////////*/
@@ -365,7 +373,7 @@ export default class LandAct extends React.Component{
                          }
                     });
                     if(this.state._website_component===null){
-                         this._set_temp_mod_show(true);
+                         //this._set_temp_mod_show(true);
                     }
                }
           }
@@ -692,6 +700,12 @@ export default class LandAct extends React.Component{
                return(<div>Empty Outer render</div>)
           }
      }
+     // _render_component(){
+     //      return(this.state.editorHelperComp? <Renderer
+     //      websiteHelper={this.state.editorHelperComp}
+     //      updateHandler={this.stateUpdateHandler}
+     //      />:<div>Empty Outer render</div>)
+     // }
      _render_context_menu(){
           return (
                <div>
@@ -946,13 +960,8 @@ export default class LandAct extends React.Component{
                          }
                     }></div>
                          <div className='land_act_creat_main_sub_cont'>
-                                        <div className='land_act_prv_add_bar_cont_outer'>
+                                        {/* <div className='land_act_prv_add_bar_cont_outer'>
                                              <div className='land_act_prv_add_bar_cont'>
-                                             {/* <div className='land_act_prv_add_bar_cir_cont'>
-                                             <div  className='land_act_prv_add_bar_cir '></div>
-                                             <div  className='land_act_prv_add_bar_cir '></div>
-                                             <div  className='land_act_prv_add_bar_cir '></div>
-                                             </div> */}
                                              <div className='land_act_prv_add_bar'>
                                                   <div className='land_act_prv_add_ico_cont'>
                                                   <svg className='land_act_prv_add_ico' viewBox='0 0 512 512'><title>Lock Closed</title><path d='M336 208v-95a80 80 0 00-160 0v95' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><rect x='96' y='208' width='320' height='272' rx='48' ry='48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>                                             
@@ -961,10 +970,6 @@ export default class LandAct extends React.Component{
                                                   {this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null}
                                                   </a>
                                              </div>
-                                             {/* <button className='land_act_prv_add_cpy_butt'>
-                                                  <svg className='land_act_prv_add_cpy' viewBox='0 0 512 512'><title>Create</title><path d='M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/><path d='M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z'/></svg>
-                                             </button> */}
-
                                              <button className='land_act_prv_add_cpy_butt'
                                              onClick={()=>{
                                                   this.copytoClip(this.state._website_component?process.env.NEXT_PUBLIC_HOST+'api/view?q='+this.state._website_component.VIEW_ID:null);
@@ -978,7 +983,7 @@ export default class LandAct extends React.Component{
                                              </button>
                                              </div>
                                              </div>    
-                                   </div>
+                                   </div> */}
                                 
                          <div className='land_act_creat_sub_cont'
                               style={{
@@ -1338,19 +1343,23 @@ export default class LandAct extends React.Component{
           this._set_loading_prog(20);
           this._init_land_user_check();   
           this._set_browserfs_configure();
-          window.addEventListener('beforeunload',(e)=>{
-               e.preventDefault();
-               if(this.SAVE_STATE===true){
-                    return;
-               }
-               else{
-                    e.returnValue  = '';
-               }
+          // window.addEventListener('beforeunload',(e)=>{
+          //      e.preventDefault();
+          //      if(this.SAVE_STATE===true){
+          //           return;
+          //      }
+          //      else{
+          //           e.returnValue  = '';
+          //      }
                
                
-          });
+          // });
      }
      elementMenuUpdate(){
+          this.forceUpdate();
+     }
+
+     stateUpdateHandler(){
           this.forceUpdate();
      }
      

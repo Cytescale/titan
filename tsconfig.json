@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/src/components/editor/index.js"  ],
+, "pages/src/components/editor/index.js", "pages/src/components/editor/renderer.js", "component/baseComp/baseDimen.js", "component/baseContainer/ELEMENT_WEBSITE.js", "component/baseContainer/ELEMENT_WEBSITE.js", "pages/src/components/editor/compRender/ELEMENT_SHELL_RENDER.js"  ],
   "exclude": [
     "node_modules"
   ]

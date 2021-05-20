@@ -2,7 +2,7 @@ export default class compDimen {
      VALUE = null;
      constructor(){
           this.VALUE = {
-               type:0,//0=px 1=percentage
+               type:0,// 0 = px 1 = precent
                val_px:0,
                val_per:0,
           }
@@ -11,6 +11,6 @@ export default class compDimen {
           return this.VALUE;
      }
      setDimen(val){
-          val?this.VALUE = val:null;
+          val?this.VALUE=Object.assign({},this.VALUE,val):null;
      }
 }
