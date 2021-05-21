@@ -10,6 +10,7 @@ export default class ELEMENT_SECTION {
      
      IDS:Partial<ID_TYPES>={
           STACK_ID:null,
+          BASE_ID:0,
           SECTION_ID: null, 
           PARENT_ID : null,
      }
@@ -38,16 +39,23 @@ export default class ELEMENT_SECTION {
      ELEMENT_CLASSNAME:string = null;
      ELEMENT_NAME:string = "Section";
      ELEMENT_LAYER_COUNT:number = 1;
-     CHILD_ELEMENTS:Array<ELEMENT_CONTAINER|ELEMENT_TEXT|ELEMENT_IMAGE> = []
+     CHILD_ELEMENTS:Array<ELEMENT_CONTAINER|ELEMENT_TEXT|ELEMENT_IMAGE|null> = []
      constructor(STACK_ID:number){
           this.ELEMENT_STYLE = new compStyle();       
           this.ELEMENT_STYLE.STYLE.body.dimen.setDimen(
                {x_type:2,
-               y_type:0,
-               y:400,
+               y_type:2,
+               yvp:90,
                xvp:100,
           });
+
+          
+
           STACK_ID?this.IDS.STACK_ID=STACK_ID:null;
+     }
+
+     getChildElements():Array<ELEMENT_CONTAINER|ELEMENT_TEXT|ELEMENT_IMAGE|null>{
+          return this.CHILD_ELEMENTS;
      }
 
      getStyleComp():compStyle{

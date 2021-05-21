@@ -1,3 +1,8 @@
+@keyframes fadeIn {
+     0% {opacity: 0;}
+     100% {opacity: 1;}
+  } 
+  
 .ele_shell_rez_lines_cont{
      width: 100%;
      height: 100%;
@@ -6,8 +11,9 @@
      right: 0;
      bottom: 0;
      left: 0;
+     overflow: visible;
      pointer-events: none;
-     z-index: 90;
+
 }
 .ele_shell_move_cont{
       position: absolute;
@@ -21,7 +27,6 @@
      border-style: none;
      outline: none;
      margin: 0;
-     border-radius: 4px;
      background-color: rgba(0, 0, 0, 0);
 }
 .ele_shell_rez_lines:hover{
@@ -30,7 +35,7 @@
 }
 .res_line_bottom{
      width: 100%;
-     height: 4px;
+     height: 3px;
      bottom: 0;
      left: 0;
      right: 0;
@@ -38,7 +43,7 @@
 }
 .res_line_top{
      width: 100%;
-     height: 4px;
+     height: 3px;
      top: 0;
      left: 0;
      right: 0;
@@ -47,14 +52,14 @@
 .res_line_right{
      right: 0;
      height: 100%;
-     width: 4px;
+     width: 3px;
      cursor: e-resize;
      
 }
 .res_line_left{
      left: 0;
      height: 100%;
-     width: 4px;
+     width: 3px;
      cursor: e-resize;
 }
 
@@ -67,6 +72,147 @@
 }
 .test_cont_move{
      display: flex;
+     overflow: show;
      align-items: center;
      justify-content: center;
+}
+.ele_shell_rez_box{
+     position:absolute;
+     pointer-events: none;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ overflow: visible;
+}
+.res_box_top{
+     left: 0;
+     right: 0;
+     top: 0;
+     width: 100%;
+     height: 0;
+     overflow: visible;
+}
+.res_box_bottom{
+     left: 0;
+     right: 0;
+     bottom: 0;
+     width: 100%;
+     height: 0;
+     overflow: visible;
+}
+.res_box_right{
+     right: 0;
+     bottom: 0;
+     top: 0;
+
+     width: 0;
+     height: 100%;
+     overflow: visible;
+}
+.res_box_left{
+     left: 0;
+     bottom: 0;
+     top: 0;
+     width: 0;
+     height: 100%;
+     overflow: visible;
+}
+.ele_shell_rez_box_cont{
+     width: 9px;
+     height: 9px;
+     border-radius: 2px;
+     background-color: #fff;
+     border:1px solid #0E98FF;
+     
+}
+.ele_shell_rez_lines:hover > .ele_shell_rez_box_cont{
+     box-shadow: 0px 0px 6px #0E98FF;
+}
+.ele_shell_margin_lines_main_cont{
+     animation-name:fadeIn;
+     animation-duration: 0.5s;
+     animation-fill-mode: forwards;
+     z-index: 99999;
+
+}
+.ele_shell_margin_lines_top_cont{
+     position: absolute;
+     height: 0px;
+     width: 0px;
+     border-style: none;
+     outline: none;
+     border-left: 1px dashed #0E98FF;
+
+}
+.ele_shell_margin_lines_left_cont{
+     position: absolute;
+     height: 0px;
+     width: 0px;
+     border-style: none;
+     outline: none;
+     border-top: 1px dashed #0E98FF;
+}
+.ele_shell_margin_lines_top_val_cont{
+     height: 100%;
+     width:auto;
+     left: 0;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding-left: 22px;
+     font-size: 11px;
+     color: #0E98FF;
+}
+.ele_shell_margin_lines_left_val_cont{
+     height: 100%;
+     width:auto;
+     left: 0;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding-top: 12px;
+     font-size: 11px;
+     color: #0E98FF;
+}
+.ele_shell_siz_indi_main_cont{
+     position: absolute;
+     border-radius: 6px;
+     background: rgba(14, 152, 255, 0.3);
+     width: auto;
+     color: #0E98FF;
+     font-size: 10px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding-left: 8px;
+     padding-right: 8px;
+     height: 26px;
+     animation-name:fadeIn;
+     animation-duration: 0.5s;
+     animation-fill-mode: forwards;
+}
+.ele_shell_siz_indi_main_cont-space{
+     width: 6px;
+}
+
+.ele_shell_attc_indi_cont{
+     position: absolute;
+     height: auto;
+     margin-top: 3px;
+     pointer-events: none;
+     width: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+
+}
+.ele_shell_attc_indi_txt{
+     background-color: #0E98FF;
+     padding-left: 7px;
+     padding-right: 7px;
+     padding-top: 4px;
+     padding-bottom: 4px;
+     font-size: 10px;
+     color: #fff;
+     border-radius: 32px;
 }

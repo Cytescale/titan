@@ -312,7 +312,7 @@ backdrop-filter: blur(7px);
      position: relative;
     
 } */
-
+/* 
 .land_act_creat_main_cont{
      width: 100%;
      margin-left: 0px;
@@ -330,8 +330,8 @@ backdrop-filter: blur(7px);
      align-items: center;
      position: relative;
      
-}
-/* 
+} */
+
 .land_act_creat_main_cont{
      width: 100%;
      margin-left: 0px;
@@ -344,7 +344,7 @@ backdrop-filter: blur(7px);
      z-index: 0;     
      position: relative;
      
-} */
+}
 
 .land_act_creat_main_cont_mobile_main_cont{
      width: 100%;
@@ -402,15 +402,15 @@ backdrop-filter: blur(7px);
      z-index: 999;
      
 }
-.land_act_creat_sub_cont{
+/* .land_act_creat_sub_cont{
      width: 900px;
      opacity: 1;
-}
-/* .land_act_creat_sub_cont{
+} */
+.land_act_creat_sub_cont{
      width: 100%;
      opacity: 1;
      
-} */
+}
 .land_act_creat_sub_cont_mobile{
      width: 100%;
      opacity: 1;

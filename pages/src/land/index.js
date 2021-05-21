@@ -373,7 +373,7 @@ export default class LandAct extends React.Component{
                          }
                     });
                     if(this.state._website_component===null){
-                         this._set_temp_mod_show(true);
+                         //this._set_temp_mod_show(true);
                     }
                }
           }
@@ -682,30 +682,30 @@ export default class LandAct extends React.Component{
      
      
      /*////////////////////////////////////RENDERERS SECTION ///////////////////////////////////////////////////*/
-     _render_component(){
-          if(this.state._website_component && this.state._website_component!==undefined ){
-          return <ElementRenderer 
-          websiteComp={this.state._website_component}   
-          currentSelectTypeId={null}
-          currentSelectRowId={this.state._select_row_id}
-          currentSelectColmId={this.state._select_element_id}
-          overlayMenuId={ELEMENT_OVERLAY_MENU_ID}
-          contextMenuHandler={this.menuHandler}
-          resizeCallback={this._renderer_resize_callback}
-          selectCallback={  this._set_url_param_selec_id}
-          elementRenderCallback={null}
-          />;
-          }
-          else{
-               return(<div>Empty Outer render</div>)
-          }
-     }
      // _render_component(){
-     //      return(this.state.editorHelperComp? <Renderer
-     //      websiteHelper={this.state.editorHelperComp}
-     //      updateHandler={this.stateUpdateHandler}
-     //      />:<div>Empty Outer render</div>)
+     //      if(this.state._website_component && this.state._website_component!==undefined ){
+     //      return <ElementRenderer 
+     //      websiteComp={this.state._website_component}   
+     //      currentSelectTypeId={null}
+     //      currentSelectRowId={this.state._select_row_id}
+     //      currentSelectColmId={this.state._select_element_id}
+     //      overlayMenuId={ELEMENT_OVERLAY_MENU_ID}
+     //      contextMenuHandler={this.menuHandler}
+     //      resizeCallback={this._renderer_resize_callback}
+     //      selectCallback={  this._set_url_param_selec_id}
+     //      elementRenderCallback={null}
+     //      />;
+     //      }
+     //      else{
+     //           return(<div>Empty Outer render</div>)
+     //      }
      // }
+     _render_component(){
+          return(this.state.editorHelperComp? <Renderer
+          websiteHelper={this.state.editorHelperComp}
+          updateHandler={this.stateUpdateHandler}
+          />:<div>Empty Outer render</div>)
+     }
      _render_context_menu(){
           return (
                <div>
@@ -953,12 +953,12 @@ export default class LandAct extends React.Component{
                     data-menuId={ELEMENT_OVERLAY_BASE_ID} 
                      onContextMenu={this.basemenuHandler}
                     >
-                             <div className='land_act_creat_main_cont_grd_back'  onMouseDown={(e)=>{
+                             {/* <div className='land_act_creat_main_cont_grd_back'  onMouseDown={(e)=>{
                          if(e.nativeEvent.which==1){
                               this._set_url_param_selec_id(-1,-1)
                          }
                          }
-                    }></div>
+                    }></div> */}
                          <div className='land_act_creat_main_sub_cont'>
                                         {/* <div className='land_act_prv_add_bar_cont_outer'>
                                              <div className='land_act_prv_add_bar_cont'>

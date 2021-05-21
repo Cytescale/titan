@@ -6,13 +6,15 @@ export default class elementSkelton{
      ELEMENT_STYLE:compStyle = null;
      IDS:Partial<ID_TYPES>={
           BASE_ID : null, 
-          PARENT_ID : null,
+          PARENT_ID : 0,
      }
      BOOLS:Partial<ELEMENT_BOOL_TYPES>={
           MOVEABLE : true,
           DELETED :false,
           EDITABLE : true,
+          PARENTABLE:false,
           ENABLED : true,
+          PROBAL_ATTACH:false,
           RESIZE_MODES:{
                TOP:true,
                LEFT:true,

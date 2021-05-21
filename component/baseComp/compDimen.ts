@@ -46,7 +46,7 @@ export default class compDimen {
                     break;
                }
                case 2:{
-                    res = this.DIMEN.yvp +'vw';
+                    res = this.DIMEN.yvp +'vh';
                     break;
                }default:{
                     console.log("FALSE DIMENTIONS");
