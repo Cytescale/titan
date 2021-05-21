@@ -21,6 +21,7 @@ interface ELEMENT_BOOL_TYPES{
      IS_LINK : boolean,    
      SELECTABLE:boolean,
      PARENTABLE:boolean,
+     IS_SECTION:boolean,
      PROBAL_ATTACH:boolean,
 }
 interface ELEMENT_MENU_TYPES{

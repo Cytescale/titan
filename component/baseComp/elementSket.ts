@@ -13,6 +13,7 @@ export default class elementSkelton{
           DELETED :false,
           EDITABLE : true,
           PARENTABLE:false,
+          IS_SECTION:false,
           ENABLED : true,
           PROBAL_ATTACH:false,
           RESIZE_MODES:{

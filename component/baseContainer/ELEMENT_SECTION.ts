@@ -18,9 +18,11 @@ export default class ELEMENT_SECTION {
           MOVEABLE : false,
           DELETED :false,
           EDITABLE : true,
+          IS_SECTION:true,
           ENABLED : true,
           RESIZEABLE : true,
           SELECTABLE:true,
+          PARENTABLE:true,
           RESIZE_MODES:{
                TOP:false,
                LEFT:false,
@@ -48,9 +50,6 @@ export default class ELEMENT_SECTION {
                yvp:90,
                xvp:100,
           });
-
-          
-
           STACK_ID?this.IDS.STACK_ID=STACK_ID:null;
      }
 

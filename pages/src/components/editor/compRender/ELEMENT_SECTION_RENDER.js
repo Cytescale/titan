@@ -10,16 +10,23 @@ export default class ELEMENT_SECTION_RENDER extends React.Component{
           */
           constructor(props){
                super(props);
+               this._render_section_childs = this._render_section_childs.bind(this);
                
           }
           _render_section_childs(el){
                if(el){
-                    let childs = el.CHILD_ELEMENTS.map((elm,ind)=>{
-                         return(
-                              <ELEMENT_SHELL_RENDER isSection={false} currentLayerId={elm.IDS.BASE_ID} sectionData={this.props.sectionData} elementData={elm}>
-                                   Container {elm.IDS.BASE_ID}     
-                              </ELEMENT_SHELL_RENDER>
-                         )
+                    let childs = el.getChildElements().map((elm,ind)=>{
+                         if(elm.BOOLS.PARENTABLE == true){
+                              return(
+                                   <ELEMENT_SHELL_RENDER {...this.props}  isSection={false} sectionData={null} currentLayerId={elm.IDS.BASE_ID}  elementData={elm}>
+                                        Container {elm.IDS.BASE_ID}     
+                                        {this._render_section_childs(elm)}
+                                   </ELEMENT_SHELL_RENDER>
+                              )     
+                         }
+                         else{
+                              return <div>NON Container ELEMENT</div>
+                         }
                     });
                     return childs;
                }
@@ -31,10 +38,10 @@ export default class ELEMENT_SECTION_RENDER extends React.Component{
           _render_section(){
                let el = this.props.sectionData;
                if(el){
-                    return(
-                    <ELEMENT_SHELL_RENDER isSection={true} elementData={this.props.sectionData}>
-                         {this._render_section_childs(el)}
-                      </ELEMENT_SHELL_RENDER>
+                    return(                    
+                         <ELEMENT_SHELL_RENDER {...this.props}  isSection={true} sectionData={el} currentLayerId={el.IDS.BASE_ID}  elementData={el}>
+                              {this._render_section_childs(el)}
+                         </ELEMENT_SHELL_RENDER>
                     );
                }else{return(<div>Empt</div>);}
           }

@@ -55,13 +55,16 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                })
           }
 
+
+
           attachToParent(){ 
                let el =  this.props.elementData;
                if(this.PROBAL_ATTACH_PARTNER){                    
                          el.IDS.PARENT_ID = this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].IDS.BASE_ID;
-                         console.log( el.IDS.BASE_ID +" -> "+this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].IDS.BASE_ID);
-                     
-               }               
+                         console.log( el.IDS.BASE_ID +" -> "+this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].IDS.BASE_ID);                                    
+                         this.props.websiteHelper?this.props.websiteHelper.addNode(this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].IDS.BASE_ID,el.IDS.BASE_ID):null;
+                         this.props.updateHandler();
+               }                              
                this.PROBAL_ATTACH_PARTNER= null;
           }
           removeAttachLabel(){
@@ -148,8 +151,7 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
 
 
           _get_under_mouse(el){
-
-                    if(this.props.sectionData){
+               if(this.props.sectionData!==null){
                          let scData = this.props.sectionData;
                          if(this.props.isSection == false){
                               for(let i = (scData.getChildElements().length-1);i>=0;i--){
@@ -434,6 +436,7 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
           componentDidMount(){
                document.addEventListener('mousemove',this.onGlobalMouseMove);
                document.addEventListener('mouseup', this.onGlobalMouseUp);
+               console.log(this.props.sectionData);
           }
 
           componentWillUnmount(){
