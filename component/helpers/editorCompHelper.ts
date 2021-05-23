@@ -234,13 +234,65 @@ export default class editorCompHelper{
      }
 
      
+     prntClip(PARENT_ID,ans,mx,my){
+          if(PARENT_ID===0){
+               return ans && true;
+          }
+          else{     
+               let pEl =  this.findNode(this.getWebsiteComp().getSectionStack()[0],PARENT_ID,[]);
+               let prntEl = pEl?pEl.ELEMENT:null;
+               let pl = prntEl?prntEl.getStyleComp().position.x_global.getDimen().val_px:null;
+               let pt = prntEl?prntEl.getStyleComp().position.y_global.getDimen().val_px:null;
+               let prtXClip = null;
+               if(prntEl){
+                    if((mx >pl && mx < pl+ prntEl.getStyleComp().body.dimen.getDimen().x)
+                    && 
+                    (my > pt && my < pt + prntEl.getStyleComp().body.dimen.getDimen().y)){
+                         prtXClip =  true;
+                        return(this.prntClip(prntEl.IDS.PARENT_ID,true,mx,my))
+                    }
+                    else{
+                         prtXClip =  false;
+                         return false;
+                    }
+               }
+
+          }
+     }
+
 
      checkClipping(el,BASE_ID,mx,my){
           let gl = el.getStyleComp().position.x_global.getDimen().val_px;
           let gt = el.getStyleComp().position.y_global.getDimen().val_px;
-          if((mx >gl && mx <gl+ el.getStyleComp().body.dimen.getDimen().x)
+          let pEl = null;
+          if(el.IDS.PARENT_ID!==0){
+                pEl = this.findNode(this.getWebsiteComp().getSectionStack()[0],el.IDS.PARENT_ID,[]);
+          }
+          else{
+                pEl = null;
+          }
+
+          let prntEl = pEl?pEl.ELEMENT:null;
+          let pl = prntEl?prntEl.getStyleComp().position.x_global.getDimen().val_px:null;
+          let pt = prntEl?prntEl.getStyleComp().position.y_global.getDimen().val_px:null;
+          
+          let prtXClip = null;
+          if(prntEl){
+               prtXClip = this.prntClip(el.IDS.PARENT_ID,true,mx,my) ;
+          }
+          if(
+               (
+                    (mx >gl && mx < gl+ el.getStyleComp().body.dimen.getDimen().x)
+                    &&
+                    (prntEl?prtXClip:true)
+               )
           &&
-            (my>gt && my < gt +el.getStyleComp().body.dimen.getDimen().y)
+          (
+                    (my>gt && my < gt +el.getStyleComp().body.dimen.getDimen().y)
+                    &&
+                    (prntEl?prtXClip:true)
+          )
+            
           )   
           {
                return true;
@@ -261,7 +313,7 @@ export default class editorCompHelper{
                               if(res){
                                    return res;
                               }
-                              if(this.checkClipping(el,el.IDS.BASE_ID,mx,my)===true){
+                              if(this.checkClipping(el,BASE_ID,mx,my)===true){
                                    el.BOOLS.PROBAL_ATTACH = true;
                                    return el.IDS.BASE_ID;
                               }else{
