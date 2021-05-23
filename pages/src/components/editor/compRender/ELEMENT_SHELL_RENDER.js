@@ -25,6 +25,7 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                this.setresizing = this.setresizing.bind(this);
                this.onMouseDown = this.onMouseDown.bind(this);
                this.onMouseUp = this.onMouseUp.bind(this);
+               this.onMouseOver = this.onMouseOver.bind(this);
                this.onGlobalMouseMove = this.onGlobalMouseMove.bind(this);
                this.onGlobalMouseUp = this.onGlobalMouseUp.bind(this);
                this.setInitPosi = this.setInitPosi.bind(this);
@@ -60,16 +61,16 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
           attachToParent(){ 
                let el =  this.props.elementData;
                if(this.PROBAL_ATTACH_PARTNER){                    
-                         el.IDS.PARENT_ID = this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].IDS.BASE_ID;
-                         console.log( el.IDS.BASE_ID +" -> "+this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].IDS.BASE_ID);                                    
-                         this.props.websiteHelper?this.props.websiteHelper.addNode(this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].IDS.BASE_ID,el.IDS.BASE_ID):null;
+                         
+                         console.log( el.IDS.BASE_ID +" -> "+this.PROBAL_ATTACH_PARTNER);                                    
+                         this.props.websiteHelper?this.props.websiteHelper.addNode(this.PROBAL_ATTACH_PARTNER,el.IDS.BASE_ID):null;
                          this.props.updateHandler();
                }                              
                this.PROBAL_ATTACH_PARTNER= null;
           }
           removeAttachLabel(){
                if(this.PROBAL_ATTACH_PARTNER){
-                    this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].BOOLS.PROBAL_ATTACH = false
+                    //this.props.sectionData.getChildElements()[this.PROBAL_ATTACH_PARTNER].BOOLS.PROBAL_ATTACH = false
                }
           }
           onClick(e){
@@ -94,7 +95,8 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                this.setInitPosi(e.clientX,e.clientY);
                this.setInitStartPosi(
                     this.props.elementData.getStyleComp().position.left.getDimen().val_px,
-                    this.props.elementData.getStyleComp().position.top.getDimen().val_px)    
+                    this.props.elementData.getStyleComp().position.top.getDimen().val_px);
+          
           }
 
           onGlobalMouseMove(e){ 
@@ -122,6 +124,12 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                this.removeAttachLabel();
                this.attachToParent();
           }
+
+
+          onMouseOver(e){
+               console.log("MOUSE OVER"+this.props.elementData.IDS.BASE_ID);
+          }
+
           _movement_y_bottom(el){
                let movY =  this.state.mouse_y -  this.state.start_mouse_y;
                let initDimen = this.state.start_height?this.state.start_height:0;
@@ -154,37 +162,13 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                if(this.props.sectionData!==null){
                          let scData = this.props.sectionData;
                          if(this.props.isSection == false){
-                              for(let i = (scData.getChildElements().length-1);i>=0;i--){
-                                   // if(this.props.currentLayerId){if(i==this.props.currentLayerId){continue;}}           
-                                   if(el.IDS.BASE_ID===scData.getChildElements()[i].IDS.BASE_ID){continue;}
-                                                  if(  (this.state.mouse_x >= 
-                                                       scData.getChildElements()[i].getStyleComp().position.left.getDimen().val_px 
-                                                       &&
-                                                       this.state.mouse_x <=
-                                                       (scData.getChildElements()[i].getStyleComp().position.left.getDimen().val_px 
-                                                       + scData.getChildElements()[i].getStyleComp().body.dimen.getDimen().x)
-                                                       )
-                                                       &&
-                                                       (
-                                                            this.state.mouse_y>= 
-                                                            (scData.getChildElements()[i].getStyleComp().position.top.getDimen().val_px 
-                                                            +56)
-                                                            &&
-                                                            this.state.mouse_y <=
-                                                            (scData.getChildElements()[i].getStyleComp().position.top.getDimen().val_px 
-                                                            + scData.getChildElements()[i].getStyleComp().body.dimen.getDimen().y
-                                                            + 56)
-                                                       ))    
-                                                       {
-                                                            scData.getChildElements()[i].BOOLS.PROBAL_ATTACH = true;
-                                                            this.PROBAL_ATTACH_PARTNER = i;                                                            
-                                                            break;
-                                                       }
-                                                       else{
-                                                            this.PROBAL_ATTACH_PARTNER = null;
-                                                            scData.getChildElements()[i].BOOLS.PROBAL_ATTACH = false;
-                                                       }                                 
-                                   }
+                              let gotBaseId = this.props.websiteHelper.findMouseUnderElement(el.IDS.BASE_ID,this.state.mouse_x,this.state.mouse_y);
+                              if(gotBaseId){
+                                   this.PROBAL_ATTACH_PARTNER = gotBaseId;  
+                              }
+                              else{
+                                   this.PROBAL_ATTACH_PARTNER = null;
+                              }
                     }
           }
      }
@@ -213,9 +197,11 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                let calcTop = initYPosi + movY;
                el.getStyleComp().position.left.getDimen().val_px = calcLeft;
                el.getStyleComp().position.top.getDimen().val_px = calcTop;
-               this._move_childs(movX,movY)
+               let elm = document.getElementById(`ELEMENT-SHELL-${el.IDS.BASE_ID}`)
+               let domRect = elm.getBoundingClientRect();
+               el.getStyleComp().position.x_global.getDimen().val_px = parseInt(domRect.x);
+               el.getStyleComp().position.y_global.getDimen().val_px = parseInt(domRect.y);
                this._get_under_mouse(el);
-
           }
           _movement(){
                let el = this.props.elementData;
@@ -402,10 +388,12 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                      {this._render_margin_line(el)}
                      {this._render_name_indicator(el)}
                      {this._render_size_indicator(el)}
-                      <div style={{
+                      <div
+                      id={`ELEMENT-SHELL-${el.IDS.BASE_ID}`}
+                      style={{
                            overflow:'hidden',
                            position:el.getStyleComp().position.position,
-                           opacity:this.state.moving==true?0.5:el.getStyleComp().body.back_color.getColor().alpha,
+                           opacity:this.state.moving==true?0.8:el.getStyleComp().body.back_color.getColor().alpha,
                            border:'1px solid #0E98FF',
                            backgroundColor:el.getStyleComp().body.back_color.getColor().colorStr,
                            top:el.getStyleComp().position.top.getDimen().val_px+'px',
@@ -419,6 +407,7 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
                            zIndex:this.state.moving==true?99999:el.getStyleComp().body.z_index,
                            
                       }}
+                      
                       onMouseDown={this.onClick}
                       >
                          {this._render_proble_attach(el)}
@@ -436,7 +425,10 @@ export default class ELEMENT_SHELL_RENDER extends React.Component{
           componentDidMount(){
                document.addEventListener('mousemove',this.onGlobalMouseMove);
                document.addEventListener('mouseup', this.onGlobalMouseUp);
-               console.log(this.props.sectionData);
+               let elm = document.getElementById(`ELEMENT-SHELL-${this.props.elementData.IDS.BASE_ID}`)
+               let domRect = elm.getBoundingClientRect();
+               this.props.elementData.getStyleComp().position.x_global.getDimen().val_px = parseInt(domRect.x);
+               this.props.elementData.getStyleComp().position.y_global.getDimen().val_px = parseInt(domRect.y);
           }
 
           componentWillUnmount(){

@@ -40,14 +40,14 @@ export default class ELEMENT_SECTION {
      }
      ELEMENT_CLASSNAME:string = null;
      ELEMENT_NAME:string = "Section";
-     ELEMENT_LAYER_COUNT:number = 1;
+     ELEMENT_LAYER_COUNT:number = 0;
      CHILD_ELEMENTS:Array<ELEMENT_CONTAINER|ELEMENT_TEXT|ELEMENT_IMAGE|null> = []
      constructor(STACK_ID:number){
           this.ELEMENT_STYLE = new compStyle();       
           this.ELEMENT_STYLE.STYLE.body.dimen.setDimen(
                {x_type:2,
                y_type:2,
-               yvp:90,
+               yvp:100,
                xvp:100,
           });
           STACK_ID?this.IDS.STACK_ID=STACK_ID:null;
@@ -56,7 +56,9 @@ export default class ELEMENT_SECTION {
      getChildElements():Array<ELEMENT_CONTAINER|ELEMENT_TEXT|ELEMENT_IMAGE|null>{
           return this.CHILD_ELEMENTS;
      }
-
+     getLayerCount(){
+          return this.ELEMENT_LAYER_COUNT;
+     }
      getStyleComp():compStyle{
           return this.ELEMENT_STYLE.getCompStyle();
      }

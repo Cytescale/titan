@@ -18,8 +18,10 @@ export default class ELEMENT_SECTION_RENDER extends React.Component{
                     let childs = el.getChildElements().map((elm,ind)=>{
                          if(elm.BOOLS.PARENTABLE == true){
                               return(
-                                   <ELEMENT_SHELL_RENDER {...this.props}  isSection={false} sectionData={null} currentLayerId={elm.IDS.BASE_ID}  elementData={elm}>
-                                        Container {elm.IDS.BASE_ID}     
+                                   <ELEMENT_SHELL_RENDER {...this.props}  isSection={false} sectionData={this.props.sectionData} currentLayerId={elm.IDS.BASE_ID}  elementData={elm}>
+                                        <div className='ele_container_main_cont' style={{
+                                             position:'absolute'
+                                        }}>Container {elm.IDS.BASE_ID}     </div>
                                         {this._render_section_childs(elm)}
                                    </ELEMENT_SHELL_RENDER>
                               )     
@@ -37,6 +39,7 @@ export default class ELEMENT_SECTION_RENDER extends React.Component{
 
           _render_section(){
                let el = this.props.sectionData;
+               //console.log(el);
                if(el){
                     return(                    
                          <ELEMENT_SHELL_RENDER {...this.props}  isSection={true} sectionData={el} currentLayerId={el.IDS.BASE_ID}  elementData={el}>

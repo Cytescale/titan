@@ -55,5 +55,8 @@ export default class elementSkelton{
                dimension:dimension?dimension:true,
           }
      }
+     getLayerCount(){
+          return this.ELEMENT_LAYER_COUNT;
+     }
 
 }

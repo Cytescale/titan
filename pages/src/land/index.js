@@ -1340,9 +1340,10 @@ export default class LandAct extends React.Component{
      /*////////////////////////////////////COMPONENT SECTION ///////////////////////////////////////////////////*/
 
      componentDidMount(){  
-          this._set_loading_prog(20);
-          this._init_land_user_check();   
-          this._set_browserfs_configure();
+          this._set_load_bool(false);
+          //     this._set_loading_prog(20);
+       //   this._init_land_user_check();   
+        //  this._set_browserfs_configure();
           // window.addEventListener('beforeunload',(e)=>{
           //      e.preventDefault();
           //      if(this.SAVE_STATE===true){

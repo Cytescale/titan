@@ -3,14 +3,18 @@ import ELEMENT_SECTION from "../baseContainer/ELEMENT_SECTION";
 import ELEMENT_CONTAINER from "../baseElement/ELEMENT_CONTAINER";
 export default class editorCompHelper{
      WEBSITE_COMP:ELEMENT_WEBSITE  = null;
+
+     MOUSE_CORREC_Y = 56;
+     MOUSE_CORREC_X = 0;
+
      constructor(){
           this.WEBSITE_COMP = new ELEMENT_WEBSITE();
           this.addSection(null,null);
-          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(1,100,200))
-          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(2,300,400))
-          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(3,300,200))
-          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(4,700,200))
-          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(5,200,600))
+          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(1,100,200,1))
+          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(2,300,400,2))
+          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(3,300,200,3))
+          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(4,700,200,4))
+          this.getWebsiteComp().getSectionStack()[0].getChildElements().push(new ELEMENT_CONTAINER(5,200,600,5))
           
      }
 
@@ -21,7 +25,7 @@ export default class editorCompHelper{
                this.getWebsiteComp().getSectionStack().push(new ELEMENT_SECTION(null))
           }    
      }
-     findNode(elem,base_id,path){
+     findNode(elem,base_id,path:Array<any>){
           if(elem.IDS.BASE_ID == base_id){
                return {
                     ELEMENT:elem,
@@ -61,7 +65,7 @@ export default class editorCompHelper{
                     };
                }else{
                     return {
-                         PARENT_ELEMENT:res.ELEMENT,
+                         PARENT_ELEMENT:res,
                          FOUND_ELEMENT:false,
                          FOUND:false,
                          PATH:res.PATH,
@@ -84,7 +88,6 @@ export default class editorCompHelper{
           }
           return null;
      }
-
      travel(base_elem,path){
           let z = 0;
           let currNode = base_elem;
@@ -93,7 +96,6 @@ export default class editorCompHelper{
           }    
           return currNode;
      }
-     
 
      deleteNode(CHILD_ID){
           let pr  = this.findInParent(0,CHILD_ID);
@@ -102,7 +104,7 @@ export default class editorCompHelper{
                if(pr.FOUND===true){
                          for(let i = 0 ; i < pr.PARENT_ELEMENT.ELEMENT.getChildElements().length;i++){
                               if(pr.PARENT_ELEMENT.ELEMENT.getChildElements()[i].IDS.BASE_ID === CHILD_ID){
-                                   pr.PARENT_ELEMENT.ELEMENT.getChildElements().splice(1,1);
+                                   pr.PARENT_ELEMENT.ELEMENT.getChildElements().splice(i,1);
                                    return true;
                                    break;
                               }
@@ -114,43 +116,178 @@ export default class editorCompHelper{
      }    
 
      deleteFromParent(PARENT_ELEM,CHILD_ELEM){
+          
           for(let i = 0 ; i < PARENT_ELEM.getChildElements().length;i++){
                if(PARENT_ELEM.getChildElements()[i].IDS.BASE_ID === CHILD_ELEM.IDS.BASE_ID){
-                    PARENT_ELEM.getChildElements().splice(1,1);
+                    PARENT_ELEM.getChildElements().splice(i,1);
                     return true;
                     break;
                }
           }
           return false;
      }
+     
+
+     getDifferentialCords(PARENT_ELM,CHILD_ELM){
+          let prLef  = PARENT_ELM.getStyleComp().position.x_global.getDimen().val_px;
+          let prTop  = PARENT_ELM.getStyleComp().position.y_global.getDimen().val_px;
+          let chLef  = CHILD_ELM.getStyleComp().position.x_global.getDimen().val_px;
+          let chTop  = CHILD_ELM.getStyleComp().position.y_global.getDimen().val_px
+          let dl = chLef-prLef;
+          let dt = chTop - prTop;
+          CHILD_ELM.getStyleComp().position.top.getDimen().val_px = dt;
+          CHILD_ELM.getStyleComp().position.left.getDimen().val_px =dl;
+     }
+
 
      addNode(PARENT_ID,BASE_ID){
           let po = this.findInParent(PARENT_ID,BASE_ID);
-          console.log(po);
           if(!po){
                console.log("PARENT NO EXIST"); 
           }
           else{
-               
               if(po.FOUND == true){
-               console.log("EXIST"); 
               }else{
                     let res = this.findInParent(0,BASE_ID);
                     if(res){
-                              if(this.deleteFromParent(res.PARENT_ELEMENT.ELEMENT,res.FOUND_ELEMENT.ELEMENT)){
-                                   po.PARENT_ELEMENT.getChildElements().push(res.FOUND_ELEMENT.ELEMENT);
-                                   console.log("ADDED");
-                              }
-                              else{
-                                   console.log("ELEMENT NOT DELETED");    
+                         let prtNode = this.findInParent(0,res.FOUND_ELEMENT.ELEMENT.IDS.PARENT_ID);
+                              if(prtNode){
+                                   if(this.deleteFromParent(prtNode.FOUND_ELEMENT.ELEMENT,res.FOUND_ELEMENT.ELEMENT)==true){
+                                        this.getDifferentialCords(po.PARENT_ELEMENT.ELEMENT,res.FOUND_ELEMENT.ELEMENT);
+                                        po.PARENT_ELEMENT.ELEMENT.getChildElements().push(res.FOUND_ELEMENT.ELEMENT);
+                                        this.sortSectionTree();
+                                        res.FOUND_ELEMENT.ELEMENT.IDS.PARENT_ID = PARENT_ID;
+                                   }
+                                   else{
+                                        console.log("ELEMENT NOT DELETED");    
+                                   }
                               }
                          }
               }
           }
      }    
+     
+     sortChildElementLay(elm){
+          if(elm){
+               let minInd = null;
+               let len = elm.getChildElements().length;
+               for(let k = 0 ; k < len ; k++){
+                    minInd = k;
+                    for(let l = k+1;l<len;l++){
+                         if(elm.getChildElements()[l].ELEMENT_LAYER_COUNT < elm.getChildElements()[minInd].ELEMENT_LAYER_COUNT){
+                              minInd = l;
+                         }
+                    }     
+                    let temp = elm.getChildElements()[k];
+                    elm.getChildElements()[k] = elm.getChildElements()[minInd];
+                    elm.getChildElements()[minInd] = temp;
+               }
+          }
+     }
 
-     findMouseUnderElement(mouse_x,mouse_y){
-               
+     sortSectionTree(){
+          this.rearrangeTree(this.getWebsiteComp().getSectionStack()[0]);
+          console.log("TREE SORTED");
+     }
+
+     rearrangeTree(PARENT_ELEM){
+          this.sortChildElementLay(PARENT_ELEM);
+          for(let i = 0 ; i < PARENT_ELEM.getChildElements().length;i++){
+               this.rearrangeTree(PARENT_ELEM.getChildElements()[i]);
+          }          
+          
+     }    
+
+     getElementAsLayer(PARENT_ELEMT){
+
+     }
+
+     getGlobalCords(BASE_ELEM,BASE_ID,left,top){
+          if(BASE_ELEM.IDS.BASE_ID == BASE_ID){
+               return {
+                    ELEMENT:BASE_ELEM,
+                    LEFT:left,   
+                    TOP:top
+               };
+          }
+          else{
+               if(BASE_ELEM.BOOLS.PARENTABLE == true){
+                    if(BASE_ELEM.getChildElements()){
+                       if(BASE_ELEM.getChildElements().length>0){
+                         for(let i:number = 0 ; i < BASE_ELEM.getChildElements().length ; i++){              
+                              left += BASE_ELEM.getStyleComp().position.left.getDimen().val_px;
+                              top += BASE_ELEM.getStyleComp().position.top.getDimen().val_px
+                              let res = this.getGlobalCords(BASE_ELEM.getChildElements()[i],BASE_ID,left,top);
+                              if(res){
+                                   return  {
+                                        ELEMENT:res.ELEMENT,
+                                        LEFT:res.LEFT,     
+                                        TOP:res.TOP
+                                   };
+                              }
+                         }
+                       }  
+                    }
+               }
+          }
+          return null;
+     }
+
+     
+
+     checkClipping(el,BASE_ID,mx,my){
+          let gl = el.getStyleComp().position.x_global.getDimen().val_px;
+          let gt = el.getStyleComp().position.y_global.getDimen().val_px;
+          if((mx >gl && mx <gl+ el.getStyleComp().body.dimen.getDimen().x)
+          &&
+            (my>gt && my < gt +el.getStyleComp().body.dimen.getDimen().y)
+          )   
+          {
+               return true;
+          }
+          else{
+               return false;
+          }  
+          return null;
+     }
+
+     travelAllNodes(elem,BASE_ID,mx,my){
+               if(elem){
+                    if(elem.BOOLS.PARENTABLE == true){
+                         for(let i = (elem.getChildElements().length-1) ; i >= 0 ; i--){
+                              let el = elem.getChildElements()[i]; 
+                              if(el.IDS.BASE_ID===BASE_ID){continue;}
+                              let res = this.travelAllNodes(el,BASE_ID,mx,my) 
+                              if(res){
+                                   return res;
+                              }
+                              if(this.checkClipping(el,el.IDS.BASE_ID,mx,my)===true){
+                                   el.BOOLS.PROBAL_ATTACH = true;
+                                   return el.IDS.BASE_ID;
+                              }else{
+                                   el.BOOLS.PROBAL_ATTACH = false;    
+                              }
+                              
+                              
+                         }
+                    }
+                    else{
+                         return null;
+                    }
+               }
+               else{
+                    return null;
+               }
+     }
+
+     findMouseUnderElement(BASE_ID,mouse_x,mouse_y){
+          let mx = mouse_x;
+          let my = mouse_y ;
+          let res = this.travelAllNodes( this.getWebsiteComp().getSectionStack()[0],BASE_ID,mx,my);
+          if(res){
+               return res;
+          }
+          return null;
      }
 
      getWebsiteComp():ELEMENT_WEBSITE{
