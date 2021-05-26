@@ -11,7 +11,7 @@ export default class Home extends React.Component{
     super(props);
   }
   componentDidMount(){
-    firebaseHelp._init_user_check(process.env.NEXT_PUBLIC_HOST+'src/land',process.env.NEXT_PUBLIC_HOST+'src/login');
+    firebaseHelp._init_user_check(process.env.NEXT_DEV_PUBLIC_HOST+'src/land',process.env.NEXT_DEV_PUBLIC_HOST+'src/login');
   }
 
   render(){
