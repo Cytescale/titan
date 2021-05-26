@@ -16,6 +16,15 @@ export default class compStyle {
                     x_relative:new baseDimen(),
                     y_relative:new baseDimen(),
                },
+               old_position:{
+                    position:'relative',
+                    top:new baseDimen(),
+                    bottom:new baseDimen(),
+                    left:new baseDimen(),
+                    right:new baseDimen(),
+                    x_global:new baseDimen(),
+                    y_global:new baseDimen(),
+               },
                stick:{
                     top:false,
                     left:false,

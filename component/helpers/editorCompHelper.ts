@@ -6,7 +6,7 @@ export default class editorCompHelper{
 
      MOUSE_CORREC_Y = 56;
      MOUSE_CORREC_X = 0;
-
+     
      constructor(){
           this.WEBSITE_COMP = new ELEMENT_WEBSITE();
           this.addSection(null,null);
@@ -139,6 +139,36 @@ export default class editorCompHelper{
           CHILD_ELM.getStyleComp().position.left.getDimen().val_px =dl;
      }
 
+     getDifferentialGlobalCords(CHILD_ELM,imx,imy){
+          let elm = document.getElementById(`ELEMENT-SHELL-${CHILD_ELM.IDS.BASE_ID}`)
+          let domRect = elm.getBoundingClientRect();
+          CHILD_ELM.getStyleComp().position.left.getDimen().val_px = CHILD_ELM.getStyleComp().position.x_global.getDimen().val_px;
+          CHILD_ELM.getStyleComp().position.top.getDimen().val_px = CHILD_ELM.getStyleComp().position.y_global.getDimen().val_px;
+          
+     }
+
+
+     moveToRoot(BASE_ID,imx,imy){
+               let res = this.findInParent(0,BASE_ID);
+               if(res){
+                    let prtNode = this.findInParent(0,res.FOUND_ELEMENT.ELEMENT.IDS.PARENT_ID);
+                         if(prtNode){
+                              if(this.deleteFromParent(prtNode.FOUND_ELEMENT.ELEMENT,res.FOUND_ELEMENT.ELEMENT)==true){
+                                   this.getDifferentialGlobalCords(res.FOUND_ELEMENT.ELEMENT,imx,imy);
+                                    res.FOUND_ELEMENT.ELEMENT.ELEMENT_LAYER_COUNT = 99999;
+                                   this.getWebsiteComp().getSectionStack()[0].getChildElements().push(res.FOUND_ELEMENT.ELEMENT);
+                                   this.sortSectionTree();
+                                   res.FOUND_ELEMENT.ELEMENT.IDS.PARENT_ID = 0;
+                              }
+                              else{
+                                   console.log("ELEMENT NOT DELETED");    
+                              }
+                         }
+               }
+               else{
+                    console.log("ELEMENT NOT FOUND");    
+               }
+     }
 
      addNode(PARENT_ID,BASE_ID){
           let po = this.findInParent(PARENT_ID,BASE_ID);

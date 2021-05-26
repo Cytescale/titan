@@ -116,7 +116,9 @@ export default class LandAct extends React.Component{
                _desktop_viewing_mode: true,
                _adder_type:0,
                _website_component : null,
+           
                editorHelperComp:new editorCompHelper(),
+               SELECTED_ELEMENT_BASE_ID:null,
           }
           this.fileUpload = React.createRef();
 
@@ -151,12 +153,18 @@ export default class LandAct extends React.Component{
           this._set_issave_bool = this._set_issave_bool.bind(this);
           this._render_save_indi = this._render_save_indi.bind(this);
           this.stateUpdateHandler =this.stateUpdateHandler.bind(this);
+          this.setSELECTED_ELEMENT_BASE_ID = this.setSELECTED_ELEMENT_BASE_ID.bind(this);
           this.noti_pool = [];     
      }
      /*////////////////////////////////////STATES SETTERS SECTION ///////////////////////////////////////////////////*/
      _set_issaving_bool(bool){
           this.setState({_issaving:bool})
      }
+
+     setSELECTED_ELEMENT_BASE_ID(val){
+          this.setState({SELECTED_ELEMENT_BASE_ID:val})
+     }
+
      _set_issave_bool(bool){
           this.setState({_issaved:bool})
      }
@@ -702,6 +710,8 @@ export default class LandAct extends React.Component{
      // }
      _render_component(){
           return(this.state.editorHelperComp? <Renderer
+          selectedElementBaseId ={this.state.SELECTED_ELEMENT_BASE_ID}
+          setSelectedElement = {this.setSELECTED_ELEMENT_BASE_ID}
           websiteHelper={this.state.editorHelperComp}
           updateHandler={this.stateUpdateHandler}
           />:<div>Empty Outer render</div>)

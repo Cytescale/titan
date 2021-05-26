@@ -1,4 +1,4 @@
-var _BASE_URL = process.env.NEXT_DEV_PUBLIC_HOST
+var _BASE_URL = process.env.NEXT_PUBLIC_HOST
 var  _URLS = null;
 if(_BASE_URL!==null){
      _URLS = {

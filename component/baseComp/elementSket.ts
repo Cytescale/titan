@@ -36,6 +36,7 @@ export default class elementSkelton{
      ELEMENT_ID = null;
      ELEMENT_TYPE_ID = null;
      ELEMENT_NAME = null;
+     OLD_ELEMENT_LAYER_COUNT = null;
      ELEMENT_LAYER_COUNT = null;
      constructor(name,type_id){
           this.ELEMENT_NAME = name;
