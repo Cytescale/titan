@@ -1,4 +1,4 @@
-var _BASE_URL = process.env.NEXT_PUBLIC_HOST
+var _BASE_URL = 'http://localhost:3000/'
 var  _URLS = null;
 if(_BASE_URL!==null){
      _URLS = {
