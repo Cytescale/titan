@@ -116,7 +116,9 @@ export default class LandAct extends React.Component{
                _desktop_viewing_mode: true,
                _adder_type:0,
                _website_component : null,
+           
                editorHelperComp:new editorCompHelper(),
+               SELECTED_ELEMENT_BASE_ID:null,
           }
           this.fileUpload = React.createRef();
 
@@ -151,12 +153,18 @@ export default class LandAct extends React.Component{
           this._set_issave_bool = this._set_issave_bool.bind(this);
           this._render_save_indi = this._render_save_indi.bind(this);
           this.stateUpdateHandler =this.stateUpdateHandler.bind(this);
+          this.setSELECTED_ELEMENT_BASE_ID = this.setSELECTED_ELEMENT_BASE_ID.bind(this);
           this.noti_pool = [];     
      }
      /*////////////////////////////////////STATES SETTERS SECTION ///////////////////////////////////////////////////*/
      _set_issaving_bool(bool){
           this.setState({_issaving:bool})
      }
+
+     setSELECTED_ELEMENT_BASE_ID(val){
+          this.setState({SELECTED_ELEMENT_BASE_ID:val})
+     }
+
      _set_issave_bool(bool){
           this.setState({_issaved:bool})
      }
@@ -373,7 +381,7 @@ export default class LandAct extends React.Component{
                          }
                     });
                     if(this.state._website_component===null){
-                         this._set_temp_mod_show(true);
+                         //this._set_temp_mod_show(true);
                     }
                }
           }
@@ -682,30 +690,32 @@ export default class LandAct extends React.Component{
      
      
      /*////////////////////////////////////RENDERERS SECTION ///////////////////////////////////////////////////*/
-     _render_component(){
-          if(this.state._website_component && this.state._website_component!==undefined ){
-          return <ElementRenderer 
-          websiteComp={this.state._website_component}   
-          currentSelectTypeId={null}
-          currentSelectRowId={this.state._select_row_id}
-          currentSelectColmId={this.state._select_element_id}
-          overlayMenuId={ELEMENT_OVERLAY_MENU_ID}
-          contextMenuHandler={this.menuHandler}
-          resizeCallback={this._renderer_resize_callback}
-          selectCallback={  this._set_url_param_selec_id}
-          elementRenderCallback={null}
-          />;
-          }
-          else{
-               return(<div>Empty Outer render</div>)
-          }
-     }
      // _render_component(){
-     //      return(this.state.editorHelperComp? <Renderer
-     //      websiteHelper={this.state.editorHelperComp}
-     //      updateHandler={this.stateUpdateHandler}
-     //      />:<div>Empty Outer render</div>)
+     //      if(this.state._website_component && this.state._website_component!==undefined ){
+     //      return <ElementRenderer 
+     //      websiteComp={this.state._website_component}   
+     //      currentSelectTypeId={null}
+     //      currentSelectRowId={this.state._select_row_id}
+     //      currentSelectColmId={this.state._select_element_id}
+     //      overlayMenuId={ELEMENT_OVERLAY_MENU_ID}
+     //      contextMenuHandler={this.menuHandler}
+     //      resizeCallback={this._renderer_resize_callback}
+     //      selectCallback={  this._set_url_param_selec_id}
+     //      elementRenderCallback={null}
+     //      />;
+     //      }
+     //      else{
+     //           return(<div>Empty Outer render</div>)
+     //      }
      // }
+     _render_component(){
+          return(this.state.editorHelperComp? <Renderer
+          selectedElementBaseId ={this.state.SELECTED_ELEMENT_BASE_ID}
+          setSelectedElement = {this.setSELECTED_ELEMENT_BASE_ID}
+          websiteHelper={this.state.editorHelperComp}
+          updateHandler={this.stateUpdateHandler}
+          />:<div>Empty Outer render</div>)
+     }
      _render_context_menu(){
           return (
                <div>
@@ -953,12 +963,12 @@ export default class LandAct extends React.Component{
                     data-menuId={ELEMENT_OVERLAY_BASE_ID} 
                      onContextMenu={this.basemenuHandler}
                     >
-                             <div className='land_act_creat_main_cont_grd_back'  onMouseDown={(e)=>{
+                             {/* <div className='land_act_creat_main_cont_grd_back'  onMouseDown={(e)=>{
                          if(e.nativeEvent.which==1){
                               this._set_url_param_selec_id(-1,-1)
                          }
                          }
-                    }></div>
+                    }></div> */}
                          <div className='land_act_creat_main_sub_cont'>
                                         {/* <div className='land_act_prv_add_bar_cont_outer'>
                                              <div className='land_act_prv_add_bar_cont'>
@@ -1340,9 +1350,10 @@ export default class LandAct extends React.Component{
      /*////////////////////////////////////COMPONENT SECTION ///////////////////////////////////////////////////*/
 
      componentDidMount(){  
-          this._set_loading_prog(20);
-          this._init_land_user_check();   
-          this._set_browserfs_configure();
+          this._set_load_bool(false);
+          //     this._set_loading_prog(20);
+       //   this._init_land_user_check();   
+        //  this._set_browserfs_configure();
           // window.addEventListener('beforeunload',(e)=>{
           //      e.preventDefault();
           //      if(this.SAVE_STATE===true){

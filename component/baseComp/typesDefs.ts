@@ -10,6 +10,7 @@ interface ELEMENT_RESIZE{
      RIGHT:boolean,
      BOTTOM:boolean,
 }
+
 interface ELEMENT_BOOL_TYPES{
      MOVEABLE : boolean,
      DELETED :boolean,
@@ -19,6 +20,9 @@ interface ELEMENT_BOOL_TYPES{
      RESIZE_MODES:ELEMENT_RESIZE,
      IS_LINK : boolean,    
      SELECTABLE:boolean,
+     PARENTABLE:boolean,
+     IS_SECTION:boolean,
+     PROBAL_ATTACH:boolean,
 }
 interface ELEMENT_MENU_TYPES{
      position:boolean,

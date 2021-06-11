@@ -4,6 +4,7 @@ const FIREBASE_CONFIG_VAR = {
      projectId: "titan-6969",
      storageBucket: "titan-6969.appspot.com",
      messagingSenderId: "956422534816",
+     databaseURL: "https://titan-6969-default-rtdb.asia-southeast1.firebasedatabase.app",
      appId: "1:956422534816:web:478368756b9509465bfbc5",
      measurementId: "G-HBBP5EPMG6"
    }
