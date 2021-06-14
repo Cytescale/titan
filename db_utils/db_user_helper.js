@@ -1,15 +1,51 @@
 import('firebase/firebase-firestore');
 const  admin = require("firebase-admin");
 const db = admin.firestore();
+
+
+async function get_user_data_by_joining_id(jid){
+     if(jid){
+          try{
+               const profile_data = db.collection('titan_user_info_collec');
+               const snapshot   = await profile_data.get();
+               if (snapshot.empty) {
+                    return null;
+               }  
+               let found_res = null;
+               snapshot.forEach(doc => {
+                    if(doc.data().joining_id){
+                         if(doc.data().joining_id == jid){
+                              found_res = doc.data();
+                              return;
+                         }
+                    }
+               });
+               return found_res;
+          }
+          catch(e){
+               console.log("User data err"+e);
+          }
+     }
+     else{
+          return null;
+     }
+}
+
 async function get_user_data(uid){
      if(uid){
-     const profile_data = db.collection('titan_user_info_collec').doc(uid);
-     const doc = await profile_data.get();
-     if (!doc.exists) {
-          return null;
-     }else{
-          return doc.data();
-     }}
+          try{
+               const profile_data = db.collection('titan_user_info_collec').doc(uid);
+               const doc  = await profile_data.get();
+               if (!doc.exists) {
+                    return null;
+               }else{
+                    return doc.data();
+               }
+          }
+          catch(e){
+               console.log("User data err"+e);
+          }
+     }
      else{
           return null;
      }
@@ -153,5 +189,6 @@ module.exports = {
      get_user_follow,
      setUserFollow,
      delUserFollow,
-     getFollCount
+     getFollCount,
+     get_user_data_by_joining_id
      }

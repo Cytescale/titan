@@ -6,13 +6,9 @@ var randomstring = require("randomstring");
 const appID = 'd95380ef73954640840d0b042d9e128d';
 const appCertificate = '9be93592e761407daa9e7bb45c2d39d6';
 const role = RtcRole.PUBLISHER;
-
-const expirationTimeInSeconds = 86400
-
+const expirationTimeInSeconds = 2592000;
 const currentTimestamp = Math.floor(Date.now() / 1000)
-
 const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds
-
 
 async function getSpaceData(){
      let res ;
